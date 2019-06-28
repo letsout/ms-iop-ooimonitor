@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="1800"/>
+    <title>Title</title>
+    <link rel="stylesheet" href="./static/plugins/layui/css/layui.css" />
+    <link rel="stylesheet" href="./static/css/tagInfo.css" />
+
+    <style>
+        .layui-form-label{
+            width: 150px;
+        }
+        .clearAdd, .clearEdit{
+            width: 200px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<br>
+<!-- 搜索框 -->
+<div class="demoTable" style="margin-top: 5px;">
+    &nbsp;
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="模糊查询">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+    <button class="layui-btn" onclick="openAddModak()">添加</button>
+<!--    <button class="layui-btn" data-type="getCheckData">删除</button>-->
+<!--    <button class="layui-btn" onclick="downSourceData()">下载</button>-->
+<!--    <button type="button" class="layui-btn" id="load">
+        <i class="layui-icon">&#xe67c;</i>导入
+    </button>-->
+</div>
+
+<div id="run" hidden="hidden">
+    <form class="layui-form">
+        <br>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口号</label>
+            <div class="layui-input-block">
+                <input type="text" name="interfaceId" required  lay-verify="required" id="runInterfaceId"
+                       placeholder="请输入接口号(只能输入数字)" autocomplete="off"
+                       class="layui-input checkLabelId clearAdd">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">运行时间</label>
+            <div class="layui-form-block" style="display:inline-block;width: 150px">
+                <input id="updateTime" type="text" class="layui-input" name="updateTime" placeholder="请输入时间">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="run">运行</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<table class="layui-hide" id="interfaceInfo" lay-filter="interfaceInfo"></table>
+<div class="alert"></div>
+</div>
+<!-- 添加的模态框 -->
+<div id="addInfo" hidden="hidden">
+    <form class="layui-form">
+        <br>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口号</label>
+            <div class="layui-input-block">
+                <input type="text" name="interfaceId" required  lay-verify="required" id="interfaceId"
+                       placeholder="请输入接口号(只能输入数字)" autocomplete="off"
+                       class="layui-input checkLabelId clearAdd">
+                <i id="id-add-msg" class="layui-icon layui-icon-close" style="font-size: 25px; color: red;"
+                   hidden="hidden"></i>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="desc" required  lay-verify="required"
+                       placeholder="请输入接口描述" autocomplete="off" class="layui-input clearAdd">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口类型</label>
+            <div class="layui-form-block" style="display:inline-block;width: 150px">
+                <select id="type" name="type" lay-verify="required">
+                    <option value="">请选择接口类型</option>
+                    <option value="1">上传</option>
+                    <option value="2">下载</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">更新周期</label>
+            <div class="layui-form-block" style="display:inline-block;width: 150px">
+                <select id="updateType" name="updateType" lay-verify="required">
+                    <option value="">请选择更新周期</option>
+                    <option value="1">日周期</option>
+                    <option value="2">月周期</option>
+                    <option value="3">周周期</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据文件位置</label>
+            <div class="layui-input-block">
+                <input type="text" name="blocPath" required  lay-verify="required"
+                       placeholder="请输入数据文件所在集团位置" autocomplete="off" class="layui-input clearAdd">
+                <i class="layui-icon layui-icon-close code-msg" style="font-size: 25px; color: red;"
+                   hidden="hidden"></i>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formAdd">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--修改的模态框-->
+<div id="editInfo" hidden="hidden">
+    <form class="layui-form">
+        <br>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口号</label>
+            <div class="layui-input-block">
+                <input type="text" name="interfaceId" required  lay-verify="required"  id="editinterfaceId"
+                       placeholder="请输入接口号(只能输入数字)" autocomplete="off"
+                       class="layui-input checkLabelId clearAdd" readonly="readonly">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="desc" required  lay-verify="required" id="editdescribe"
+                       placeholder="请输入接口描述" autocomplete="off" class="layui-input clearAdd">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口类型</label>
+            <div class="layui-form-block" style="display:inline-block;width: 150px">
+                <select  name="type" lay-verify="required" id="edittype">
+                    <option value="">请选择接口类型</option>
+                    <option value="1">上传</option>
+                    <option value="2">下载</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">更新周期</label>
+            <div class="layui-form-block" style="display:inline-block;width: 150px">
+                <select  name="updateType" lay-verify="required" id="editupdateType">
+                    <option value="">请选择更新周期</option>
+                    <option value="1">日周期</option>
+                    <option value="2">月周期</option>
+                    <option value="3">周周期</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据文件位置</label>
+            <div class="layui-input-block">
+                <input type="text" name="blocPath" required  lay-verify="required" id="editblocPath"
+                       placeholder="请输入数据文件所在集团位置" autocomplete="off" class="layui-input clearAdd">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 工具条 -->
+<script type="text/html" id="barinterfaceInfo">
+    <a class="layui-btn layui-btn-xs" lay-event="run">重跑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="./static/plugins/jquery/jquery-2.0.3.min.js"></script>
+<script src="./static/plugins/layui/layui.js"></script>
+<script src="./static/js/Getparam.js"></script>
+<script src="./static/js/interfaceInfo.js"></script>
+
+</body>
+</html>
+

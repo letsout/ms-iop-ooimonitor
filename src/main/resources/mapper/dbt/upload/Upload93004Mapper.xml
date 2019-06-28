@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.upload.UploadMapper" >
+  <resultMap id="BaseResultMap93004" type="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93004" >
+    <constructor >
+      <arg column="PROVINCE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID_ONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID_TWO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="POSTITION_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="POSTITION_ID_ONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="POSTITION_ID_TWO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="POSTITON_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PHONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="IMIE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRODUCT_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRODUCT_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="SUB_PRODUCT_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <select id="selectUpload93004" parameterType="string"  resultMap="BaseResultMap93004">
+   select * from ${tableName}
+ </select>
+</mapper>

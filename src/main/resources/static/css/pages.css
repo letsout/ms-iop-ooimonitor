@@ -1,0 +1,105 @@
+body { /* color:#fff; */
+	margin: 0px;
+	font-size: 14px;
+	font-family: "gill sans", "gill sans mt", "myriad pro",
+		"dejavu sans condensed", "微软雅黑";
+}
+
+#head {
+	background-color: #262a35;
+	height: 25px;
+	line-height: 25px;
+	font-size: 16px;
+}
+
+.head {
+	border-radius: 5px 5px 0px 0px;
+	height: 25px;
+	line-height: 25px;
+	font-size: 16px;
+}
+
+table {
+	width: 100%;
+	border: none;
+	margin: none;
+	padding: 0px;
+}
+
+table th, td {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#menu {
+	height: 30px;
+	margin: 20px;
+    position: absolute;
+}
+
+.menuM{
+	height: 70px;
+	background: rgba(14,85,139,0.3);
+}
+
+.menu {
+	background-color: transparent;
+	height: 30px;
+	width: 185px;
+	float: left;
+	border-radius: 4px;
+	border: 1px solid #5a7b99;
+	color: #dfdfdf;
+	text-align: center;
+	line-height: 30px;
+	box-sizing: content-box;
+}
+
+.select {
+	border-radius: 5px;
+	margin-left: 30px;
+	background-color: #0091d4;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	float: left;
+	border: 2px solid #0091d4;
+	cursor: pointer;
+}
+
+.left {
+	width: 280px;
+}
+
+.right {
+	margin-left: 20px;
+	width: 780px;
+}
+
+.rt {
+	margin-left: 14px;
+	width: calc(75% - 7px);
+	height: 100%;
+}
+
+#backgroup_map {
+	height: calc(100% - 20px);
+	background-color: #fff;
+}
+
+/*
+#realflow {
+	height: 200px;
+	background-color: #262a35;
+}
+*/
+
+.css {
+	height: 20px;
+	line-height: 20px;
+	width: 60px;
+	display: inline-block;
+	text-align: center;
+}

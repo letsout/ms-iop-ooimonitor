@@ -1,0 +1,12 @@
+.input-style{
+    width: 200px;
+    display: inline-block;
+    margin-left: 0px;
+}
+.layui-form-label{
+    width: 110px;
+}
+
+.layui-form-select dl {
+    max-height: 290px;
+}

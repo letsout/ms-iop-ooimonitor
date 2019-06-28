@@ -1,0 +1,63 @@
+@charset:"utf-8";
+body{font-family:"Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed","Î¢ÈíÑÅºÚ";}
+.layui-input,.layui-btn { height: 36px; line-height: 16px; padding:10px; border-radius: 4px; display: inline-block;}
+.layui-btn {
+
+    background-color: #00b063;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: .9;
+    filter: alpha(opacity=90)
+}
+.layui-btn-primary {
+    border: 1px solid #C9C9C9;
+    background-color: #fff;
+    color: #555;
+}
+
+.layui-form-radio i:hover, .layui-form-radioed i{color:#00b8f2;}
+.layui-icon{display: inline-block;}
+.layui-btn .layui-icon{vertical-align: sub; display: inline-block; margin-right: 3px; margin-left: -4px;}
+.layui-form-item .layui-input-inline{margin-right:20px; width: auto;}
+.layui-form-item .layui-input-inline:last-child{margin-right:0px;}
+.layui-laypage .layui-laypage-prev{margin-right:10px;}
+.layui-laypage .layui-laypage-next{margin-left: 10px;}
+.layui-laypage input{width:40px; padding-left: 10px; padding-right: 0;}
+.layui-laypage .layui-laypage-total{color:#000000; padding:0 0 0 5px;}
+.layui-textarea{min-height: 50px;}
+
+/********************DIALOG*****************************/
+.layui-layer-title{background-color:#3a4d5b; color:#ffffff; font-size: 16px; border-top-left-radius: 4px; border-top-right-radius: 4px;}
+.layui-layer-title .text{border-left:4px solid #00b8f2; padding-left:10px; height: 16px; line-height: 16px; margin-top: 13px;}
+.layui-layer-close{background-image: url(popup_closewindow.png) ; background-repeat: no-repeat; }
+.layui-layer-setwin .layui-layer-close1{background-position: center center;}
+.layui-layer-btn{background-color: #f5f5f5; padding:10px 12px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;}
+
+.layui-layer{position: absolute; background-color:unset; }
+.layui-layer,.layui-layer-dialog{border-radius: 4px;}
+
+.layui-layer-btn a,.layui-layer-btn a:first-child{background-color: #f1f1f1; color:#6b6b6b; border:1px solid #cecece;}
+.layui-layer-btn a:last-child{border-color: #00b8f2; background-color: #00b8f2; color: #fff;}
+
+.layui-layer-dialog .layui-layer-content{padding:10px 35px 20px 35px; background-color:#ffffff; }
+.layui-layer-dialog .layui-layer-padding{padding:20px 20px 20px 55px}
+.layui-layer-dialog .layui-layer-content .dialog-row{padding:10px 0; border-bottom:1px solid #e5e5e5;}
+.layui-layer-dialog .layui-layer-content .dialog-row .title{font-size: 18px; color:#66b7f0;}
+.layui-layer-dialog .layui-layer-content .layui-form-item{margin-bottom: 0;}
+.layui-layer-dialog .layui-layer-content .row{width:100%; display: inline-block; padding:0px 0; table-layout: fixed;}
+.layui-layer-dialog .layui-layer-content .row .col-md-6{float: left; width: 50%; max-width:380px; display: inline-block; table-layout: fixed;}
+.layui-layer-dialog .layui-layer-content .row .col-md-6:first-child{padding:0 30px 0 0;}
+.layui-layer-dialog .layui-layer-content .row .col-md-6:last-child{padding:0 0px 0 30px;}
+.layui-layer-dialog .layui-layer-content .row .col-md-12{width: 100%; display: inline-block;}
+.layui-layer-dialog .layui-layer-content .row .layui-form-label{float: none; text-align: left; padding: 9px 0; color:#000000; margin:0; display: inline-block; width: 100%;}
+.layui-layer-dialog .layui-layer-content .row .layui-input-block,
+.layui-layer-dialog .layui-layer-content .row .layui-input-block input[type=text]{margin: 0; display: inline-block; width: 100%;}
+.layui-layer-dialog .layui-layer-content .dialog-input{width: 100%; padding:0 10px;}
+/********************END DIALOG*****************************/
+
+
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.upload.UploadMapper" >
+  <resultMap id="BaseResultMap" type="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93006" >
+    <constructor >
+      <arg column="ROWS" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="NOWTIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PROVINCE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CITY" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PHONE_NO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PV" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CLICK_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TRANS_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="IS_TOUCH" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="IS_JOIN" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="IS_MARKETING" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <select id="selectUpload93006" parameterType="string" resultMap="BaseResultMap">
+       select * from ${tableName}
+  </select>
+</mapper>

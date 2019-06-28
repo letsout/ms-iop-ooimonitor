@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.upload.UploadMapper" >
+  <resultMap id="BaseResultMap93011" type="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93011" >
+    <constructor >
+      <arg column="ROWS" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PHONE_NO" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <select id="selectUpload93011" parameterType="string" resultMap="BaseResultMap93011">
+       select * from ${tableName}
+  </select>
+</mapper>

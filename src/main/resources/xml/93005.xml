@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<upload>
+    <date>
+        <nowTime type="yyyymmddHHMMSS">nowTime</nowTime>
+        <nowDay type="yyyymmdd">nowDay</nowDay>
+        <lastDay type="yyyymmdd">lastDay</lastDay>
+        <twoDaysAgo type="yyyymmdd">twoDaysAgo</twoDaysAgo>
+        <threeDaysAgo type="yyyymmdd">threeDaysAgo</threeDaysAgo>
+        <nowMonth type="yyyymm">nowMonth</nowMonth>
+        <lastMonth type="yyyymm">lastMonth</lastMonth>
+    </date>
+    <constant>
+        <FILE_NAME replaceStr="lastDay"  replaceType="String">a_13000_$lastDay_IOP-93005_00</FILE_NAME>
+        <binPath>C:\Users\40468\Desktop\iopFile</binPath>
+        <className>com.asiainfo.msooimonitor.model.datahandlemodel.Upload93005</className>
+    </constant>
+    <sql>
+        <step1>
+            truncate table fcm.iop_93005_processid immediate
+        </step1>
+        <step2>
+            truncate table fcm.iop_93005_activity_pg_info immediate
+        </step2>
+        <step3>
+            truncate table fcm.iop_93005_activity_info immediate
+        </step3>
+        <step4>
+            truncate table fcm.iop_93005_result immediate
+        </step4>
+        <step5>
+            truncate table fcm.iop_93005_campaign_info immediate
+        </step5>
+        <!--省级策划一级执行-->
+        <step6 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93005_processid
+            select
+            b.ACTIVITY_ID,c.flow
+            from fcm.activity_info a right join
+            (select distinct activity_id,rule_value from fcm.activity_channel_info where rule_id='R002' and channel_id='q07') b on a.ACTIVITY_ID=b.ACTIVITY_ID
+            left join qcd.activity_flow_info c on b.rule_value=c.position_id
+            where a.STOPPED='0'and a.DELETED='0' and to_char(a.end_time,'yyyymmdd')='$threeDaysAgo'
+        </step6>
+        <!--一级策划省级执行processid=’1'-->
+        <step7 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93005_processid
+            select
+            activityid,'1'
+            from qcd.marking_activity_info
+            where to_date('$threeDaysAgo','yyyymmdd') = to_date(substr(activityendtime,1,10),'yyyy/mm/dd')
+        </step7>
+        <!--省级策划省级执行processid='3'-->
+        <step8 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93005_processid
+            select
+            a.activity_id,'3'
+            from fcm.activity_info a
+            where to_char(a.end_time,'yyyymmdd')='$threeDaysAgo' and a.activity_id not in (select ACTIVITY_ID from fcm.iop_93005_processid ) and a.STOPPED='0'and a.DELETED='0'
+        </step8>
+        <!--营销活动-->
+        <step9>
+            insert into fcm.iop_93005_activity_info
+            select
+            (case when (a.processid in (select distinct flow from qcd.activity_flow_info)) then '280'||substr(b.activity_id,2,13) else b.activity_id end) as activity_id,
+            b.activity_name,
+            to_char(b.start_time,'yyyymmddHH24mmss') as activity_starttime,
+            to_char(b.end_time,'yyyymmddHH24mmss') as activity_endtime,
+            b.business_type_id,
+            b.MARKETING_PURPOSE_ID,
+            b.activity_name as activity_desc,
+            '',
+            a.processid
+            from fcm.iop_93005_processid a
+            left join fcm.activity_info b on a.ACTIVITY_ID=b.ACTIVITY_ID
+            where a.processid>1
+        </step9>
+        <step10>
+            insert into fcm.iop_93005_activity_info
+            select
+            b.ACTIVITYID,
+            b.ACTIVITYNAME,
+            to_char(to_date(b.ACTIVITYSTARTTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss') as activity_starttime,
+            to_char(to_date(b.ACTIVITYENDTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss') as activity_endtime,
+            b.ACTIVITYTYPE,
+            b.ACTIVITYOBJECTIVE,
+            b.ACTIVITYDESCRIBE,
+            b.PCCID,
+            a.processid
+            from fcm.iop_93005_processid a
+            left join qcd.marking_activity_info b on a.activity_id=b.activityid
+            where a.processid=1
+        </step10>
+        <!--综合查询-流程2，3-取子活动信息-->
+        <step11>
+            insert into fcm.iop_93005_campaign_info
+            select
+            a.ACTIVITY_ID,
+            (case  when (b.processid in (select distinct flow from qcd.activity_flow_info)) then '280_000_'||substr(a.ACTIVITY_ID,2,13) else a.ACTIVITY_ID end) as campaign_id,
+            a.ACTIVITY_NAME as capaign_name,
+            to_char(a.start_time,'yyyymmddHH24mmss')  as campaign_start_time,
+            to_char(a.end_time,'yyyymmddHH24mmss') as campaign_end_time
+            from fcm.activity_info a
+            right join fcm.iop_93005_processid b on a.ACTIVITY_ID=b.ACTIVITY_ID where b.processid>1
+        </step11>
+        <!--取效果评估数据-->
+        <step12>
+            insert into fcm.iop_93005_activity_pg_info
+            select
+            a.activity_id,
+            '','','','','',
+            sum(c.touch_num) as touch_num,
+            (case when sum(c.OBJ_NUM) !=0 then to_char(DECIMAL((sum(c.TOUCH_NUM))/(sum(c.OBJ_NUM)*1.000),20,6)) else '0.000000' end) as touch_rate,
+            '' as response_rate,
+            sum(c.vic_num) as vic_num,
+            (case when sum(c.TOUCH_NUM) !=0 then to_char(DECIMAL((sum(c.VIC_NUM))/(sum(c.TOUCH_NUM)*1.000),20,6)) else '0.000000' end) as vic_rate,
+            ''
+            from fcm.iop_93005_processid a
+            left join fcm.activity_info b on a.activity_id=b.activity_id
+            left join qcd.activity_pg_activity c on a.activity_id=c.camp_id
+            where a.processid>1
+            group by a.activity_id
+        </step12>
+        <ste13>
+            insert into fcm.iop_93005_result(activity_id,activity_name,activity_start_time,activity_end_time,activity_type,
+            activity_purpose_id,activity_desc,pcc,flow,campaign_id,campaign_name,campaign_start_time,campaign_end_time,A18,A19,A22,
+            product_id,product_name,product_type,channel_id,channel_name,channel_type,A30,A34,A35,A36,A37,A38,
+            touch_num,touch_rate,response_rate,vic_num,vic_rate,a44)
+            select
+            distinct
+            k.*,
+            b.campaign_id,
+            b.campaign_name,
+            b.campaign_start_time,
+            b.campaign_end_time ,
+            '自定义','自定义',e.CREATE_TYPE,'0428000'||f.product_id,f.PRODUCT_NAME,f.PRODUCT_TYPE,
+            (case when (a.processid in (select distinct flow from qcd.activity_flow_info)) then (select distinct rule_value from fcm.ACTIVITY_CHANNEL_INFO z where z.activity_id=a.activity_id and rule_id='R002') else '28005'||h.CHANNEL_id end) as channel_id,
+            h.CHANNEL_NAME,
+            '02010301',
+            '0',
+            i.pv,
+            i.click_num,
+            i.uv,
+            i.handle_num,
+            i.phone_no,
+            i.touch_num,
+            i.touch_rate,
+            i.response_rate,
+            i.vic_num,
+            i.vic_rate,'0'
+            from fcm.iop_93005_processid a
+            left join fcm.iop_93005_campaign_info b on a.ACTIVITY_ID=b.ACTIVITY_ID
+            left join fcm.ACTIVITY_CUSTOMER_GROUP_INFO e on e.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.activity_recommend_product f on f.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.ACTIVITY_CHANNEL_INFO g on g.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.channel h on h.CHANNEL_ID=g.CHANNEL_ID
+            left join fcm.iop_93005_activity_pg_info i on i.activity_id=a.ACTIVITY_ID
+            left join fcm.iop_93005_activity_info k on  'A'||substr(k.activity_id,4,13)=a.ACTIVITY_ID or k.activity_id=a.activity_id
+            where  i.vic_num>0 and  a.processid>1  and a.ACTIVITY_ID is not null
+        </ste13>
+        <!--流程1-->
+        <step14>
+            insert into fcm.iop_93005_campaign_info
+            select
+            b.ACTIVITY_ID,
+            a.campaignid as campaign_id,
+            a.campaignname as capaign_name,
+            to_char(to_date(a.CAMPAIGNSTARTTIME,'yyyymmdd hh24:mi:ss'),'yyyymmddHH24mmss')  as campaign_start_time,
+            to_char(to_date(a.CAMPAIGNENDTIME,'yyyymmdd hh24:mi:ss'),'yyyymmddHH24mmss') as campaign_end_time
+            from qcd.marking_campaign_info a
+            right join fcm.iop_93005_processid b on a.ACTIVITYID=b.ACTIVITY_ID where b.processid=1
+        </step14>
+        <step15>
+            insert into fcm.iop_93005_activity_pg_info
+            select
+            b.activity_id,
+            '','','','','',
+            sum(c.touch_num) as touch_num,
+            (case when sum(c.OBJ_NUM) !=0 then to_char(DECIMAL((sum(c.TOUCH_NUM))/(sum(c.OBJ_NUM)*1.000),20,6)) else '0.000000' end) as touch_rate,
+            '' as response_rate,
+            sum(c.vic_num) as vic_num,
+            (case when sum(c.TOUCH_NUM) !=0 then to_char(DECIMAL((sum(c.VIC_NUM))/(sum(c.TOUCH_NUM)*1.000),20,6)) else '0.000000' end) as vic_rate,
+            b.campaign_id
+            from fcm.iop_93005_processid a
+            left join qcd.IOP_G2PACTDOWN_REL b on a.activity_id=b.activity_id
+            left join qcd.activity_pg_activity c on b.camp_id=c.camp_id
+            where a.processid=1
+            group by b.activity_id,b.campaign_id
+        </step15>
+        <step16>
+            insert into fcm.iop_93005_result(activity_id,activity_name,activity_start_time,activity_end_time,activity_type,
+            activity_purpose_id,activity_desc,pcc,flow,campaign_id,campaign_name,campaign_start_time,campaign_end_time,A18,A19,A22,
+            product_id,product_name,product_type,channel_id,channel_name,channel_type,A30,A34,A35,A36,A37,A38,
+            touch_num,touch_rate,response_rate,vic_num,vic_rate,a44)
+            select
+            distinct
+            k.*,
+            b.campaign_id,
+            b.campaign_name,
+            b.campaign_start_time,
+            b.campaign_end_time ,
+            '自定义','自定义',e.CREATE_TYPE,'0428000'||f.product_id,f.PRODUCT_NAME,f.PRODUCT_TYPE,
+            (case when (a.processid in (select distinct flow from qcd.activity_flow_info)) then (select distinct rule_value from fcm.ACTIVITY_CHANNEL_INFO z where z.activity_id=a.activity_id and rule_id='R002') else '28005'||h.CHANNEL_id end) as channel_id,
+            h.CHANNEL_NAME,
+            '02010301',
+            '0',
+            i.pv,
+            i.click_num,
+            i.uv,
+            i.handle_num,
+            i.phone_no,
+            i.touch_num,
+            i.touch_rate,
+            i.response_rate,
+            i.vic_num,
+            i.vic_rate,'0'
+            from fcm.iop_93005_processid a
+            left join fcm.iop_93005_campaign_info b on a.ACTIVITY_ID=b.ACTIVITY_ID
+            left join fcm.ACTIVITY_CUSTOMER_GROUP_INFO e on e.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.activity_recommend_product f on f.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.ACTIVITY_CHANNEL_INFO g on g.ACTIVITY_ID=a.ACTIVITY_ID
+            left join fcm.channel h on h.CHANNEL_ID=g.CHANNEL_ID
+            left join fcm.iop_93005_activity_pg_info i on i.activity_id=a.ACTIVITY_ID
+            left join fcm.iop_93005_activity_info k on  'A'||substr(k.activity_id,4,13)=a.ACTIVITY_ID or k.activity_id=a.activity_id
+            where  i.vic_num>0 and  a.processid>1  and a.ACTIVITY_ID is not null
+        </step16>
+        <step17>
+            insert into fcm.iop_93005_upload (select row_number() over(),'$nowTime','280','028',ACTIVITY_ID,ACTIVITY_NAME,ACTIVITY_START_TIME,ACTIVITY_END_TIME,ACTIVITY_TYPE,ACTIVITY_PURPOSE_ID,ACTIVITY_DESC,PCC,FLOW,CAMPAIGN_ID,CAMPAIGN_NAME,CAMPAIGN_START_TIME,CAMPAIGN_END_TIME,A18,A19,A20,A21,A22,PRODUCT_ID,PRODUCT_NAME,PRODUCT_TYPE,CHANNEL_ID,CHANNEL_NAME,CHANNEL_TYPE,A29,A30,A31,A32,A33,A34,A35,A36,A37,A38,TOUCH_NUM,TOUCH_RATE,
+            RESPONSE_RATE,VIC_NUM,VIC_RATE,A44,A45,A46,A47,A48,A49,A50,A51,A52,A53,A54,A55,A56,A57,A58,A59,A60,A61,A62,A63,A64,A65,A66,A67,A68,A69,A70,A71,A72,A73,A74,A75,A76,A77,A78,A79,A80
+            from   fcm.iop_93005_result)
+        </step17>
+    </sql>
+
+</upload>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.upload.UploadMapper" >
+  <resultMap id="BaseResultMap93002" type="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93002" >
+    <constructor >
+      <arg column="ROW_NUMBER" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="OP_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PROVINCE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CITY" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_OBJECT" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_DESC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PCC_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_PROCESS" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMP_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_COUNT" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_DESC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_FILETER" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRO_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRO_SUB_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRO_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRO_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID_ONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID_TWO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_TOUCH_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TIMES" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TIMES_DESC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_QUALITY_INFO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="SOURCE_UESD" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PV" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CLICK_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="UV" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TRANSACTION_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CUSTOMER_PHONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TOUCH_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TOUCH_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="RESPONSE_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="VIC_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="VIC_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="IN_OUT_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PCC_CUSTOMER_ONE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PCC_CUSTOMER_TWO" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PCC_CUSTOMER_THREE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A51" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A52" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A53" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A54" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A55" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A56" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A57" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A58" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A59" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A60" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A61" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A62" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A63" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A64" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A65" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A66" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A67" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A68" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A69" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A70" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A71" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A72" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A73" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A74" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A75" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A76" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A77" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A78" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A79" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A80" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A81" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A82" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A83" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+ <select id="selectUpload93002" parameterType="string"  resultMap="BaseResultMap93002">
+   select * from ${tableName}
+ </select>
+</mapper>

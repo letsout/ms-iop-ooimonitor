@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<upload>
+    <date>
+        <nowTime type="yyyymmddHHMMSS">nowTime</nowTime>
+        <nowDay type="yyyymmdd">nowDay</nowDay>
+        <lastDay type="yyyymmdd">lastDay</lastDay>
+        <twoDaysAgo type="yyyymmdd">twoDaysAgo</twoDaysAgo>
+        <threeDaysAgo type="yyyymmdd">threeDaysAgo</threeDaysAgo>
+        <nowMonth type="yyyymm">nowMonth</nowMonth>
+        <lastMonth type="yyyymm">lastMonth</lastMonth>
+    </date>
+    <constant>
+        <FILE_NAME replaceStr="lastDay"  replaceType="String">a_13000_$lastDay_IOP-93001_00</FILE_NAME>
+        <binPath>C:\Users\40468\Desktop\iopFile</binPath>
+        <className>com.asiainfo.msooimonitor.model.datahandlemodel.Upload93001</className>
+    </constant>
+    <sql>
+        <step1>
+            truncate table fcm.iop_93001_new_activity_type immediate
+        </step1>
+        <step2>
+            truncate table fcm.iop_93001_campaign_city immediate
+        </step2>
+        <step3>
+            truncate table fcm.iop_93001_campaign_city_distinct immediate
+        </step3>
+        <step4>
+            truncate table fcm.iop_93001_new_activity immediate
+        </step4>
+        <step5>
+            truncate table fcm.iop_93001_new_activity_upload immediate
+        </step5>
+        <step6>
+            truncate table fcm.iop_93001_camp_pg immediate
+        </step6>
+        <step7>
+            truncate table fcm.iop_93001_campaign_pg immediate
+        </step7>
+        <step8>
+            truncate table fcm.iop_93001_activity_info_2019 immediate
+        </step8>
+        <step9>
+            truncate table fcm.iop_93001_uploaded immediate
+        </step9>
+        <step10 replaceStr="threeDaysAgo"  replaceType="String">
+            insert into fcm.iop_93001_new_activity_type select  a.CAMP_ID,
+            case when (to_char(b.end_time,'yyyymmdd') &lt; '$threeDaysAgo') then 2 else 1 end,
+            c.city
+            from
+            qcd.IOP_G2PACTDOWN_REL a left join fcm.activity_info b on a.camp_id = b.activity_id
+            left join fcm.iop_93001_city c on b.city_id = c.iop_city
+            where b.end_time is not null and c.iop_city is not null
+        </step10>
+        <step11>
+            insert into fcm.iop_93001_new_activity_upload select CAMP_ID,CAMP_TYPE,city from fcm.iop_93001_new_activity_type where  CAMP_ID not in (select camp_id from fcm.iop_93001_uploaded)
+        </step11>
+        <step12>
+            insert into fcm.iop_93001_new_activity_upload select CAMP_ID,3,city from fcm.iop_93001_new_activity_type where camp_id not in (select camp_id from fcm.iop_93001_new_activity_upload)
+        </step12>
+        <step13>
+            insert into fcm.iop_93001_camp_pg select
+            b.CAMP_ID,
+            sum(b.OBJ_NUM),
+            sum(b.TOUCH_NUM),
+            sum(b.VIC_NUM)
+            from
+            fcm.iop_93001_new_activity_upload a
+            left join
+            qcd.ACTIVITY_PG_ACTIVITY b on a.camp_id = b.CAMP_ID
+            where
+            b.CAMP_ID is not null and b.VIC_NUM > 0  and  a.CAMP_TYPE !=3  group by b.CAMP_ID
+        </step13>
+        <step14 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93001_camp_pg select
+            a.CAMP_ID,
+            b.OBJ_NUM,
+            c.COUNT_NUM,
+            f.vic_num
+            from
+            fcm.iop_93001_new_activity_upload a
+            left join
+            qcd.ACTIVITY_PG_ACTIVITY b on a.CAMP_ID = b.CAMP_ID
+            left join
+            fcm.ACTIVITY_PG_TOUCH_COUNT c on a.CAMP_ID = c.ACTIVITY_ID
+            left join
+            (select e.ACTIVITY_ID,count(e.ACTIVITY_ID) as vic_num from fcm.iop_93001_new_activity_upload d  left join dW_IOP_ACTIVITY_02  e on d.CAMP_ID = e.ACTIVITY_ID  where e.OPER_DATE = '$threeDaysAgo'  and e.ACTIVITY_ID is not null  and d.CAMP_ID = e.ACTIVITY_ID  group by ACTIVITY_ID) f on f.ACTIVITY_ID = a.CAMP_ID
+            where
+            c.ACTIVITY_ID is not null and b.OP_TIME='$threeDaysAgo' and a.CAMP_TYPE=3
+        </step14>
+        <step15>
+            insert into fcm.iop_93001_campaign_city select distinct c.CAMPAIGN_ID,c.city
+            from
+            (select b.ACTIVITY_ID,b.CAMPAIGN_ID,b.CAMP_ID,a.city
+            from
+            fcm.iop_93001_new_activity_upload a
+            left join qcd.IOP_G2PACTDOWN_REL b on a.CAMP_ID = b.CAMP_ID
+            where
+            b.camp_id is not null and a.city is not null) c
+        </step15>
+        <step16>
+            insert into fcm.iop_93001_campaign_city_distinct  select CAMPAIGN_ID,
+            replace(replace(xml2clob(xmlagg(xmlelement(name A,CITY||''))),'<A>',','),'</A>','')
+            from
+            fcm.iop_93001_campaign_city group by CAMPAIGN_ID
+        </step16>
+        <step17>
+            insert into fcm.iop_93001_campaign_pg select
+            CAMPAIGN_ID,sum(a.OBJ_NUM),sum(a.TOUCH_NUM),sum(a.VIC_NUM)
+            from
+            fcm.iop_93001_camp_pg a
+            left join
+            qcd.IOP_G2PACTDOWN_REL b on a.CAMP_ID = b.CAMP_ID where a.VIC_NUM > 0 group by  CAMPAIGN_ID
+        </step17>
+        <step18 replaceStr="nowTime" replaceType="String">
+            insert into fcm.iop_93001_activity_info_2019 select row_number() over(),'$nowtime','280',
+            substr(b.CITY,2,length(b.CITY)-1),
+            c.ACTIVITYID,c.ACTIVITYNAME,to_char(to_date(c.ACTIVITYSTARTTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss'),to_char(to_date(c.ACTIVITYENDTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss'),c.ACTIVITYTYPE,c.ACTIVITYOBJECTIVE,rtrim(c.ACTIVITYDESCRIBE),c.PCCID,'1',
+            d.CAMPAIGNID,d.CAMPAIGNNAME,to_char(to_date(d.CAMPAIGNSTARTTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss'),to_char(to_date(d.CAMPAIGNENDTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmddHH24mmss'),'001','客户群名称','','','客户群筛选','04280001234','0428000','d.CAMPAIGNNAME','1',d.CHANNELID,substr(d.CHANNELID,1,3),substr(d.CHANNELID,4,2),d.CHANNELNAME,'02010305','渠道接触规则','0','','','','','','',
+            a.TOUCH_NUM,to_char(DECIMAL((a.TOUCH_NUM)/(a.OBJ_NUM*1.000),20,6)),to_char(DECIMAL((a.VIC_NUM)/(a.TOUCH_NUM*1.000),20,6)),a.VIC_NUM,to_char(DECIMAL((a.VIC_NUM)/(a.TOUCH_NUM*1.000),20,6)),'',''
+            from
+            fcm.iop_93001_campaign_pg a
+            left join
+            fcm.iop_93001_campaign_city_distinct b on a.CAMPAIGN_ID = b.CAMPAIGN_ID
+            left join
+            qcd.MARKING_campaign_INFO d on a.CAMPAIGN_ID = d.CAMPAIGNID
+            left join
+            qcd.MARKING_ACTIVITY_INFO c on c.ACTIVITYID = d.ACTIVITYID
+            where d.CAMPAIGNID is not null and a.VIC_NUM > 0 and a.TOUCH_NUM >0 and  c.ACTIVITYID = d.ACTIVITYID
+        </step18>
+        <step19 replaceStr="nowTime" replaceType="String">
+            db2 "insert into fcm.iop_93001_uploaded select * from fcm.iop_93001_new_activity_upload "
+        </step19>
+        <step20 replaceStr="lastDay"  replaceType="String">
+            db2 "insert into fcm.iop_93001_uploaded select CAMP_ID,'$lastDay' from fcm.iop_93001_new_activity_upload "
+        </step20>
+    </sql>
+</upload>

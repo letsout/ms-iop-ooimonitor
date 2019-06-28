@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<upload>
+    <date>
+        <nowTime type="yyyymmddHHMMSS">nowTime</nowTime>
+        <nowDay type="yyyymmdd">nowDay</nowDay>
+        <lastDay type="yyyymmdd">lastDay</lastDay>
+        <twoDaysAgo type="yyyymmdd">twoDaysAgo</twoDaysAgo>
+        <threeDaysAgo type="yyyymmdd">threeDaysAgo</threeDaysAgo>
+        <nowMonth type="yyyymm">nowMonth</nowMonth>
+        <lastMonth type="yyyymm">lastMonth</lastMonth>
+    </date>
+    <constant>
+        <FILE_NAME replaceStr="lastDay"  replaceType="String" >a_13000_$lastDay_IOP-93006_00</FILE_NAME>
+        <binPath>C:\Users\40468\Desktop\iopFile</binPath>
+        <className>com.asiainfo.msooimonitor.model.datahandlemodel.Upload93006</className>
+    </constant>
+    <sql>
+        <step1>
+            truncate table fcm.iop_93006_processid immediate
+        </step1>
+        <step2>
+            truncate table fcm.iop_93006_customer immediate
+        </step2>
+        <step3>
+            truncate table fcm.iop_93006_customer_distinct immediate
+        </step3>
+        <step4>
+            truncate table fcm.iop_93006_activity_channel immediate
+        </step4>
+        <step5>
+            truncate table fcm.iop_93006_customer_touch immediate
+        </step5>
+        <step6>
+            truncate table fcm.iop_93006_customer_touch_distinct immediate
+        </step6>
+        <step7>
+            truncate table fcm.iop_93006_customer_vic immediate
+        </step7>
+        <step8>
+            truncate table fcm.iop_93006_customer_vic_distinct immediate
+        </step8>
+        <step9>
+            truncate table fcm.iop_93006_phone_tag immediate
+        </step9>
+        <step10>
+            truncate table fcm.iop_93006_customer_vic immediate
+        </step10>
+        <step11 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93006_processid  select distinct activity_id,'1' from qcd.IOP_G2PACTDOWN_REL a left join qcd.MARKING_ACTIVITY_INFO b on a.ACTIVITY_ID = b.ACTIVITYID where to_char(to_date(ACTIVITYENDTIME,'yyyy/mm/dd hh24:mi:ss'),'yyyymmdd') = '$threeDaysAgo' and b.ACTIVITYID is not null
+        </step11>
+        <step12 replaceStr="threeDaysAgo" replaceType="String">
+            insert into fcm.iop_93006_processid  select a.activity_id,'3' from fcm.activity_info a left join fcm.ACTIVITY_CHANNEL_INFO b on a.activity_id = b.activity_id where  a.STOPPED='0'and a.DELETED='0' and b.CHANNEL_ID !='q07' and to_char(a.END_TIME,'yyyymmdd')= '$threeDaysAgo'
+        </step12>
+        <return type="Map" name="actCusMap">
+            select distinct a.activity_id,b.FINAL_GROUP_TABLE_NAME from fcm.iop_93006_processid a left join fcm.ACTIVITY_CUSTOMER_REMOVE_INFO b on a.activity_id = b.activity_id
+            where
+            b.activity_id is not null and b.FINAL_GROUP_TABLE_NAME is not null and PROCESSID=3
+        </return>
+        <foreach replaceStr1="activity_id" replaceStr2="FINAL_GROUP_TABLE_NAME" replaceType="Map" replaceName="actCusMap" >
+        insert into fcm.iop_93006_customer select '$activity_id',phone_no from fcm.$FINAL_GROUP_TABLE_NAME where length(phone_no)='11'
+    </foreach>
+        <!--#########计算效果数据
+        目前效果明细渠道支持d01        优惠提醒  ，q05        和生活，d02        触点短信模式 ，f02        客服系统 ，f01        前台弹窗/大掌柜    ，q03        掌厅
+        短信渠道1，其他渠道2-->
+        <step13>
+            insert into fcm.iop_93006_activity_channel  select distinct a.activity_id,
+            case when (b.CHANNEL_ID='d01' or b.CHANNEL_ID='q05') then '1' else '2' end
+            from
+            fcm.iop_93006_customer a
+            left join
+            fcm.ACTIVITY_CHANNEL_INFO b on a.activity_id = b.activity_id where b.CHANNEL_ID in ('d01','q05','d02','f02','f01','q03')
+        </step13>
+        <step14>
+            insert into fcm.iop_93006_activity_channel  select distinct a.activity_id,
+            case when (c.CHANNEL_ID='d01' or c.CHANNEL_ID='q05') then '1' else '2' end
+            from
+            fcm.iop_93006_customer a
+            left join
+            qcd.IOP_G2PACTDOWN_REL b on a.activity_id = b.CAMP_ID
+            left join
+            fcm.ACTIVITY_CHANNEL_INFO c on c.activity_id = b.CAMP_ID where c.CHANNEL_ID in ('d01','q05','d02','f02','f01','q03')
+        </step14>
+        <!--#######根据channel_type计算接触明细 ，短信渠道跨月情况
+          计算短信渠道-->
+        <step15 replaceStr="nowMonth" replaceType="String">
+            insert into fcm.iop_93006_CUSTOMER_touch select SEND_ID_NO,PHONE_NO from aiapp.SMS_PLATFORM_HISTORY_10086_$nowMonth where  SEND_ID_NO in (select activity_id  from fcm.iop_93006_activity_channel a  where a.channle_type='1')
+        </step15>
+        <step16 replaceStr="lastMonth" replaceType="String">
+            insert into fcm.iop_93006_CUSTOMER_touch select SEND_ID_NO,PHONE_NO from aiapp.SMS_PLATFORM_HISTORY_10086_$lastMonth where  SEND_ID_NO in (select activity_id  from fcm.iop_93006_activity_channel a  where a.channle_type='1')
+        </step16>
+        <step17>
+            insert into fcm.iop_93006_CUSTOMER_touch select ACTIVE_ID,PHONE_NO from qcd.CUSTOM_TOUCH_RECORD where ACTIVE_ID in (select activity_id  from fcm.iop_93006_activity_channel a  where a.channle_type='2' )
+        </step17>
+        <step18>
+            insert into fcm.iop_93006_CUSTOMER_vic select ACTIVITY_ID,PHONE_NO from  aiapp.DW_IOP_ACTIVITY_02 a where a.ACTIVITY_ID in (select activity_id  from fcm.iop_93006_CUSTOMER_touch)
+        </step18>
+        <return type="Map" name="actCampMap">
+            select  distinct b.activity_id as activity_id,b.camp_id  as camp_id from fcm.iop_93006_processid a left join qcd.IOP_G2PACTDOWN_REL b on a.activity_id = b.CAMP_ID where b.camp_id is not null
+        </return>
+        <step20 replaceStr1="activity_id" replaceStr2="camp_id" replaceType="Map" replaceName="actCampMap">
+            update fcm.iop_93006_CUSTOMER_touch set ACTIVITY_ID='$activit_yId' where ACTIVITY_ID='$camp_Id'
+        </step20>
+        <step21 replaceStr1="activity_id" replaceStr2="camp_id" replaceType="Map" replaceName="actCampMap">
+            update fcm.iop_93006_CUSTOMER_vic  set ACTIVITY_ID='$activity_Id' where ACTIVITY_ID='$camp_Id'
+        </step21>
+        <step22>
+            insert into fcm.iop_93006_CUSTOMER_touch_distinct select distinct ACTIVITY_ID,PHONE_NO from fcm.iop_93006_CUSTOMER_touch
+        </step22>
+        <step23>
+            insert into fcm.iop_93006_CUSTOMER_vic_distinct select distinct ACTIVITY_ID,PHONE_NO from fcm.iop_93006_CUSTOMER_vic
+        </step23>
+        <step24>
+            insert into fcm.iop_93006_customer_distinct select  distinct ACTIVITY_ID,PHONE_NO from fcm.iop_93006_customer
+        </step24>
+        <step25>
+            insert into fcm.iop_93006_phone_tag
+            select
+            distinct
+            a.ACTIVITY_ID,
+            a.phone_no,
+            case when (a.phone_no = b.phone_no) then '1' else '0' end,
+            case when (a.phone_no = c.phone_no) then '1' else '0' end,
+            case when (a.phone_no = c.phone_no) then '1' else '0' end
+            from
+            fcm.IOP_93006_CUSTOMER_DISTINCT a
+            left join
+            fcm.IOP_93006_CUSTOMER_TOUCH_DISTINCT b on a.ACTIVITY_ID = b.ACTIVITY_ID and a.phone_no = b.phone_no
+            left join
+            fcm.IOP_93006_CUSTOMER_VIC_DISTINCT c on a.ACTIVITY_ID = c.ACTIVITY_ID and a.phone_no=c.phone_no and b.phone_no = c.phone_no
+        </step25>
+        <step26 replaceStr="nowTime" replaceType="String" >
+            insert into fcm.iop_93006_upload_new select '$nowTime','280',case when a.PROCESSID=1 then '028' else b.city_id end,d.PHONE_NO,a.activity_id,case when a.PROCESSID=1 then c.ACTIVITYNAME else b.ACTIVITY_NAME end,'','','','','',d.ISTOUCH,d.ISVIC,d.ISMARKET from  fcm.iop_93006_processid a left join fcm.activity_info b on a.activity_id = b.activity_id left join qcd.marking_activity_info c on c.ACTIVITYID = a.activity_id left join fcm.iop_93006_phone_tag d on d.ACTIVITY_ID = a.activity_id where d.phone_no is  not null
+        </step26>
+        <step26 replaceStr="nowTime" replaceType="String" >
+            insert into fcm.iop_93006_upload select row_number() over(),NOWTIME,PROVINCE,CITY,ACTIVITY_ID,ACTIVITY_NAME,CAMP_ID,CAMP_NAME,PHONE_NO,IS_TOUCH,IS_JOIN,IS_MARKETING from fcm.iop_93006_upload_new
+        </step26>
+    </sql>
+
+</upload>

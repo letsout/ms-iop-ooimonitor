@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper" >
+  <select id="getInterfaceInfo" parameterType="map" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+    select
+      a.INTERFACE_ID ,
+      a.TYPE ,
+      a.BLOC_PATH ,
+      a.DESC ,
+      a.UPDATE_TYPE ,
+      a.UPDATE_TIME
+      from FCM.INTERFACE_INFO a
+      <if test="str != null ">
+          where
+          a.type
+          like  concat(concat('%',#{str}),'%')
+          or
+          a.interface_id like concat(concat('%',#{str}),'%')
+          or
+          a.bloc_path like concat(concat('%',#{str}),'%')
+          or
+          a.update_type like concat(concat('%',#{str}),'%')
+      </if>
+       order by a.interface_id desc
+  </select>
+
+    <select id="checkInterface" parameterType="string" resultType="int">
+        select count(*) from FCM.INTERFACE_INFO
+        where
+        interface_id = #{interfaceId}
+    </select>
+
+    <insert id="saveInterfceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+        insert into fcm.INTERFACE_INFO(
+        INTERFACE_ID,
+        TYPE,
+        DESC,
+        UPDATE_TYPE,
+        BLOC_PATH,
+        UPDATE_TIME)
+        values (
+        #{interfaceId},
+        #{type},
+        #{desc},
+        #{updateType},
+        #{blocPath},
+        #{updateTime}
+        )
+    </insert>
+
+    <insert id="saveInterfaceRecord" parameterType="map">
+        insert into FCM.INTERFACE_RECORD (
+        INTERFACE_ID,
+        STATE,
+        UPDATE_TIME,
+        REASON,
+        SUCCESS_COUNT,
+        FILE_COUNT)
+        values (
+        #{interfaceId},
+        #{state},
+        #{updateTime},
+        #{reason},
+        #{successCount},
+        #{fileCount}
+        )
+    </insert>
+
+    <delete id="deleteInterfaceId" parameterType="string">
+        delete from FCM.INTERFACE_INFO where INTERFACE_ID = #{interfaceId}
+    </delete>
+
+    <update id="editInterfaceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+      update fcm.INTERFACE_INFO set
+      INTERFACE_ID=#{interfaceId} ,
+      TYPE=#{type},
+      BLOC_PATH=#{blocPath},
+      DESC=#{desc},
+      UPDATE_TYPE=#{updateType},
+      UPDATE_TIME=#{updateTime}
+      where
+      INTERFACE_ID=#{interfaceId}
+    </update>
+
+    <select id="getDownloadFile" resultType="string">
+        select INTERFACE_ID as interfaceId  from fcm.INTERFACE_INFO where TYPE='2';
+    </select>
+
+    <select id="getuploadInterface" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+        select INTERFACE_ID as interfaceId,
+        TYPE as type,
+        BLOC_PATH as blocPath,
+        UPDATE_TYPE as updateType,
+        UPDATE_TIME as updateTime,
+        DESC as describe
+        from FCM.INTERFACE_INFO
+        where
+        TYPE='1'
+    </select>
+
+    <select id="getLoadInterface" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+          select INTERFACE_ID as interfaceId,
+    TYPE as type,
+    BLOC_PATH as blocPath,
+    UPDATE_TYPE as updateType,
+    UPDATE_TIME as updateTime,
+    DESC as describe
+    from FCM.INTERFACE_INFO
+    where
+    TYPE='2'
+
+    </select>
+
+<!--    /*select t.INTERFACE_ID as interfaceId,t.STATE as state,t.UPDATE_TIME as updateTime,t.REASON as reason ,t.FILE_COUNT as fileCount,t.SUCCESS_COUNT as successCount
+    from ( select ROW_NUMBER over (partition by INTERFACE_ID order by UPDATE_TIME desc ) as num ,INTERFACE_ID,STATE,SUCCESS_COUNT,UPDATE_TIME,REASON from FCM.INTERFACE_RECORD) t
+    where t.num =1 and order by  t.INTERFACE_ID;*/-->
+    <select id="getInterfaceRecord" parameterType="map" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord">
+      select t.INTERFACE_ID as interfaceId,
+        t.STATE as state,
+       t.UPDATE_TIME as updateTime,
+       t.REASON as reason ,
+       t.FILE_COUNT as fileCount,
+       t.SUCCESS_COUNT as successCount
+       from
+        (select row_number() over (order by UPDATE_TIME desc ) as num ,
+        INTERFACE_ID,
+        STATE,
+        SUCCESS_COUNT,
+        UPDATE_TIME,
+        REASON,FILE_COUNT from FCM.INTERFACE_RECORD ) t
+          where
+          t.num between #{start} and #{end} order by  t.INTERFACE_ID
+    </select>
+
+    <select id="getInterfaceRecordByParam" parameterType="hashmap" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord">
+        select interfaceId,
+        successCount,
+        updateTime,
+        REASON,
+        fileCount,
+        STATE
+        from (
+        select row_number() over (order by a.UPDATE_TIME desc ) as num ,a.INTERFACE_ID as interfaceId,
+        a.SUCCESS_COUNT as successCount,
+        a.UPDATE_TIME as updateTime,
+        a.REASON,
+        a.FILE_COUNT as fileCount,
+        a.STATE
+        from
+        FCM.INTERFACE_RECORD a left join FCM.INTERFACE_INFO b on a.INTERFACE_ID = b.INTERFACE_ID
+          <where>
+              <if test="interfaceId != ''">
+                 a.INTERFACE_ID = #{interfaceId}
+              </if>
+              <if test="state != ''">
+                  and a.STATE = #{state}
+              </if>
+              <if test="updateTime != ''">
+                  and substr(a.UPDATE_TIME,1,8) = #{updateTime}
+              </if>
+              <if test="updateType != ''">
+                  and b.UPDATE_TYPE = #{updateType}
+              </if>
+          </where>
+        order by a.INTERFACE_ID
+        ) as t
+        where
+        t.num between #{start} and #{end} order by  t.interfaceId
+    </select>
+
+    <select id="getInterfaceIdType" resultType="string" parameterType="string">
+        select distinct
+        type
+        from
+        fcm.interface_info
+        where
+        interface_id=#{interfaceId}
+    </select>
+</mapper>

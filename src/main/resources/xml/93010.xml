@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uplaod>
+    <date>
+        <nowTime type="yyyymmddHHMMSS">nowTime</nowTime>
+        <nowDay type="yyyymmdd">nowDay</nowDay>
+        <lastDay type="yyyymmdd">lastDay</lastDay>
+        <twoDaysAgo type="yyyymmdd">twoDaysAgo</twoDaysAgo>
+        <threeDaysAgo type="yyyymmdd">threeDaysAgo</threeDaysAgo>
+        <nowMonth type="yyyymm">nowMonth</nowMonth>
+        <lastMonth type="yyyymm">lastMonth</lastMonth>
+    </date>
+    <constant>
+        <FILE_NAME replaceStr="lastDay"  replaceType="String">a_13000_$lastDay_IOP-93010_00</FILE_NAME>
+        <binPath>C:\Users\40468\Desktop\iopFile</binPath>
+        <className>com.asiainfo.msooimonitor.model.datahandlemodel.Upload93010</className>
+    </constant>
+
+    <sql>
+        <step1>
+            truncate table fcm.iop_93010_upload immediate
+        </step1>
+        <step2 replaceStr="lastDay"  replaceType="String">
+            insert into fcm.iop_93010_upload select row_number() over(),PHONE_NO,IMEI,IDFA,PROD_PRC_NAME,to_char(ORDER_DATE,'yyyymmddHH24mmss'),ORDER_SOURCE,MONTH_TYPE from dw.DW_IOP_ZF_W_$lastDay where IMEI!='\N'
+        </step2>
+    </sql>
+</uplaod>

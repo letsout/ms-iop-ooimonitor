@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.dbt.upload.UploadMapper" >
+  <resultMap id="BaseResultMap93005" type="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93005" >
+    <constructor >
+      <arg column="ROW_NUMBER" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="OP_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PROVINCE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CITY" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_PURPOSE_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ACTIVITY_DESC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PCC" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="FLOW" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMPAIGN_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMPAIGN_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMPAIGN_START_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CAMPAIGN_END_TIME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A18" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A19" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A20" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A21" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A22" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRODUCT_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRODUCT_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="PRODUCT_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_ID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_NAME" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="CHANNEL_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A29" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A30" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A31" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A32" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A33" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A34" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A35" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A36" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A37" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A38" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TOUCH_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TOUCH_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="RESPONSE_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="VIC_NUM" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="VIC_RATE" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A44" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A45" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A46" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A47" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A48" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A49" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A50" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A51" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A52" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A53" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A54" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A55" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A56" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A57" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A58" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A59" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A60" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A61" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A62" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A63" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A64" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A65" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A66" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A67" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A68" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A69" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A70" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A71" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A72" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A73" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A74" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A75" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A76" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A77" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A78" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A79" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="A80" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+ <!-- <insert id="insert" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93005" >
+    insert into FCM.IOP_93005_UPLOAD (ROW_NUMBER, OP_TIME, PROVINCE, 
+      CITY, ACTIVITY_ID, ACTIVITY_NAME, 
+      ACTIVITY_START_TIME, ACTIVITY_END_TIME, ACTIVITY_TYPE, 
+      ACTIVITY_PURPOSE_ID, ACTIVITY_DESC, PCC, 
+      FLOW, CAMPAIGN_ID, CAMPAIGN_NAME, 
+      CAMPAIGN_START_TIME, CAMPAIGN_END_TIME, A18, 
+      A19, A20, A21, A22, 
+      PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, 
+      CHANNEL_ID, CHANNEL_NAME, CHANNEL_TYPE, 
+      A29, A30, A31, A32, 
+      A33, A34, A35, A36, 
+      A37, A38, TOUCH_NUM, 
+      TOUCH_RATE, RESPONSE_RATE, VIC_NUM, 
+      VIC_RATE, A44, A45, 
+      A46, A47, A48, A49, 
+      A50, A51, A52, A53, 
+      A54, A55, A56, A57, 
+      A58, A59, A60, A61, 
+      A62, A63, A64, A65, 
+      A66, A67, A68, A69, 
+      A70, A71, A72, A73, 
+      A74, A75, A76, A77, 
+      A78, A79, A80)
+    values (#{rowNumber,jdbcType=VARCHAR}, #{opTime,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR}, #{activityName,jdbcType=VARCHAR}, 
+      #{activityStartTime,jdbcType=VARCHAR}, #{activityEndTime,jdbcType=VARCHAR}, #{activityType,jdbcType=VARCHAR}, 
+      #{activityPurposeId,jdbcType=VARCHAR}, #{activityDesc,jdbcType=VARCHAR}, #{pcc,jdbcType=VARCHAR}, 
+      #{flow,jdbcType=VARCHAR}, #{campaignId,jdbcType=VARCHAR}, #{campaignName,jdbcType=VARCHAR}, 
+      #{campaignStartTime,jdbcType=VARCHAR}, #{campaignEndTime,jdbcType=VARCHAR}, #{a18,jdbcType=VARCHAR}, 
+      #{a19,jdbcType=VARCHAR}, #{a20,jdbcType=VARCHAR}, #{a21,jdbcType=VARCHAR}, #{a22,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productType,jdbcType=VARCHAR}, 
+      #{channelId,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, #{channelType,jdbcType=VARCHAR}, 
+      #{a29,jdbcType=VARCHAR}, #{a30,jdbcType=VARCHAR}, #{a31,jdbcType=VARCHAR}, #{a32,jdbcType=VARCHAR}, 
+      #{a33,jdbcType=VARCHAR}, #{a34,jdbcType=VARCHAR}, #{a35,jdbcType=VARCHAR}, #{a36,jdbcType=VARCHAR}, 
+      #{a37,jdbcType=VARCHAR}, #{a38,jdbcType=VARCHAR}, #{touchNum,jdbcType=VARCHAR}, 
+      #{touchRate,jdbcType=VARCHAR}, #{responseRate,jdbcType=VARCHAR}, #{vicNum,jdbcType=VARCHAR}, 
+      #{vicRate,jdbcType=VARCHAR}, #{a44,jdbcType=VARCHAR}, #{a45,jdbcType=VARCHAR}, 
+      #{a46,jdbcType=VARCHAR}, #{a47,jdbcType=VARCHAR}, #{a48,jdbcType=VARCHAR}, #{a49,jdbcType=VARCHAR}, 
+      #{a50,jdbcType=VARCHAR}, #{a51,jdbcType=VARCHAR}, #{a52,jdbcType=VARCHAR}, #{a53,jdbcType=VARCHAR}, 
+      #{a54,jdbcType=VARCHAR}, #{a55,jdbcType=VARCHAR}, #{a56,jdbcType=VARCHAR}, #{a57,jdbcType=VARCHAR}, 
+      #{a58,jdbcType=VARCHAR}, #{a59,jdbcType=VARCHAR}, #{a60,jdbcType=VARCHAR}, #{a61,jdbcType=VARCHAR}, 
+      #{a62,jdbcType=VARCHAR}, #{a63,jdbcType=VARCHAR}, #{a64,jdbcType=VARCHAR}, #{a65,jdbcType=VARCHAR}, 
+      #{a66,jdbcType=VARCHAR}, #{a67,jdbcType=VARCHAR}, #{a68,jdbcType=VARCHAR}, #{a69,jdbcType=VARCHAR}, 
+      #{a70,jdbcType=VARCHAR}, #{a71,jdbcType=VARCHAR}, #{a72,jdbcType=VARCHAR}, #{a73,jdbcType=VARCHAR}, 
+      #{a74,jdbcType=VARCHAR}, #{a75,jdbcType=VARCHAR}, #{a76,jdbcType=VARCHAR}, #{a77,jdbcType=VARCHAR}, 
+      #{a78,jdbcType=VARCHAR}, #{a79,jdbcType=VARCHAR}, #{a80,jdbcType=VARCHAR})
+  </insert>-->
+  <!--<insert id="insertSelective" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.Upload93005" >
+    insert into FCM.IOP_93005_UPLOAD
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rowNumber != null" >
+        ROW_NUMBER,
+      </if>
+      <if test="opTime != null" >
+        OP_TIME,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="activityId != null" >
+        ACTIVITY_ID,
+      </if>
+      <if test="activityName != null" >
+        ACTIVITY_NAME,
+      </if>
+      <if test="activityStartTime != null" >
+        ACTIVITY_START_TIME,
+      </if>
+      <if test="activityEndTime != null" >
+        ACTIVITY_END_TIME,
+      </if>
+      <if test="activityType != null" >
+        ACTIVITY_TYPE,
+      </if>
+      <if test="activityPurposeId != null" >
+        ACTIVITY_PURPOSE_ID,
+      </if>
+      <if test="activityDesc != null" >
+        ACTIVITY_DESC,
+      </if>
+      <if test="pcc != null" >
+        PCC,
+      </if>
+      <if test="flow != null" >
+        FLOW,
+      </if>
+      <if test="campaignId != null" >
+        CAMPAIGN_ID,
+      </if>
+      <if test="campaignName != null" >
+        CAMPAIGN_NAME,
+      </if>
+      <if test="campaignStartTime != null" >
+        CAMPAIGN_START_TIME,
+      </if>
+      <if test="campaignEndTime != null" >
+        CAMPAIGN_END_TIME,
+      </if>
+      <if test="a18 != null" >
+        A18,
+      </if>
+      <if test="a19 != null" >
+        A19,
+      </if>
+      <if test="a20 != null" >
+        A20,
+      </if>
+      <if test="a21 != null" >
+        A21,
+      </if>
+      <if test="a22 != null" >
+        A22,
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="productName != null" >
+        PRODUCT_NAME,
+      </if>
+      <if test="productType != null" >
+        PRODUCT_TYPE,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="channelName != null" >
+        CHANNEL_NAME,
+      </if>
+      <if test="channelType != null" >
+        CHANNEL_TYPE,
+      </if>
+      <if test="a29 != null" >
+        A29,
+      </if>
+      <if test="a30 != null" >
+        A30,
+      </if>
+      <if test="a31 != null" >
+        A31,
+      </if>
+      <if test="a32 != null" >
+        A32,
+      </if>
+      <if test="a33 != null" >
+        A33,
+      </if>
+      <if test="a34 != null" >
+        A34,
+      </if>
+      <if test="a35 != null" >
+        A35,
+      </if>
+      <if test="a36 != null" >
+        A36,
+      </if>
+      <if test="a37 != null" >
+        A37,
+      </if>
+      <if test="a38 != null" >
+        A38,
+      </if>
+      <if test="touchNum != null" >
+        TOUCH_NUM,
+      </if>
+      <if test="touchRate != null" >
+        TOUCH_RATE,
+      </if>
+      <if test="responseRate != null" >
+        RESPONSE_RATE,
+      </if>
+      <if test="vicNum != null" >
+        VIC_NUM,
+      </if>
+      <if test="vicRate != null" >
+        VIC_RATE,
+      </if>
+      <if test="a44 != null" >
+        A44,
+      </if>
+      <if test="a45 != null" >
+        A45,
+      </if>
+      <if test="a46 != null" >
+        A46,
+      </if>
+      <if test="a47 != null" >
+        A47,
+      </if>
+      <if test="a48 != null" >
+        A48,
+      </if>
+      <if test="a49 != null" >
+        A49,
+      </if>
+      <if test="a50 != null" >
+        A50,
+      </if>
+      <if test="a51 != null" >
+        A51,
+      </if>
+      <if test="a52 != null" >
+        A52,
+      </if>
+      <if test="a53 != null" >
+        A53,
+      </if>
+      <if test="a54 != null" >
+        A54,
+      </if>
+      <if test="a55 != null" >
+        A55,
+      </if>
+      <if test="a56 != null" >
+        A56,
+      </if>
+      <if test="a57 != null" >
+        A57,
+      </if>
+      <if test="a58 != null" >
+        A58,
+      </if>
+      <if test="a59 != null" >
+        A59,
+      </if>
+      <if test="a60 != null" >
+        A60,
+      </if>
+      <if test="a61 != null" >
+        A61,
+      </if>
+      <if test="a62 != null" >
+        A62,
+      </if>
+      <if test="a63 != null" >
+        A63,
+      </if>
+      <if test="a64 != null" >
+        A64,
+      </if>
+      <if test="a65 != null" >
+        A65,
+      </if>
+      <if test="a66 != null" >
+        A66,
+      </if>
+      <if test="a67 != null" >
+        A67,
+      </if>
+      <if test="a68 != null" >
+        A68,
+      </if>
+      <if test="a69 != null" >
+        A69,
+      </if>
+      <if test="a70 != null" >
+        A70,
+      </if>
+      <if test="a71 != null" >
+        A71,
+      </if>
+      <if test="a72 != null" >
+        A72,
+      </if>
+      <if test="a73 != null" >
+        A73,
+      </if>
+      <if test="a74 != null" >
+        A74,
+      </if>
+      <if test="a75 != null" >
+        A75,
+      </if>
+      <if test="a76 != null" >
+        A76,
+      </if>
+      <if test="a77 != null" >
+        A77,
+      </if>
+      <if test="a78 != null" >
+        A78,
+      </if>
+      <if test="a79 != null" >
+        A79,
+      </if>
+      <if test="a80 != null" >
+        A80,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rowNumber != null" >
+        #{rowNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="opTime != null" >
+        #{opTime,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="activityId != null" >
+        #{activityId,jdbcType=VARCHAR},
+      </if>
+      <if test="activityName != null" >
+        #{activityName,jdbcType=VARCHAR},
+      </if>
+      <if test="activityStartTime != null" >
+        #{activityStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="activityEndTime != null" >
+        #{activityEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="activityType != null" >
+        #{activityType,jdbcType=VARCHAR},
+      </if>
+      <if test="activityPurposeId != null" >
+        #{activityPurposeId,jdbcType=VARCHAR},
+      </if>
+      <if test="activityDesc != null" >
+        #{activityDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="pcc != null" >
+        #{pcc,jdbcType=VARCHAR},
+      </if>
+      <if test="flow != null" >
+        #{flow,jdbcType=VARCHAR},
+      </if>
+      <if test="campaignId != null" >
+        #{campaignId,jdbcType=VARCHAR},
+      </if>
+      <if test="campaignName != null" >
+        #{campaignName,jdbcType=VARCHAR},
+      </if>
+      <if test="campaignStartTime != null" >
+        #{campaignStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="campaignEndTime != null" >
+        #{campaignEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="a18 != null" >
+        #{a18,jdbcType=VARCHAR},
+      </if>
+      <if test="a19 != null" >
+        #{a19,jdbcType=VARCHAR},
+      </if>
+      <if test="a20 != null" >
+        #{a20,jdbcType=VARCHAR},
+      </if>
+      <if test="a21 != null" >
+        #{a21,jdbcType=VARCHAR},
+      </if>
+      <if test="a22 != null" >
+        #{a22,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null" >
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null" >
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="a29 != null" >
+        #{a29,jdbcType=VARCHAR},
+      </if>
+      <if test="a30 != null" >
+        #{a30,jdbcType=VARCHAR},
+      </if>
+      <if test="a31 != null" >
+        #{a31,jdbcType=VARCHAR},
+      </if>
+      <if test="a32 != null" >
+        #{a32,jdbcType=VARCHAR},
+      </if>
+      <if test="a33 != null" >
+        #{a33,jdbcType=VARCHAR},
+      </if>
+      <if test="a34 != null" >
+        #{a34,jdbcType=VARCHAR},
+      </if>
+      <if test="a35 != null" >
+        #{a35,jdbcType=VARCHAR},
+      </if>
+      <if test="a36 != null" >
+        #{a36,jdbcType=VARCHAR},
+      </if>
+      <if test="a37 != null" >
+        #{a37,jdbcType=VARCHAR},
+      </if>
+      <if test="a38 != null" >
+        #{a38,jdbcType=VARCHAR},
+      </if>
+      <if test="touchNum != null" >
+        #{touchNum,jdbcType=VARCHAR},
+      </if>
+      <if test="touchRate != null" >
+        #{touchRate,jdbcType=VARCHAR},
+      </if>
+      <if test="responseRate != null" >
+        #{responseRate,jdbcType=VARCHAR},
+      </if>
+      <if test="vicNum != null" >
+        #{vicNum,jdbcType=VARCHAR},
+      </if>
+      <if test="vicRate != null" >
+        #{vicRate,jdbcType=VARCHAR},
+      </if>
+      <if test="a44 != null" >
+        #{a44,jdbcType=VARCHAR},
+      </if>
+      <if test="a45 != null" >
+        #{a45,jdbcType=VARCHAR},
+      </if>
+      <if test="a46 != null" >
+        #{a46,jdbcType=VARCHAR},
+      </if>
+      <if test="a47 != null" >
+        #{a47,jdbcType=VARCHAR},
+      </if>
+      <if test="a48 != null" >
+        #{a48,jdbcType=VARCHAR},
+      </if>
+      <if test="a49 != null" >
+        #{a49,jdbcType=VARCHAR},
+      </if>
+      <if test="a50 != null" >
+        #{a50,jdbcType=VARCHAR},
+      </if>
+      <if test="a51 != null" >
+        #{a51,jdbcType=VARCHAR},
+      </if>
+      <if test="a52 != null" >
+        #{a52,jdbcType=VARCHAR},
+      </if>
+      <if test="a53 != null" >
+        #{a53,jdbcType=VARCHAR},
+      </if>
+      <if test="a54 != null" >
+        #{a54,jdbcType=VARCHAR},
+      </if>
+      <if test="a55 != null" >
+        #{a55,jdbcType=VARCHAR},
+      </if>
+      <if test="a56 != null" >
+        #{a56,jdbcType=VARCHAR},
+      </if>
+      <if test="a57 != null" >
+        #{a57,jdbcType=VARCHAR},
+      </if>
+      <if test="a58 != null" >
+        #{a58,jdbcType=VARCHAR},
+      </if>
+      <if test="a59 != null" >
+        #{a59,jdbcType=VARCHAR},
+      </if>
+      <if test="a60 != null" >
+        #{a60,jdbcType=VARCHAR},
+      </if>
+      <if test="a61 != null" >
+        #{a61,jdbcType=VARCHAR},
+      </if>
+      <if test="a62 != null" >
+        #{a62,jdbcType=VARCHAR},
+      </if>
+      <if test="a63 != null" >
+        #{a63,jdbcType=VARCHAR},
+      </if>
+      <if test="a64 != null" >
+        #{a64,jdbcType=VARCHAR},
+      </if>
+      <if test="a65 != null" >
+        #{a65,jdbcType=VARCHAR},
+      </if>
+      <if test="a66 != null" >
+        #{a66,jdbcType=VARCHAR},
+      </if>
+      <if test="a67 != null" >
+        #{a67,jdbcType=VARCHAR},
+      </if>
+      <if test="a68 != null" >
+        #{a68,jdbcType=VARCHAR},
+      </if>
+      <if test="a69 != null" >
+        #{a69,jdbcType=VARCHAR},
+      </if>
+      <if test="a70 != null" >
+        #{a70,jdbcType=VARCHAR},
+      </if>
+      <if test="a71 != null" >
+        #{a71,jdbcType=VARCHAR},
+      </if>
+      <if test="a72 != null" >
+        #{a72,jdbcType=VARCHAR},
+      </if>
+      <if test="a73 != null" >
+        #{a73,jdbcType=VARCHAR},
+      </if>
+      <if test="a74 != null" >
+        #{a74,jdbcType=VARCHAR},
+      </if>
+      <if test="a75 != null" >
+        #{a75,jdbcType=VARCHAR},
+      </if>
+      <if test="a76 != null" >
+        #{a76,jdbcType=VARCHAR},
+      </if>
+      <if test="a77 != null" >
+        #{a77,jdbcType=VARCHAR},
+      </if>
+      <if test="a78 != null" >
+        #{a78,jdbcType=VARCHAR},
+      </if>
+      <if test="a79 != null" >
+        #{a79,jdbcType=VARCHAR},
+      </if>
+      <if test="a80 != null" >
+        #{a80,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>-->
+
+  <select id="selectUpload93005" parameterType="string" resultMap="BaseResultMap93005">
+       select * from ${tableName}
+  </select>
+</mapper>

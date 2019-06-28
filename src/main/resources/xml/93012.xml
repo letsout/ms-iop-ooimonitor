@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uplaod>
+    <date>
+        <nowTime type="yyyymmddHHMMSS">nowTime</nowTime>
+        <nowDay type="yyyymmdd">nowDay</nowDay>
+        <lastDay type="yyyymmdd">lastDay</lastDay>
+        <twoDaysAgo type="yyyymmdd">twoDaysAgo</twoDaysAgo>
+        <threeDaysAgo type="yyyymmdd">threeDaysAgo</threeDaysAgo>
+        <nowMonth type="yyyymm">nowMonth</nowMonth>
+        <lastMonth type="yyyymm">lastMonth</lastMonth>
+    </date>
+    <constant>
+        <FILE_NAME replaceStr="lastDay"  replaceType="String">i_13000_$lastDay_IOP-93012_00</FILE_NAME>
+        <binPath>C:\Users\40468\Desktop\iopFile</binPath>
+        <className>com.asiainfo.msooimonitor.model.datahandlemodel.Upload93012</className>
+    </constant>
+    <sql>
+        <step1>
+            truncate table fcm.iop_93012_upload immediate
+        </step1>
+        <step2 replaceStr="lastMonth" replaceType="String">
+            insert into fcm.iop_93012_upload select row_number() over(),PHONE_NO,USE_IMEI,'',TONGYONG_FLOW_TOTAL,TONGYONG_FLOW_USE,MIGUDINGXIANG_TOTAL,MIGUDINGXIANG_USE,MIGU_SHIPING,AIQIYI_SHIPING,TENGXUN_SHIPING,YOUKU_SHIPING,MANGGUO_SHIPING,PPTV_SHIPING from dw.DW_IOP_APPFLOW_$lastMonth
+        </step2>
+    </sql>
+</uplaod>

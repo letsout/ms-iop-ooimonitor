@@ -1,0 +1,239 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.body {
+	margin-left: 10px;
+	width: calc(100% - 10px);
+	height: 161%;
+	box-sizing: border-box;
+}
+
+.content-html {
+	min-width: 1120px;
+	overflow: auto;
+}
+
+span,
+td {
+	color: #fff;
+	font-size: 12px;
+}
+
+dd,
+h3,
+h4 {
+	color: #fff;
+}
+
+footer {
+	width: 300px;
+	position: absolute;
+	left: 50%;
+	margin-left: -150px;
+	bottom: 10px;
+}
+
+.wrapper {
+	margin: 25px 30px 30px 20px;
+}
+
+.content {
+	overflow: hidden;
+	height: 100px;
+}
+
+.content .login_info_main input {
+	line-height: 36px;
+	border-radius: 8px;
+	border: 1px solid #d7d7d7;
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.content .login_info_main .check-validate img {
+	cursor: pointer;
+}
+
+
+.content .login_info_main .other-option label {
+	font-size: 16px;
+	font-weight: lighter;
+}
+
+.item {
+	overflow: hidden;
+	padding: 1%;
+	border-top: 1px solid #1483a8;
+}
+
+.item .row span {
+	vertical-align: bottom;
+}
+
+.item .row img {
+	margin-top: 2px;
+	height: 12px;
+}
+
+.item .specific-custom i {
+	display: inline-block;
+	margin-right: 5px;
+	float: right;
+	width: 10px;
+	height: 10px;
+}
+
+.item .specific-custom i.normal {
+	background-color: #3c932b;
+}
+
+
+.style1 .content span {
+	font-size: 14px;
+	padding: 0;
+}
+
+.content span {
+	font-size: 12px;
+	color: #fff;
+}
+
+.content .normal {
+	background-color: #2f7c3c;
+}
+
+.content .crowded {
+	background-color: #ecb02f;
+}
+
+.content .gathered {
+	background-color: #f83106;
+}
+
+.content .container-fluid {
+	margin-top: 10px;
+}
+
+.head span {
+	color: #fff;
+	margin-left: 10px;
+	font-size: 14px;
+	line-height: 25px;
+	vertical-align: middle;
+	position: relative;
+	top: -10px;
+}
+
+.toggle-box table td {
+	text-align: center;
+}
+
+.normal {
+	background-color: #3c932b;
+}
+
+.baidu-map {
+	position: relative;
+}
+
+
+.baidu-map .btn-group button {
+	height: 24px;
+	color: #fff;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-radius: 13px;
+	border: 0;
+	background-color: #3f4554;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.pager button {
+	border-radius: 4px;
+	width: 65px;
+	line-height: 28px;
+	background-color: #26c7cc;
+	border: 0;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	cursor: pointer;
+	color: #fff;
+}
+
+.pager button:focus,
+.pager button:active:focus {
+	outline: none;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.layui-input-inline .layui-select-title input {
+	border-radius: 4px;
+	background-color: rgba(255,255,255,0.1);
+	color: #fff;
+	border: 1px solid #5a7b99;
+}
+
+.layui-form-select dl dd:hover {
+	background-color: #3bd5fd;
+}
+
+.layui-input-inline .layui-form-select .layui-anim-upbit dd {
+	color: #dfdfdf;
+}
+
+.layui-input-inline .layui-form-select .layui-anim-upbit dd:hover {
+	color: #fff;
+}
+
+
+.layui-input-inline input {
+	width: 183px;
+}
+
+
+.layui-breadcrumb a:hover {
+	text-decoration: none;
+}
+
+.layui-breadcrumb a cite {
+	color: #999999;
+}
+
+
+.text-glow {
+	color: #fff;
+	text-shadow: 0 0 0.5em #dfdfdf, -0 -0 0.5em #dfdfdf;
+}
+
+
+.grad{
+	background: -moz-linear-gradient(right, rgb(19,70,122) ,rgb(33,86,136));
+	background: linear-gradient(to right, rgb(19,70,122) ,rgb(33,86,136));
+	text-align: center;
+}
+.rowheight .grad{
+	color: #6ede71;
+}
+.rowheight{
+	height: 30px;
+}
+
+.map_bg_c{
+	margin: 10px;
+}
+.mouseUnderline:hover{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.divMa{
+	margin-top: 10px;
+}
