@@ -1,11 +1,12 @@
-package com.asiainfo.msooimonitor.service;
+package com.asiainfo.msooimonitor.mapper.mysql;
 
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface InterfaceInfoService {
-
+@Repository
+public interface InterfaceInfoMapper {
     /**
      * 获取所有接口信息
      * @param serachFilter

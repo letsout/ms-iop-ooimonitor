@@ -49,4 +49,9 @@ public class InterfaceInfo {
      * 接口文件名称
      */
     private String fileName;
+
+    /**
+     * 数据是否有效
+     */
+    private String dataState;
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.InterfaceInfoMapper">
+
+    <select id="getInterfaceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo"
+            resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+        select * from ooi_interface_info
+        where
+        data_state = 'U'
+        <if test="interfaceId != null and '' neq interfaceId">
+            and interface_id = #{interfaceId}
+        </if>
+        <if test="interfaceType != null and '' neq interfaceType">
+            and interface_type = #{interfaceType}
+        </if>
+        <if test="interfaceDealType ！= null and '' neq interfaceDealType">
+            and interface_deal_type = #{interfaceDealType}
+        </if>
+        <if test="interfaceCycle != null and '' neq interfaceCycle">
+            and interface_cycle = #{interfaceCycle}
+        </if>
+    </select>
+
+    <update id="deleteInterfaceInfoById" parameterType="string">
+        update ooi_interface_info set data_state = 'E' where interface_id = #{interfaceId}
+    </update>
+
+    <update id="updateInterfaceInfoById" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+        update ooi_interface_info set
+        interface_type = #{interfaceType},
+        interface_deal_type = #{interfaceDealType},
+        interface_cycle = #{interfaceCycle},
+        interface_local_path = #{interfaceLocalPath},
+        interface_remote_path = #{interfaceRemotePath},
+        interface_run_time = #{interfaceRunTime},
+        file_name = #{fileName}
+        where
+        interface_id = #{interfaceId}
+    </update>
+
+    <insert id="insertInterfaceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
+        insert into ooi_interface_info (
+        interface_id,
+        interface_type,
+        interface_deal_type,
+        interface_cycle,
+        interface_loca_path,
+        interface_remote_path,
+        interface_run_time,
+        file_name
+        ) values (
+        #{interfaceId},
+        #{interfaceType},
+        #{interfaceDealType},
+        #{interfaceCycle},
+        #{interfaceLocaPath}
+        #{interfaceRemotePath}
+        #{interfaceRunTime}
+        #{fileName}
+        );
+    </insert>
+</mapper>
