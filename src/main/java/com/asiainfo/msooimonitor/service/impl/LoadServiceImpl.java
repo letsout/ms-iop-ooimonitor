@@ -1,6 +1,6 @@
 package com.asiainfo.msooimonitor.service.impl;
 
-import com.asiainfo.msooimonitor.mapper.Mysql.DownloadFileMapper;
+import com.asiainfo.msooimonitor.mapper.mysql.DownloadFileMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.load.LoadMapper;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;

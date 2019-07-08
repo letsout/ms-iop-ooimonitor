@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  **/
 @Configuration
 @EnableTransactionManagement
-@MapperScan(basePackages = "com.asiainfo.msooimonitor.mapper.Mysql", sqlSessionFactoryRef = "MysqlSessionFactory")
+@MapperScan(basePackages = "com.asiainfo.msooimonitor.mapper.mysql", sqlSessionFactoryRef = "MysqlSessionFactory")
 public class MysqlDataBaseConfig {
 
     @Primary
@@ -39,7 +39,7 @@ public class MysqlDataBaseConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResources("classpath:mapper/Mysql/*.xml"));
+                .getResources("classpath:mapper/mysql/*.xml"));
         /** 设置typeAlias 包扫描路径 */
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
         sqlSessionFactory.getConfiguration().setMapUnderscoreToCamelCase(true);

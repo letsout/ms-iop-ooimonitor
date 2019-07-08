@@ -1,6 +1,6 @@
 package com.asiainfo.msooimonitor.service.impl;
 
-import com.asiainfo.msooimonitor.mapper.Mysql.DownloadFileMapper;
+import com.asiainfo.msooimonitor.mapper.mysql.DownloadFileMapper;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.service.DownloadInterfaceService;
 import lombok.extern.slf4j.Slf4j;

@@ -25,16 +25,14 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = "com.asiainfo.msooimonitor.mapper.dbt", sqlSessionFactoryRef = "DBTSessionFactory")
 public class DBTDataBaseConfig {
 
-    @Primary
-    @Bean(name = "DBTSessionFactory")
+    @Bean(name = "DBTDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Primary
-    @Bean(name = "MysqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("DBTSessionFactory") DataSource dataSource)
+    @Bean(name = "DBTSessionFactory")
+    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("DBTDataSource") DataSource dataSource)
             throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
@@ -46,9 +44,8 @@ public class DBTDataBaseConfig {
         return sqlSessionFactory;
     }
 
-    @Primary
     @Bean(name = "DBTTransactionManager")
-    public DataSourceTransactionManager transactionManager(@Qualifier("DBTSessionFactory") DataSource dataSource) {
+    public DataSourceTransactionManager transactionManager(@Qualifier("DBTDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 }
