@@ -14,7 +14,6 @@ public interface LoadMapper {
 
     void deleteSql(@Param("sql") String sql);
 
-    void updateRecord(Map map);
 
     int getrows(@Param("tableName") String tableName);
 }

@@ -1,6 +1,8 @@
 package com.asiainfo.msooimonitor.thread;
 
+import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.handle.HandleData;
+import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
 import com.asiainfo.msooimonitor.utils.FileUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
@@ -105,24 +107,30 @@ public class ReadFileThread implements Runnable {
                 mapList.clear();
             }
 
-            // 2文件下载成功 ，3文件入库成功 ，-2失败 文件下载失败，-3 文件校验失败
-            logger.error("文件[{}]入库成功！！！", fileName);
-            recordMap.put("state", "3");
-            recordMap.put("reason", "文件入库完成");
-            recordMap.put("successCount", String.valueOf(count));
-            recordMap.put("fileCount", String.valueOf(FileUtil.getFileRows(dir, interfaceId)));
+            logger.info("文件[{}]入库成功！！！", fileName);
+            InterfaceRecord interfaceRecord = new InterfaceRecord();
+            interfaceRecord.setInterfaceId(interfaceId);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
+            interfaceRecord.setFileName(fileName);
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
+            interfaceRecord.setFileSuccessNum(String.valueOf(count));
+            loadService.insertRecord(interfaceRecord);
             logger.info("文件[{}]入库完成！！！", fileName);
-            loadService.updateRecord(recordMap);
 
         } catch (Exception e) {
             logger.error("文件[{}]入库失败！！！错误行数{}", fileName, count);
             logger.error("message：{}", e);
             loadService.deleteSql("delete from fcm." + tableName + " where OP_TIME='" + date + "'");
-            recordMap.put("state", "-3");
-            recordMap.put("reason", "文件解析出错");
-            recordMap.put("successCount", "0");
-            recordMap.put("fileCount", "0");
-            loadService.updateRecord(recordMap);
+            InterfaceRecord interfaceRecord = new InterfaceRecord();
+            interfaceRecord.setInterfaceId(interfaceId);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
+            interfaceRecord.setFileName(fileName);
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
+            interfaceRecord.setFileSuccessNum("0");
+            interfaceRecord.setErrorDesc("文件解析出错:"+count);
+            loadService.insertRecord(interfaceRecord);
         }
     }
 }

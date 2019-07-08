@@ -1,7 +1,5 @@
 package com.asiainfo.msooimonitor.model.datahandlemodel;
 
-import com.asiainfo.msooimonitor.config.SplitConstant;
-
 /**
  * 93002 接口实体
  */

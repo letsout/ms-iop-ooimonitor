@@ -1,18 +1,15 @@
 package com.asiainfo.msooimonitor.service.impl;
 
+import com.asiainfo.msooimonitor.mapper.Mysql.DownloadFileMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.load.LoadMapper;
+import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
-import com.asiainfo.msooimonitor.utils.SpringUtil;
-import com.asiainfo.msooimonitor.utils.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +26,9 @@ public class LoadServiceImpl implements LoadService {
 
     @Autowired
     private LoadMapper loadMapper;
+
+    @Autowired
+    private DownloadFileMapper downloadFileMapper;
 
     @Override
     public Map<String,Object> sqlTemplate(String tableName) {
@@ -61,48 +61,19 @@ public class LoadServiceImpl implements LoadService {
         return returnMap;
     }
 
-   /* @Override
-    public void batchInsert(String sql, List<Map<String, String>> mapList,String tableName,String date) {
-
-        try {
-            long begin = System.currentTimeMillis();
-
-            NamedParameterJdbcTemplate jdbcTemplate = (NamedParameterJdbcTemplate) SpringUtil.getBean("loadJdbc");
-
-            Map<String, ?>[] map = new HashMap[mapList.size()];
-
-            jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(mapList.toArray(map)));
-
-            String timeW = String.valueOf(System.currentTimeMillis() - begin);
-
-            logger.info("inser sql a wast of time: {}ms",timeW);
-        }catch (Exception e){
-            logger.error("批处理失败！！！[{}]",e.getMessage());
-            //TODO 清除之前入库成功的数据
-            loadMapper.deleteSql("delete from fcm."+tableName+" where OP_TIME='"+date+"'");
-            HashMap<String, String> recordMap = new HashMap<>();
-            recordMap.put("interface_id",tableName.substring(4,5));
-            recordMap.put("is_success","2");
-            recordMap.put("update_time", TimeUtil.getLongSeconds(new Date()));
-            recordMap.put("reason","文件入库出错");
-            loadMapper.updateRecord(recordMap);
-        }
-
-    }*/
-
     @Override
     public void deleteSql(String sql) {
         loadMapper.deleteSql(sql);
     }
 
     @Override
-    public void updateRecord(Map map) {
-        loadMapper.updateRecord(map);
+    public int getrows(String tableName) {
+       return loadMapper.getrows(tableName);
     }
 
     @Override
-    public int getrows(String tableName) {
-       return loadMapper.getrows(tableName);
+    public void insertRecord(InterfaceRecord interfaceRecord) {
+        downloadFileMapper.insertRecord(interfaceRecord);
     }
 
 

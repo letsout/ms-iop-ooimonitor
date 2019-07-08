@@ -19,15 +19,13 @@ import java.util.Vector;
 public class SFTPUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SFTPUtils.class);
-/*
     private static ChannelSftp sftp;
 
-    private static SFTPUtils instance = null;*/
-/*
+    private static SFTPUtils instance = null;
     private SFTPUtils() {
-    }*/
+    }
 
-   /* public static SFTPUtils getInstance(String host, String username, String password) {
+    public static SFTPUtils getInstance(String host, String username, String password) {
         if (instance == null) {
             if (instance == null) {
                 instance = new SFTPUtils();
@@ -37,7 +35,7 @@ public class SFTPUtils {
             }
         }
         return instance;
-    }*/
+    }
 
     /**
      * 连接sftp服务器

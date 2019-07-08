@@ -99,31 +99,26 @@ public class FileUtil {
     }
 
     /**
-     * 根据接口号判断生成文件的数量
+     * 判断生成文件的数量
      *
      * @param filePath
-     * @param interfaceId
+     * @param fileName
      * @return
      */
-    public static int getFileRows(String filePath, String interfaceId) {
+    public static String getFileRows(String filePath, String fileName) {
         int rows = 0;
-        File file = new File(filePath);
-        String[] list = file.list();
-        List<String> dat = Arrays.stream(list).filter(name -> name.endsWith("dat") && name.contains(interfaceId)).collect(Collectors.toList());
-        if (dat.size() > 0) {
-            try {
-                File file1 = new File(filePath + File.separator + dat);
-                FileReader fileReader = new FileReader(file1);
-                LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
-                lineNumberReader.skip(Long.MAX_VALUE);
-                rows = lineNumberReader.getLineNumber();
-                fileReader.close();
-                lineNumberReader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            File file1 = new File(filePath + File.separator + fileName);
+            FileReader fileReader = new FileReader(file1);
+            LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
+            lineNumberReader.skip(Long.MAX_VALUE);
+            rows = lineNumberReader.getLineNumber();
+            fileReader.close();
+            lineNumberReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return rows;
+        return String.valueOf(rows);
     }
 
 
@@ -140,9 +135,8 @@ public class FileUtil {
         try {
             dat = Arrays.stream(list).filter(name -> name.endsWith("dat")).collect(Collectors.toList());
         } catch (Exception e) {
-            logger.info("遍历指定文件夹下的文件名出错：{}", dir);
+            logger.error("遍历指定文件夹下的文件名出错：{}", dir);
         }
-
         return dat;
     }
 
@@ -163,30 +157,30 @@ public class FileUtil {
                 name) {*/
 
 
-            String oldPath1 = oldPath + File.separator + name;
-            String newPath1 = newPath + File.separator + name;
-            // 判断文件是否存在
-            dirExit( oldPath );
-            dirExit(newPath);
+        String oldPath1 = oldPath + File.separator + name;
+        String newPath1 = newPath + File.separator + name;
+        // 判断文件是否存在
+        dirExit(oldPath);
+        dirExit(newPath);
 
-            FileInputStream fileInputStream = new FileInputStream(oldPath1);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, fromCharset);
-            BufferedReader rw = new BufferedReader(inputStreamReader);
+        FileInputStream fileInputStream = new FileInputStream(oldPath1);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, fromCharset);
+        BufferedReader rw = new BufferedReader(inputStreamReader);
 
-            FileOutputStream fileOutputStream = new FileOutputStream(newPath1);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, toCharset);
-            BufferedWriter bw = new BufferedWriter(outputStreamWriter);
+        FileOutputStream fileOutputStream = new FileOutputStream(newPath1);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, toCharset);
+        BufferedWriter bw = new BufferedWriter(outputStreamWriter);
 
-            StringBuilder sb = new StringBuilder();
-            String line = "";
-            while ((line = rw.readLine()) != null) {
-                sb.append(line).append("/n");
-            }
-
-            bw.write(sb.toString());
-            bw.flush();
-            bw.close();
+        StringBuilder sb = new StringBuilder();
+        String line = "";
+        while ((line = rw.readLine()) != null) {
+            sb.append(line).append("/n");
         }
+
+        bw.write(sb.toString());
+        bw.flush();
+        bw.close();
+    }
 
 /*
 

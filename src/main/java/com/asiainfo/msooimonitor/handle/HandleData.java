@@ -39,16 +39,15 @@ public class HandleData {
     public void killFile(String interfaceId, String localPath, String date) {
 
         List<String> list = FileUtil.listFile(localPath);
-
        /* String newPath= localPath+File.separator+"tmp";
         FileUtil.dirExit(newPath);*/
-
         logger.info("localPath:{}", localPath);
+
         if(!(list==null||list.size()==0)){
             List<String> collect = list.stream().filter(name -> name.contains(interfaceId)).collect(Collectors.toList());
             if (collect.size() > 0) {
                 ExecutorService executorService = Executors.newFixedThreadPool(collect.size());
-                collect.forEach(name -> executorService.execute(new ReadFileThread(name, "D:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\test\\download\\20180403\\day", interfaceId, loadService, date, new HandleData())));
+                collect.forEach(fileName -> executorService.execute(new ReadFileThread(fileName, localPath, interfaceId, loadService, date, new HandleData())));
             } else {
                 logger.info("接口：{" + interfaceId + "} 文件不存在！！！");
             }

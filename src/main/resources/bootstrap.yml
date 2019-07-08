@@ -1,0 +1,30 @@
+server:
+  #服务运行端口和绑定地址，生产环境中使用命令行参数传入！！必须
+  port: 6065
+  address: 127.0.0.1
+  servlet:
+    context-path: /ooiminitor
+spring:
+  application:
+    name: ms-iop-ooiminitor #！！！！修改成服务名，比如ms-iop-recommend  #此名称必须指定！！！！！
+  cloud:
+    consul:
+#      host: 10.101.167.28  #配置中心地址，生产环境中使用命令行参数传入，必须要传入
+#      host: 127.0.0.1  #配置中心地址，生产环境中使用命令行参数传入，必须要传入
+      host: 10.101.167.28
+      port: 8500
+      #公用配置在/ms-config/apps/configuration,文件格式*PROPERTIES*
+      config:
+        enabled: true
+        prefix: ms-config #设置配置值的基本文件夹
+        defaultContext: apps #设置所有应用程序使用的文件夹名称
+        profileSeparator: '.' #设置分隔符的值，用于使用配置文件在属性源中分隔配置文件名称
+        format: PROPERTIES    # 表示consul上面文件的格式 有四种 YAML PROPERTIES KEY-VALUE FILES
+        data-key: configuration    #表示consul上面的KEY值(或者说文件的名字) 默认是data
+        watch:
+          delay: 1000 #默认值为1000，以毫秒为单位
+      discovery:
+        instanceId: ${spring.application.name}:${server.address}:${server.port}
+        healthCheckInterval: 15s
+        preferIpAddress: true
+        ipAddress: ${server.address}

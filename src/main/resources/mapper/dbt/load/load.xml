@@ -9,24 +9,6 @@
         ${sql}
     </delete>
 
-    <insert id="updateRecord" parameterType="map">
-        insert into fcm.interface_record(
-        interface_id,
-        STATE,
-        UPDATE_TIME,
-        REASON,
-        FILE_COUNT,
-        SUCCESS_COUNT
-        ) values (
-        #{interfaceId},
-        #{state},
-        #{updateTime},
-        #{reason},
-        #{fileCount},
-        #{successCount}
-        )
-    </insert>
-
     <select id="getrows" parameterType="string" resultType="int">
         select count(*) from ${tableName}
     </select>

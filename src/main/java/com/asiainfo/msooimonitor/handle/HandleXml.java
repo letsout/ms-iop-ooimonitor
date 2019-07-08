@@ -77,8 +77,8 @@ public class HandleXml {
         SAXReader saxReader = new SAXReader();
 
         try {
-//            Document document = saxReader.read(new File(this.getClass().getResource("/xml/" + interfaceId + ".xml").getPath()));
-            Document document = saxReader.read(new File("/data1/miscro-service/ms-ooi/ms-ooi-monitor/xml/" + interfaceId + ".xml"));
+            Document document = saxReader.read(new File(this.getClass().getResource("/xml/" + interfaceId + ".xml").getPath()));
+//            Document document = saxReader.read(new File("/data1/miscro-service/ms-ooi/ms-ooi-monitor/xml/" + interfaceId + ".xml"));
 
             Element root = document.getRootElement();
 

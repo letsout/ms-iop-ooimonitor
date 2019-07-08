@@ -1,0 +1,51 @@
+management:
+  endpoints:
+    web:
+      #      base-path: "/"   #默认是在“/actuator”下面
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
+
+spring:
+  security:  ## 登陆spring boot admin所需的账号密码
+    user:
+      name: "user"
+      password: "password"
+#  boot:
+#    admin:
+#      client:
+#        url: http://127.0.0.1:9412  #需要指明admin server的地址
+#        username: ${spring.security.user.name}       #These two are needed so that the client
+#        password: ${spring.security.user.password}   #can register at the protected server api
+#        instance:
+#          prefer-ip: true
+#          metadata:
+#            user.name: ${spring.security.user.name}         #These two are needed so that the server
+#            user.password: ${spring.security.user.password} #can access the protected client endpoints
+  zipkin:
+    enable: true
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://10.101.167.28:3306/iop?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      username: iop
+      password: iop123
+    secondary:
+      driver-class-name: com.ibm.db2.jcc.DB2Driver
+      jdbc-url: jdbc:db2://10.101.167.28:56000/QCD:currentSchema=QCD;
+      username: db2
+      password: 123456
+
+info: #定义各种额外的详情给服务端显示
+  app:
+    name: "@project.name@"   #从pom.xml中获取#"@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"
+    spring-cloud.version: "@spring-cloud.version@"
+
+#mybatis:
+#  mapper-locations: classpath:mapper/**/*.xml
+#  config-location: classpath:mybatis-config.xml
+#  type-aliases-package: com.asiainfo.systemmanage.entity.*

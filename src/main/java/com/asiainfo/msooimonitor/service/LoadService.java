@@ -1,8 +1,7 @@
 package com.asiainfo.msooimonitor.service;
 
-import org.springframework.stereotype.Service;
+import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 
-import java.util.List;
 import java.util.Map;
 public interface LoadService {
 
@@ -18,8 +17,7 @@ public interface LoadService {
 
     void deleteSql(String sql);
 
-    void updateRecord(Map map);
-
     int getrows(String tableName);
 
+    void insertRecord(InterfaceRecord interfaceRecord);
 }
