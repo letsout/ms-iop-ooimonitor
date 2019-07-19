@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 public class DBTDataBaseConfig {
 
     @Bean(name = "DBTDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    @ConfigurationProperties(prefix = "spring.datasource.secondary")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }

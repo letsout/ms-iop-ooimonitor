@@ -33,7 +33,7 @@ public class InterfaceInfo {
     /**
      * 活动名称
      */
-    private String act_name;
+    private String actName;
 
     /**
      * 接口类型 接口类型 1-实时 2-文件

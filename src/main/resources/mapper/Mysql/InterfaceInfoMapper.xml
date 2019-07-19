@@ -13,13 +13,13 @@
         <if test="interfaceType != null and '' neq interfaceType">
             and interface_type = #{interfaceType}
         </if>
-        <if test="interfaceDealType ！= null and '' neq interfaceDealType">
+        <if test="interfaceDealType != null and '' neq interfaceDealType">
             and interface_deal_type = #{interfaceDealType}
         </if>
         <if test="interfaceCycle != null and '' neq interfaceCycle">
             and interface_cycle = #{interfaceCycle}
         </if>
-        <if test="fuzzyQueryInfo ！= null and '' neq fuzzyQueryInfo">
+        <if test="fuzzyQueryInfo != null and '' neq fuzzyQueryInfo">
             and (interface_id = #{fuzzyQueryInfo} or interface_name = #{fuzzyQueryInfo} or interface_desc = #{fuzzyQueryInfo})
         </if>
     </select>

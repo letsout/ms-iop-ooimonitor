@@ -27,10 +27,20 @@ public class InterfaceInfoController {
     InterfaceInfoService interfaceInfoService;
 
     @RequestMapping("/getInterfaceInfo")
-    public Result getInterfaceInfo(@RequestBody InterfaceInfo serachFilter,
-                                   @RequestParam("pageNum") int pageNum,
-                                   @RequestParam("pageSize") int pageSize) {
+    public Result getInterfaceInfo(@RequestParam(value = "interfaceId",required = false) String interfaceId ,
+                                   @RequestParam(value = "interfaceType",required = false) String interfaceType,
+                                   @RequestParam(value = "interfaceDealType",required = false) String interfaceDealType,
+                                   @RequestParam(value = "interfaceCycle",required = false) String interfaceCycle,
+                                   @RequestParam(value = "fuzzyQueryInfo",required = false)String fuzzyQueryInfo,
+                                   @RequestParam("page") int pageNum,
+                                   @RequestParam("limit") int pageSize) {
 
+        InterfaceInfo serachFilter = new InterfaceInfo();
+        serachFilter.setInterfaceId(interfaceId);
+        serachFilter.setInterfaceType(interfaceType);
+        serachFilter.setInterfaceDealType(interfaceDealType);
+        serachFilter.setInterfaceCycle(interfaceCycle);
+        serachFilter.setFuzzyQueryInfo(fuzzyQueryInfo);
         PageInfo<InterfaceInfo> interfaceInfo = interfaceInfoService.getInterfaceInfo(serachFilter, pageNum, pageSize);
 
         return ResultUtil.success(interfaceInfo.getList(),interfaceInfo.getTotal());

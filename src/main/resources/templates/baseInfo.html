@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口基本信息</title>
+    <meta http-equiv="refresh" content="1800"/>
+    <link rel="stylesheet" href="./static/plugins/layui/css/layui.css" />
+    <link rel="stylesheet" href="./static/css/baseInfo.css" />
+
+    <style>
+        .layui-form-label{
+            width: 150px;
+        }
+        .clearAdd, .clearEdit{
+            width: 200px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<!-- 搜索框 -->
+<div class="demoTable" style="margin-top: 5px;">
+    &nbsp;
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="模糊查询">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+    <button class="layui-btn" onclick="">添加</button>
+    <button class="layui-btn" data-type="getCheckData">删除</button>
+</div>
+
+<table class="layui-hide" id="baseInfo" lay-filter="baseInfo"></table>
+
+</body>
+</html>
+
+<!-- 工具条 -->
+<script type="text/html" id="barBaseInfo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script src="./static/plugins/jquery/jquery-2.0.3.min.js"></script>
+<script src="./static/plugins/layui/layui.js"></script>
+<script src="./static/plugins/jquery/jquery.base64.js"></script>
+<script src="./static/js/baseInfo.js"></script>

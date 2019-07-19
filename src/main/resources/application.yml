@@ -5,12 +5,12 @@ spring:
   datasource:
     primary:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://10.101.167.28:3306/iop?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      jdbcUrl: jdbc:mysql://10.101.167.28:3306/iop?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
       username: aiapp
       password: tFc_99w_
     secondary:
       driver-class-name: com.ibm.db2.jcc.DB2Driver
-      jdbc-url: jdbc:db2://10.101.167.28:50000/BDXDB:currentSchema=FCM;
+      jdbcUrl: jdbc:db2://10.101.167.28:50000/BDXDB:currentSchema=FCM;
       username: aiapp
       password: 5bytfAU_
 
