@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.Result;
 import com.asiainfo.msooimonitor.service.InterfaceInfoService;
 import com.asiainfo.msooimonitor.utils.ResultUtil;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +27,13 @@ public class InterfaceInfoController {
     InterfaceInfoService interfaceInfoService;
 
     @RequestMapping("/getInterfaceInfo")
-    public Result getInterfaceInfo(@RequestBody InterfaceInfo serachFilter) {
-        List<InterfaceInfo> interfaceInfo = interfaceInfoService.getInterfaceInfo(serachFilter);
-        return ResultUtil.success(interfaceInfo);
+    public Result getInterfaceInfo(@RequestBody InterfaceInfo serachFilter,
+                                   @RequestParam("pageNum") int pageNum,
+                                   @RequestParam("pageSize") int pageSize) {
+
+        PageInfo<InterfaceInfo> interfaceInfo = interfaceInfoService.getInterfaceInfo(serachFilter, pageNum, pageSize);
+
+        return ResultUtil.success(interfaceInfo.getList(),interfaceInfo.getTotal());
     }
 
 

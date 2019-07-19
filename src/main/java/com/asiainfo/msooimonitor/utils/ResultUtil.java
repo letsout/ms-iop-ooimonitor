@@ -18,6 +18,16 @@ public class ResultUtil {
         return result;
     }
 
+    // 分页信息构造方法
+    public static Result success(Object object,long total){
+        Result<Object> result = new Result<>();
+        result.setCode(ResultEnum.SUCCESS.getCode());
+        result.setMsg(ResultEnum.SUCCESS.getMsg());
+        result.setData(object);
+        result.setCount(total);
+        return result;
+    }
+
     public static Result success(){
         return success(null);
     }

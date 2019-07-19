@@ -1,17 +1,18 @@
 package com.asiainfo.msooimonitor.service;
 
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
-
-import java.util.List;
+import com.github.pagehelper.PageInfo;
 
 public interface InterfaceInfoService {
 
     /**
      * 获取所有接口信息
      * @param serachFilter
+     * @param pageNum
+     * @param pageSize
      * @return
      */
-    List<InterfaceInfo> getInterfaceInfo(InterfaceInfo serachFilter);
+    PageInfo<InterfaceInfo> getInterfaceInfo(InterfaceInfo serachFilter, int pageNum, int pageSize);
 
     /**
      * 根据id删除接口信息

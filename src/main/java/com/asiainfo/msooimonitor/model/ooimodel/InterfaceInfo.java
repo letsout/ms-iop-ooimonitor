@@ -16,6 +16,26 @@ public class InterfaceInfo {
     private String interfaceId;
 
     /**
+     * 接口名称
+     */
+    private String interfaceName;
+
+    /**
+     *  接口描述
+     */
+    private String interfaceDesc;
+
+    /**
+     * 活动id
+     */
+    private String actId;
+
+    /**
+     * 活动名称
+     */
+    private String act_name;
+
+    /**
      * 接口类型 接口类型 1-实时 2-文件
      */
     private String interfaceType;
@@ -54,4 +74,9 @@ public class InterfaceInfo {
      * 数据是否有效
      */
     private String dataState;
+
+    /**
+     * 模糊查询参数
+     */
+    private String fuzzyQueryInfo;
 }

@@ -3,6 +3,8 @@ package com.asiainfo.msooimonitor.service.impl;
 import com.asiainfo.msooimonitor.mapper.mysql.InterfaceInfoMapper;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.service.InterfaceInfoService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +22,11 @@ public class InterfaceInfoServiceImpl implements InterfaceInfoService {
     InterfaceInfoMapper interfaceInfoMapper;
 
     @Override
-    public List<InterfaceInfo> getInterfaceInfo(InterfaceInfo serachFilter) {
-       return interfaceInfoMapper.getInterfaceInfo(serachFilter);
+    public PageInfo<InterfaceInfo> getInterfaceInfo(InterfaceInfo serachFilter, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<InterfaceInfo> interfaceInfoList = interfaceInfoMapper.getInterfaceInfo(serachFilter);
+        PageInfo<InterfaceInfo> interfaceInfoPageInfo = new PageInfo<>(interfaceInfoList);
+        return interfaceInfoPageInfo;
     }
 
     @Override

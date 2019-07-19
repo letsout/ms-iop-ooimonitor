@@ -22,13 +22,13 @@ public class Result<T> {
      */
     private T data;
 
-    private int count;
+    private long count;
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 

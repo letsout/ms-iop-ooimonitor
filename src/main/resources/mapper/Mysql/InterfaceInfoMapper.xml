@@ -19,6 +19,9 @@
         <if test="interfaceCycle != null and '' neq interfaceCycle">
             and interface_cycle = #{interfaceCycle}
         </if>
+        <if test="fuzzyQueryInfo ！= null and '' neq fuzzyQueryInfo">
+            and (interface_id = #{fuzzyQueryInfo} or interface_name = #{fuzzyQueryInfo} or interface_desc = #{fuzzyQueryInfo})
+        </if>
     </select>
 
     <update id="deleteInterfaceInfoById" parameterType="string">
