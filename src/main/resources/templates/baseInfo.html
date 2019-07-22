@@ -19,10 +19,36 @@
 </head>
 <body>
 <!-- 搜索框 -->
-<div class="demoTable" style="margin-top: 5px;">
+<div class="demoTable layui-form" style="margin-top: 5px;">
     &nbsp;
     <div class="layui-inline">
         <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="模糊查询">
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="interfaceType" pm_id="interfaceType"
+                lay-filter="interfaceType">
+            <option value="-1">全部接口类型</option>
+            <option value="1">实时</option>
+            <option value="2">文件</option>
+        </select>
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="interfaceDealType" pm_id="interfaceDealType"
+                lay-filter="interfaceDealType">
+            <option value="-1">全部文件处理类型</option>
+            <option value="1">上传</option>
+            <option value="2">下载</option>
+        </select>
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="interfaceCycle" pm_id="interfaceCycle"
+                lay-filter="interfaceCycle">
+            <option value="-1">全部运行周期</option>
+            <option value="1">日</option>
+            <option value="2">周</option>
+            <option value="3">月</option>
+            <option value="4">临时</option>
+        </select>
     </div>
     <button class="layui-btn" data-type="reload">搜索</button>
     <button class="layui-btn" onclick="">添加</button>
@@ -38,6 +64,10 @@
 <script type="text/html" id="barBaseInfo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="insertBaseInfo">
+
 </script>
 
 <script src="./static/plugins/jquery/jquery-2.0.3.min.js"></script>

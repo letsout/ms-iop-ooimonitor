@@ -1,6 +1,7 @@
 package com.asiainfo.msooimonitor.mapper.mysql;
 
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
+import feign.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface InterfaceInfoMapper {
      * 根据id删除接口信息
      * @param interfaceId
      */
-    void deleteInterfaceInfoById(String interfaceId);
+    void deleteInterfaceInfoById(@Param("interfaceId")String interfaceId);
 
     /**
      * 修改接口信息

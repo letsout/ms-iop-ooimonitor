@@ -1,17 +1,21 @@
 //数据表格
-layui.use('table', function(){
+layui.use(['table', 'form'], function(){
     var table = layui.table;
+    var form = layui.form;
 
     var url = 'getInterfaceInfo';
-    // if(param != "" && param != null) {
-    //     url = 'tagInfo?str=' + param;
-    // }
     table.render({
         elem: '#baseInfo'
         , url: url
-        , page: true
+        , page: {
+                groups: 3 //只显示 1 个连续页码
+                , first: '首页'
+                , last: '尾页'
+                , limit: 12
+                , layout: ['prev', 'page', 'next']
+            }
         , id: 'baseInfoReload'
-        , height: 475
+        , height: 580
         , cols: [[
             {checkbox: true, aline: 'center', LAY_CHECKED: false, filter: 'test', width: '5%'}
             , {field: 'interfaceId', align: 'center', width: '10%', title: '接口编码'}
@@ -71,49 +75,64 @@ layui.use('table', function(){
     //数据重载（模糊搜索）
     var $ = layui.$, active = {
         reload: function(){
-            var demoReload = $('#demoReload');
+            var demoReload = $('#demoReload').val();
+            if(demoReload != null){
+                demoReload = '%' + demoReload + '%';
+            }
 
             //执行重载
-            table.reload('tagInfoReload', {
+            table.reload('baseInfoReload', {
                 page: {
                     curr: 1 //重新从第 1 页开始
                 }
                 ,where: {
-                    str: demoReload.val()
+                    fuzzyQueryInfo: demoReload,
+                    interfaceType: $("#interfaceType").val(),
+                    interfaceDealType: $("#interfaceDealType").val(),
+                    interfaceCycle: $("#interfaceCycle").val()
                 }
             });
         },
         getCheckData:function () {
-            layer.confirm('是否删除！', function(index){
-                    var checkStatus=table.checkStatus('tagInfoReload')
-                        ,data=checkStatus.data;
-                    var ids='';
-                    if (data==""){
-                        layer.msg("没有选中数据",{icon:2});
-                        return;
-                    }
-                    if (data.length>0){
-                        for (var i=0;i<data.length;i++){
-                            ids+=data[i].labelId+","
-                        }
-                        $.ajax({
-                            url: "tagInfo/"+ids,
-                            success: function (msg) {
-                                if(msg === "success"){
-
-                                    layer.close(index);
-                                    reload();
-                                }
-                            }
-                        })
-                    }
+            var checkStatus=table.checkStatus('baseInfoReload')
+                ,data=checkStatus.data;
+            var ids='';
+            if (data==""){
+                layer.msg("没有选中数据",{icon:2});
+                return;
+            }
+            if (data.length>0){
+                for (var i=0;i<data.length;i++){
+                    ids+=data[i].interfaceId+","
                 }
-            )}
+                layer.confirm('确定删除？', function(index) {
+                    ids = ids.substring(0,ids.length-1);
+                    ids = '(' + ids + ')';
+                    $.ajax({
+                        url: "deleteInterfaceInfoById",
+                        data: {
+                            interfaceId: ids
+                        },
+                        success: function (data) {
+                            if(data.code == 0){
+                                layer.closeAll();
+                                layer.msg("删除成功",{icon:1});
+                                active.reload();
+                            }else{
+                                layer.closeAll();
+                                layer.msg("删除失败",{icon:5});
+                                active.reload();
+                            }
+                        }
+                    })
+                })
+            }
+        }
     };
-    // $('.demoTable .layui-btn').on('click', function(){
-    //     var type = $(this).data('type');
-    //     active[type] ? active[type].call(this) : '';
-    // })
+    $('.demoTable .layui-btn').on('click', function(){
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    })
 
     table.on('tool(baseInfo)', function(obj){ //注：tool是工具条事件名，tagInfo是table原始容器的属性 lay-filter="对应的值"
         var dataCur = obj.data;
@@ -121,13 +140,22 @@ layui.use('table', function(){
         if(layEvent === 'del'){ //删除
             layer.confirm('是否删除！', function(index){
                 //向服务端发送删除指令
+                var ids = dataCur.interfaceId;
+                ids = '(' + ids + ')';
                 $.ajax({
-                    url: "tagInfo/"+dataCur.labelId,
-                    type: "delete",
-                    success: function (msg) {
-                        if(msg === "success"){
-                            obj.del();
-                            layer.close(index);
+                    url: "deleteInterfaceInfoById",
+                    data: {
+                        interfaceId: ids
+                    },
+                    success: function (data) {
+                        if(data.code == 0){
+                            layer.closeAll();
+                            layer.msg("删除成功",{icon:1});
+                            active.reload();
+                        }else{
+                            layer.closeAll();
+                            layer.msg("删除失败",{icon:5});
+                            active.reload();
                         }
                     }
                 })

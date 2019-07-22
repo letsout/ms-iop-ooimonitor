@@ -7,25 +7,22 @@
         select * from ooi_interface_info
         where
         data_state = 'U'
-        <if test="interfaceId != null and '' neq interfaceId">
-            and interface_id = #{interfaceId}
-        </if>
-        <if test="interfaceType != null and '' neq interfaceType">
+        <if test="interfaceType != null and '' neq interfaceType and '-1' neq interfaceType">
             and interface_type = #{interfaceType}
         </if>
-        <if test="interfaceDealType != null and '' neq interfaceDealType">
+        <if test="interfaceDealType != null and '' neq interfaceDealType and '-1' neq interfaceDealType">
             and interface_deal_type = #{interfaceDealType}
         </if>
-        <if test="interfaceCycle != null and '' neq interfaceCycle">
+        <if test="interfaceCycle != null and '' neq interfaceCycle and '-1' neq interfaceCycle">
             and interface_cycle = #{interfaceCycle}
         </if>
         <if test="fuzzyQueryInfo != null and '' neq fuzzyQueryInfo">
-            and (interface_id = #{fuzzyQueryInfo} or interface_name = #{fuzzyQueryInfo} or interface_desc = #{fuzzyQueryInfo})
+            and (interface_id like #{fuzzyQueryInfo} or interface_name like #{fuzzyQueryInfo} or interface_desc like #{fuzzyQueryInfo})
         </if>
     </select>
 
     <update id="deleteInterfaceInfoById" parameterType="string">
-        update ooi_interface_info set data_state = 'E' where interface_id = #{interfaceId}
+        update ooi_interface_info set data_state = 'E' where interface_id in ${_parameter}
     </update>
 
     <update id="updateInterfaceInfoById" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
