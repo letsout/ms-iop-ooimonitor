@@ -9,7 +9,7 @@
         <if test="interfaceId != null and '' neq interfaceId ">
             and (interface_id like #{interfaceId} or file_name like #{interfaceId} or error_desc like #{interfaceId})
         </if>
-        <if test="typeDesc != null and '' neq typeDesc and '@' neq typeDesc">
+        <if test="typeDesc != null and '' neq typeDesc and '-2' neq typeDesc">
             and type_desc = #{typeDesc}
         </if>
         <if test="runStep != null and '' neq runStep and '-1' neq runStep">
