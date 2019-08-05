@@ -32,4 +32,6 @@ public interface InterfaceInfoMapper {
      * @param interfaceInfo
      */
     void insertInterfaceInfo(InterfaceInfo interfaceInfo);
+
+    int thisIdIsHave(String interfaceId);
 }

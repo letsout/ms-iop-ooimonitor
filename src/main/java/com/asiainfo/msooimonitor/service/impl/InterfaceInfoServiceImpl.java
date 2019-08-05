@@ -44,4 +44,9 @@ public class InterfaceInfoServiceImpl implements InterfaceInfoService {
         interfaceInfoMapper.insertInterfaceInfo(interfaceInfo);
     }
 
+    @Override
+    public int thisIdIsHave(String interfaceId){
+        return interfaceInfoMapper.thisIdIsHave(interfaceId);
+    }
+
 }

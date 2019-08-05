@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口基本信息</title>
+    <meta http-equiv="refresh" content="1800"/>
+    <link rel="stylesheet" href="./static/plugins/layui/css/layui.css" />
+    <link rel="stylesheet" href="./static/css/interfaceRunRecord.css" />
+
+    <style>
+        .layui-form-label{
+            width: 140px;
+            padding-right: 27px;
+        }
+        .clearAdd, .clearEdit{
+            width: 200px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<!-- 搜索框 -->
+<div class="demoTable layui-form" style="margin-top: 5px;">
+    &nbsp;
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="模糊查询">
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="typeDesc" pm_id="typeDesc"
+                lay-filter="typeDesc">
+            <option value="@">全部状态</option>
+            <option value="0">成功</option>
+            <option value="-1">失败</option>
+        </select>
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="runStep" pm_id="runStep"
+                lay-filter="runStep">
+            <option value="-1">全部运行步骤</option>
+            <option value="1">文件生成/下载</option>
+            <option value="2">文件上传/入库</option>
+            <option value="3">文件校验</option>
+        </select>
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+</div>
+
+<table class="layui-hide" id="interfaceRunRecord" lay-filter="interfaceRunRecord"></table>
+
+</body>
+</html>
+
+<script src="./static/plugins/jquery/jquery-2.0.3.min.js"></script>
+<script src="./static/plugins/layui/layui.js"></script>
+<script src="./static/plugins/jquery/jquery.base64.js"></script>
+<script src="./static/js/interfaceRunRecord.js"></script>

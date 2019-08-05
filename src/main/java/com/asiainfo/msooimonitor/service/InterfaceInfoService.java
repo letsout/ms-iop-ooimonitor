@@ -31,4 +31,6 @@ public interface InterfaceInfoService {
      * @param interfaceInfo
      */
     void insertInterfaceInfo(InterfaceInfo interfaceInfo);
+
+    int thisIdIsHave(String interfaceId);
 }

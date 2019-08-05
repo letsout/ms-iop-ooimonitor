@@ -27,6 +27,8 @@
 
     <update id="updateInterfaceInfoById" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
         update ooi_interface_info set
+        interface_name = #{interfaceName},
+        interface_desc = #{interfaceDesc},
         interface_type = #{interfaceType},
         interface_deal_type = #{interfaceDealType},
         interface_cycle = #{interfaceCycle},
@@ -41,22 +43,30 @@
     <insert id="insertInterfaceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
         insert into ooi_interface_info (
         interface_id,
+        interface_name,
+        interface_desc,
         interface_type,
         interface_deal_type,
         interface_cycle,
-        interface_loca_path,
+        interface_local_path,
         interface_remote_path,
         interface_run_time,
         file_name
         ) values (
         #{interfaceId},
+        #{interfaceName},
+        #{interfaceDesc},
         #{interfaceType},
         #{interfaceDealType},
         #{interfaceCycle},
-        #{interfaceLocaPath}
-        #{interfaceRemotePath}
-        #{interfaceRunTime}
+        #{interfaceLocalPath},
+        #{interfaceRemotePath},
+        #{interfaceRunTime},
         #{fileName}
         );
     </insert>
+
+    <select id="thisIdIsHave" resultType="int">
+        select count(*) from ooi_interface_info where interface_id = #{interfaceId}
+    </select>
 </mapper>

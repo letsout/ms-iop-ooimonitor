@@ -62,6 +62,10 @@ public class InterfaceInfoController {
 
     @RequestMapping("/insertInterfaceInfo")
     public Result insertInterfaceInfo(@RequestBody InterfaceInfo interfaceInfo){
+        int isHave = interfaceInfoService.thisIdIsHave(interfaceInfo.getInterfaceId());
+        if(isHave > 0){
+            return ResultUtil.error("接口编码已存在");
+        }
         interfaceInfoService.insertInterfaceInfo(interfaceInfo);
         return ResultUtil.success();
     }
