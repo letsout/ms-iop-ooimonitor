@@ -1,7 +1,5 @@
 package com.asiainfo.msooimonitor.utils;
 
-import com.asiainfo.msooimonitor.exception.FtpException;
-import com.asiainfo.msooimonitor.service.LambdaThrowException;
 import com.jcraft.jsch.*;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -13,7 +11,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * Created by H on 2018/1/11.
@@ -370,7 +367,9 @@ public class FtpUtil {
      * @param interfaceId 接口号
      * @return
      */
-    public static boolean downloadFileFTP(String remotePath, String localPath, String interfaceId) throws RuntimeException,IOException {
+    public static boolean downloadFileFTP(String remotePath, String localPath, String interfaceId) throws RuntimeException, IOException {
+
+        boolean flag= false;
 
         FTPClient ftpClient = new FTPClient();
 
@@ -400,32 +399,26 @@ public class FtpUtil {
 
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-        Arrays.stream(ftpFiles)
-                .filter(ftpFile -> ftpFile.getName().contains(interfaceId))
-                .forEach(LambdaThrowExceptionImpl(ftpFile -> {
-                    FileOutputStream out = new FileOutputStream(localPath + File.separator + ftpFile.getName());
-                    boolean b = ftpClient.retrieveFile(ftpFile.getName(), out);
+        if (ftpFiles.length > 0) {
+            for (FTPFile file :
+                    ftpFiles) {
+                if (file.getName().contains(interfaceId)) {
+                    FileOutputStream out = new FileOutputStream(localPath + File.separator + file.getName());
+                    boolean b = ftpClient.retrieveFile(file.getName(), out);
                     if (b) {
-                        logger.info("文件：{}下载成功！！！", ftpFile.getName());
+                        logger.info("文件：{}下载成功！！！", file.getName());
+                        flag = true;
                     } else {
-                        logger.info("文件：{}下载失败 ！！！", ftpFile.getName());
+                        logger.info("文件：{}下载失败 ！！！", file.getName());
                     }
                     out.close();
-                }));
+                }
+            }
+        }
         ftpClient.logout();
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
         }
-        return true;
-    }
-
-    static <T>Consumer<T> LambdaThrowExceptionImpl(LambdaThrowException<T,Exception> throwException){
-        return i -> {
-            try {
-                throwException.accept(i);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        };
+     return flag;
     }
 }

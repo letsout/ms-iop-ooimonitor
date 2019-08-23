@@ -115,6 +115,7 @@ public class ReadFileThread implements Runnable {
             interfaceRecord.setFileName(fileName);
             interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
             interfaceRecord.setFileSuccessNum(String.valueOf(count));
+            interfaceRecord.setFileTime(date);
             loadService.insertRecord(interfaceRecord);
             logger.info("文件[{}]入库完成！！！", fileName);
 
@@ -128,6 +129,7 @@ public class ReadFileThread implements Runnable {
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
             interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
+            interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             interfaceRecord.setErrorDesc("文件解析出错:"+count);
             loadService.insertRecord(interfaceRecord);

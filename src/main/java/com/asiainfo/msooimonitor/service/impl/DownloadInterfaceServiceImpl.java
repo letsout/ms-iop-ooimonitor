@@ -26,4 +26,9 @@ public class DownloadInterfaceServiceImpl implements DownloadInterfaceService {
     public List<InterfaceInfo> listDownloadFileInterface() {
         return downloadFileMapper.listDownloadFileInterface();
     }
+
+    @Override
+    public String getMaxSuccessTime(String interfaceId) {
+        return downloadFileMapper.getMaxSuccessTime(interfaceId);
+    }
 }

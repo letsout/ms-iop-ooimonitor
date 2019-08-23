@@ -1,12 +1,16 @@
 package com.asiainfo.msooimonitor.utils;
 
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sound.midi.SoundbankResource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author H
@@ -166,6 +170,19 @@ public class TimeUtil {
     }
 
 
+    /**
+     * 获取指定日期后一天
+     */
+    public static String getAfterDay(String day) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_DAY_FORMAT_SQL);
+        Date parse = format.parse(day);
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(parse);
+        instance.add(Calendar.DATE,1);
+        return format.format(instance.getTime());
+    }
+
+
 
     /**
      * 判断今天是几号
@@ -178,13 +195,70 @@ public class TimeUtil {
         return i;
     }
 
-    public static int getWeek(){
+    public static int getWeek(String day) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_DAY_FORMAT_SQL);
+        Date parse = format.parse(day);
         Calendar instance = Calendar.getInstance();
+        instance.setTime(parse);
         int i = instance.get(Calendar.DAY_OF_WEEK);
         return i;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getWeek());
+
+    /**
+     * 获取时间段内的时间
+     * @param begin
+     * @param end
+     * @return
+     */
+    public static List<String> getBetweenDate(String begin, String end){
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        List<String> betweenList = new ArrayList<String>();
+
+        try{
+            Calendar startDay = Calendar.getInstance();
+            startDay.setTime(format.parse(begin));
+            startDay.add(Calendar.DATE, -1);
+
+            while(true){
+                startDay.add(Calendar.DATE, 1);
+                Date newDate = startDay.getTime();
+                String newend=format.format(newDate);
+                betweenList.add(newend);
+                if(end.equals(newend)){
+                    break;
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return betweenList;
     }
+
+    public static List<String> getBetweenMonth(String begin, String end){
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+        List<String> betweenList = new ArrayList<String>();
+
+        try{
+            Calendar startDay = Calendar.getInstance();
+            startDay.setTime(format.parse(begin));
+            startDay.add(Calendar.MONTH, -1);
+
+            while(true){
+                startDay.add(Calendar.MONTH, 1);
+                Date newDate = startDay.getTime();
+                String newend=format.format(newDate);
+                betweenList.add(newend);
+                if(end.equals(newend)){
+                    break;
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return betweenList;
+    }
+
 }

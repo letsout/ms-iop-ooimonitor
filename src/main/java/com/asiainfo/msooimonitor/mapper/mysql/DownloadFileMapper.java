@@ -20,4 +20,11 @@ public interface DownloadFileMapper {
      * @param interfaceRecord
      */
     void insertRecord(InterfaceRecord interfaceRecord);
+
+    /**
+     * 获取此接口成功的最大时间
+     * @param interfaceId
+     * @return
+     */
+    String getMaxSuccessTime(String interfaceId);
 }

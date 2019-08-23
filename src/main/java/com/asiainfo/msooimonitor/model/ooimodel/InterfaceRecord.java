@@ -32,5 +32,6 @@ public class InterfaceRecord {
 
     private String updateTime;
 
+    private String fileTime;
 
 }

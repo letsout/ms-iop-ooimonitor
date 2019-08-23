@@ -11,4 +11,10 @@ public interface DownloadInterfaceService {
      * @return
      */
     List<InterfaceInfo> listDownloadFileInterface();
+
+    /**
+     * 查询此接口成功入库的最大时间
+     * @param interfaceId
+     */
+    String getMaxSuccessTime(String interfaceId);
 }

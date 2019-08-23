@@ -33,10 +33,10 @@ spring:
       username: iop
       password: iop123
     secondary:
-      driver-class-name: com.ibm.db2.jcc.DB2Driver
-      jdbc-url: jdbc:db2://10.101.167.28:56000/QCD:currentSchema=QCD;
-      username: db2
-      password: 123456
+      driver-class-name: com.gbase.jdbc.Driver
+      jdbc-url: jdbc:gbase://10.101.167.28:5258/iop
+      username: gbase
+      password: gbase
 
 info: #定义各种额外的详情给服务端显示
   app:
