@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.File;
@@ -28,7 +29,8 @@ import java.util.Objects;
 
 @Component
 @Slf4j
-public class downloadFileTask {
+@RequestMapping("/download")
+public class DownloadFileTask {
 
     @Autowired
     private DownloadInterfaceService downloadInterfaceServic;
@@ -50,7 +52,7 @@ public class downloadFileTask {
      * 月接口 每月一次
      */
     @RequestMapping("/dotask")
-    @Scheduled(cron = "0 0/30 09-23 * * ?")
+    @Scheduled(cron = "0 0/5 09-23 * * ?")
     public void downloadFile() {
         // 查询需要处理的下载接口
         List<InterfaceInfo> interfaceInfos = downloadInterfaceServic.listDownloadFileInterface();
@@ -64,10 +66,29 @@ public class downloadFileTask {
                         String remotePathMon = path228 + File.separator + info.getInterfaceRemotePath() + File.separator + lastMonth + File.separator + "month";
                         String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + yesterday + File.separator + "day";
                         String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + lastMonth + File.separator + "month";
+
                         String interfaceId = info.getInterfaceId();
                         // 查询此接口成功入库的最大时间
-                        String successTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
-                        String startTime = TimeUtil.getAfterDay(successTime);
+                        String startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
+
+                        // 为空时初始化默认时间
+                        if(StringUtils.isEmpty(startTime)){
+                            startTime = "20190101";
+                        }
+
+                        // 判断时间是否ok
+                        if (startTime.length() == 4){
+                           if(!TimeUtil.timeIsOk(startTime, lastMonth)){
+                               log.info("开始时间：{}大于结束时间;{}",startTime,lastMonth);
+                               return;
+                           }
+                        }else {
+                            if(!TimeUtil.timeIsOk(startTime,yesterday)){
+                                log.info("开始时间：{}大于结束时间;{}",startTime,yesterday);
+                                return;
+                            }
+                        }
+
 
                         List<String> betweenTime = new ArrayList<>();
                         String localPath = "";
@@ -96,8 +117,7 @@ public class downloadFileTask {
                                 remotePath = remotePathDay;
                                 break;
                             case StateAndTypeConstant.MONTH_INTERFACE:
-                                String endMonth = TimeUtil.getLastMonthSql(new Date());
-                                betweenTime = TimeUtil.getBetweenMonth(startTime, endMonth);
+                                betweenTime = TimeUtil.getBetweenMonth(startTime, lastMonth);
                                 localPath = localPathMon;
                                 remotePath = remotePathMon;
                                 break;
@@ -109,6 +129,7 @@ public class downloadFileTask {
                             for (String time :
                                     betweenTime) {
                                 boolean isDownload = dealInterface(interfaceId, remotePath, localPath, time);
+                              //  boolean isDownload = true;
                                 if (isDownload) {
                                     log.info("接口：{}准备入库！！！", info.getInterfaceId());
                                     handleData.killFile(interfaceId, localPath, time);
@@ -116,7 +137,7 @@ public class downloadFileTask {
                             }
                         }
                     } catch (Exception e) {
-                        log.error("接口：{}入库失败！！！！", info.getInterfaceId());
+                        log.error("接口：{}入库失败！！！！：{}", info.getInterfaceId(),e);
                     }
                 });
     }

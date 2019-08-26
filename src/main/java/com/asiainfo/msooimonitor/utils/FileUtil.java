@@ -130,6 +130,7 @@ public class FileUtil {
      */
     public static List<String> listFile(String dir) {
         List<String> dat = null;
+       // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
         File file = new File(dir);
         String[] list = file.list();
         try {

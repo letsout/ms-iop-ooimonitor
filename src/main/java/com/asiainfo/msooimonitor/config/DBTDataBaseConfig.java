@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -37,11 +38,30 @@ public class DBTDataBaseConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResources("classpath:mapper/dbt/*.xml"));
+                .getResources("classpath:mapper/dbt/*/*.xml"));
         /** 设置typeAlias 包扫描路径 */
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
         sqlSessionFactory.getConfiguration().setMapUnderscoreToCamelCase(true);
         return sqlSessionFactory;
+    }
+
+    @Bean(name = "loadJdbc")
+    public NamedParameterJdbcTemplate loadJdbc(){
+
+       /* DataSource dataSource = DataSourceBuilder.create()
+                .driverClassName("com.gbase.jdbc.Driver")
+                .url("jdbc:gbase://10.101.167.28:5258/iop?rewriteBatchedStatements=true")
+                .username("gbase")
+                .password("gbase")
+                .build();*/
+        DataSource dataSource = DataSourceBuilder.create()
+                .driverClassName("com.gbase.jdbc.Driver")
+                .url("jdbc:gbase://10.113.148.2:5258/iop?rewriteBatchedStatements=true")
+                .username("gbinst1")
+                .password("@_kx%a3p")
+                .build();
+        NamedParameterJdbcTemplate loadJdbc = new NamedParameterJdbcTemplate(dataSource);
+        return loadJdbc;
     }
 
     @Bean(name = "DBTTransactionManager")

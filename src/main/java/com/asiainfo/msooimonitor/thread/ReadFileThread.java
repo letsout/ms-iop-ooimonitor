@@ -66,7 +66,9 @@ public class ReadFileThread implements Runnable {
         try {
             logger.info("开始读取文件 [{}]", fileName);
 
-            FileInputStream fileInputStream = new FileInputStream(dir + File.separator + fileName);
+           // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+
+            FileInputStream fileInputStream = new FileInputStream(dir + File.separator+ fileName);
 
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "gb2312");
 
@@ -80,7 +82,7 @@ public class ReadFileThread implements Runnable {
 
             while ((line = bufferedReader.readLine()) != null) {
 
-                logger.info("读取字符串信息：{},分割符{}", line, new String(new byte[]{(byte) 0x80}));
+            //    logger.info("读取字符串信息：{},分割符{}", line, new String(new byte[]{(byte) 0x80}));
 
                 String s = line + new String(new byte[]{(byte) 0x80}) + date;
 

@@ -32,11 +32,11 @@ public class LoadServiceImpl implements LoadService {
     @Override
     public Map<String,Object> sqlTemplate(String tableName) {
 
-        String structureSql = "select column_name from sysibm.columns where table_schema = 'FCM' and table_name = '"+tableName+"' order by ordinal_position";
+        String structureSql = "select column_name from information_schema.columns where table_schema = 'iop' and table_name = '"+tableName+"' order by ordinal_position";
 
         List<String> structureList = loadMapper.selectTableSutrct(structureSql);
 
-        StringBuffer sqlTemplate1 = new StringBuffer("insert into fcm." + tableName + " (");
+        StringBuffer sqlTemplate1 = new StringBuffer("insert into " + tableName + " (");
 
         structureList.forEach(name -> sqlTemplate1.append(name+","));
 

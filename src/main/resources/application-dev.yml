@@ -38,6 +38,17 @@ spring:
       username: gbase
       password: gbase
 
+ftp:
+  host: 10.101.167.28
+  user: sftp
+  port: 25
+  password: sftp
+  path: /datain/qcd_iop/iop-OOI/sbin-data
+
+file:
+  path17: /data1/vgop_iop/iop-OOI/sbin-data
+
+
 info: #定义各种额外的详情给服务端显示
   app:
     name: "@project.name@"   #从pom.xml中获取#"@project.name@"

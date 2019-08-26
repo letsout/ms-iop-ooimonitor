@@ -3,7 +3,7 @@
 <mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.DownloadFileMapper" >
 
     <select id="listDownloadFileInterface" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
-        select * from ooi_interface_info
+        select * from ooi_interface_info where  data_state = 'U'
     </select>
 
     <insert id="insertRecord" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord">

@@ -7,7 +7,7 @@ public interface LoadService {
 
     /**
      * 根据不同的表创建不同的insert 语句
-     * @param tableName 表名 默认schem 为fcm
+     * @param tableName 表名 默认schem 为iop
      * @return insert 语句
      */
     Map<String,Object> sqlTemplate(String tableName);

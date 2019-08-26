@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.utils;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.sound.midi.SoundbankResource;
 import java.text.ParseException;
@@ -204,7 +205,6 @@ public class TimeUtil {
         return i;
     }
 
-
     /**
      * 获取时间段内的时间
      * @param begin
@@ -218,7 +218,6 @@ public class TimeUtil {
         try{
             Calendar startDay = Calendar.getInstance();
             startDay.setTime(format.parse(begin));
-            startDay.add(Calendar.DATE, -1);
 
             while(true){
                 startDay.add(Calendar.DATE, 1);
@@ -243,7 +242,6 @@ public class TimeUtil {
         try{
             Calendar startDay = Calendar.getInstance();
             startDay.setTime(format.parse(begin));
-            startDay.add(Calendar.MONTH, -1);
 
             while(true){
                 startDay.add(Calendar.MONTH, 1);
@@ -259,6 +257,26 @@ public class TimeUtil {
         }
 
         return betweenList;
+    }
+
+
+    public static boolean timeIsOk(String startTime,String endTime)throws Exception{
+
+        if (endTime.length() == 4){
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+            Date time = format.parse(startTime);
+            startTime = format.format(time);
+        }
+
+        boolean flag = false;
+
+        int start = Integer.parseInt(startTime);
+        int end= Integer.parseInt(endTime);
+
+        if (start <= end){
+            flag = true;
+        }
+        return flag;
     }
 
 }
