@@ -3,10 +3,10 @@ server:
   port: 6065
   address: 127.0.0.1
   servlet:
-    context-path: /ooiminitor
+    context-path: /ooimonitor
 spring:
   application:
-    name: ms-iop-ooiminitor #！！！！修改成服务名，比如ms-iop-recommend  #此名称必须指定！！！！！
+    name: ms-iop-ooimonitor #！！！！修改成服务名，比如ms-iop-recommend  #此名称必须指定！！！！！
   cloud:
     consul:
 #      host: 10.101.167.28  #配置中心地址，生产环境中使用命令行参数传入，必须要传入

@@ -26,11 +26,18 @@ spring:
             user.password: ${spring.security.user.password} #can access the protected client endpoints
   zipkin:
     enable: true
-  #  datasource:
-  #        driver-class-name: com.mysql.cj.jdbc.Driver
-  #        url: jdbc:mysql://10.113.221.57:3306/vgop?useUnicode=true&amp;characterEncoding=utf8&serverTimezone=Asia/Shanghai
-  #        username: aiapp
-  #        password: tFc_99w_
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://10.113.221.57:3306/iop?serverTimezone=Asia/Shanghai
+      username: aiapp
+      password: tFc_99w_
+    secondary:
+      driver-class-name: com.gbase.jdbc.Driver
+      jdbc-url: jdbc:gbase://10.113.148.2:5258/iop
+      username: gbinst1
+      password: '@_kx%a3p'
+
   redis:
     password: qcd_As1ainfo
     cluster:

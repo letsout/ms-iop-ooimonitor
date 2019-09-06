@@ -8,7 +8,10 @@ import com.asiainfo.msooimonitor.utils.FileUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.xml.ws.Action;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,32 +23,18 @@ import java.util.*;
  * @Date 2019/2/20 16:07
  * @Desc
  **/
-public class ReadFileThread implements Runnable {
+@Component
+public class ReadFileThread {
     private static final Logger logger = LoggerFactory.getLogger(ReadFileThread.class);
 
-    private String fileName;
+    @Autowired
+    LoadService loadService;
 
-    private String dir;
+    @Autowired
+    HandleData handleData;
 
-    private String interfaceId;
+    public void ReadFile(String fileName, String dir, String interfaceId, String date) {
 
-    private LoadService loadService;
-
-    private String date;
-
-    private HandleData handleData;
-
-    public ReadFileThread(String fileName, String dir, String interfaceId, LoadService loadService, String date, HandleData handleData) {
-        this.fileName = fileName;
-        this.dir = dir;
-        this.interfaceId = interfaceId;
-        this.loadService = loadService;
-        this.date = date;
-        this.handleData = handleData;
-    }
-
-    @Override
-    public void run() {
         String tableName = "IOP_" + interfaceId;
 
         Map<String, Object> sMap = loadService.sqlTemplate(tableName);
@@ -66,7 +55,7 @@ public class ReadFileThread implements Runnable {
         try {
             logger.info("开始读取文件 [{}]", fileName);
 
-           // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+            // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
 
             FileInputStream fileInputStream = new FileInputStream(dir + File.separator+ fileName);
 
@@ -81,8 +70,11 @@ public class ReadFileThread implements Runnable {
             ArrayList<Map<String, String>> mapList = new ArrayList<>();
 
             while ((line = bufferedReader.readLine()) != null) {
+                if(count == 0 ){
+                    loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
+                }
 
-            //    logger.info("读取字符串信息：{},分割符{}", line, new String(new byte[]{(byte) 0x80}));
+                //    logger.info("读取字符串信息：{},分割符{}", line, new String(new byte[]{(byte) 0x80}));
 
                 String s = line + new String(new byte[]{(byte) 0x80}) + date;
 
@@ -112,7 +104,7 @@ public class ReadFileThread implements Runnable {
             logger.info("文件[{}]入库成功！！！", fileName);
             InterfaceRecord interfaceRecord = new InterfaceRecord();
             interfaceRecord.setInterfaceId(interfaceId);
-            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
             interfaceRecord.setFileName(fileName);
             interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
@@ -124,17 +116,18 @@ public class ReadFileThread implements Runnable {
         } catch (Exception e) {
             logger.error("文件[{}]入库失败！！！错误行数{}", fileName, count);
             logger.error("message：{}", e);
-            loadService.deleteSql("delete from fcm." + tableName + " where OP_TIME='" + date + "'");
+            loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
             InterfaceRecord interfaceRecord = new InterfaceRecord();
             interfaceRecord.setInterfaceId(interfaceId);
-            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
             interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
-            interfaceRecord.setErrorDesc("文件解析出错:"+count);
+            interfaceRecord.setErrorDesc("文件解析出错:"+e.getMessage().substring(0,470));
             loadService.insertRecord(interfaceRecord);
         }
+
     }
 }

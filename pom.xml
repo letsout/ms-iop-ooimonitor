@@ -227,6 +227,15 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>generator.properties</exclude>
+                    <exclude>generatorConfig.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -242,43 +251,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.3</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includes>
-                        <!--                        <include>${basedir}/target/classes/static/pages/*.html</include>-->
-                        <include>${basedir}/target/classes/static/pages/**/*.html</include>
-                    </includes>
-                    <replacements>
-                        <replacement>
-                            <token>\.css\"</token>
-                            <value>.css?v=${maven.build.timestamp}\"</value>
-                        </replacement>
-                        <replacement>
-                            <token>\.css\'</token>
-                            <value>.css?v=${maven.build.timestamp}\'</value>
-                        </replacement>
-                        <replacement>
-                            <token>\.js\"</token>
-                            <value>.js?v=${maven.build.timestamp}\"</value>
-                        </replacement>
-                        <replacement>
-                            <token>\.js\'</token>
-                            <value>.js?v=${maven.build.timestamp}\'</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -288,6 +260,4 @@
             <url>http://10.101.167.28:8888/nexus/content/groups/public/</url>
         </repository>
     </repositories>
-
-
 </project>

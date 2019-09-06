@@ -7,6 +7,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -46,12 +47,13 @@ public class FtpUtil {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("application-prod.yml"));
+            ClassPathResource classPathResource = new ClassPathResource("/application-prod.yml");
+            properties.load(classPathResource.getInputStream());
             HOST = properties.getProperty("ftp.host", "10.109.3.228");
             USER = properties.getProperty("ftp.user", "vgop_iop");
             PASS = properties.getProperty("ftp.pass", "456vCe!b");
             FTP_PORT = Integer.parseInt(properties.getProperty("ftp.port", "21"));
-            SFTP_PORT = Integer.parseInt(properties.getProperty("ftp.sport", "21"));
+            SFTP_PORT = Integer.parseInt(properties.getProperty("ftp.sport", "22"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -369,6 +371,8 @@ public class FtpUtil {
      */
     public static boolean downloadFileFTP(String remotePath, String localPath, String interfaceId) throws RuntimeException, IOException {
 
+        logger.info("remotePath:{};localPath{};interfaceId{}",remotePath,localPath,interfaceId);
+
         boolean flag= false;
 
         FTPClient ftpClient = new FTPClient();
@@ -376,11 +380,11 @@ public class FtpUtil {
         int reply;
 
         // 连接FTP服务器
-        logger.info("连接FTP服务器:{}：{}", HOST, FTP_PORT);
+//        logger.info("连接FTP服务器:{}：{}", HOST, FTP_PORT);
         ftpClient.connect(HOST, FTP_PORT);
 
         // 登录
-        logger.info("登录:{},{}", USER, PASS);
+//        logger.info("登录:{},{}", USER, PASS);
         ftpClient.login(USER, PASS);
 
         reply = ftpClient.getReplyCode();
@@ -390,19 +394,20 @@ public class FtpUtil {
             return false;
         }
 
-        logger.info("登陆成功！！！");
+//        logger.info("登陆成功！！！");
 
         // 切入到远程目录
         ftpClient.changeWorkingDirectory(remotePath);
 
         FTPFile[] ftpFiles = ftpClient.listFiles();
 
-        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+       // ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
         if (ftpFiles.length > 0) {
             for (FTPFile file :
                     ftpFiles) {
-                if (file.getName().contains(interfaceId)) {
+                if (file.getName().contains(interfaceId) && file.getName().contains(".dat")) {
+                    FileUtil.dirExit(localPath);
                     FileOutputStream out = new FileOutputStream(localPath + File.separator + file.getName());
                     boolean b = ftpClient.retrieveFile(file.getName(), out);
                     if (b) {
@@ -414,6 +419,8 @@ public class FtpUtil {
                     out.close();
                 }
             }
+        }else {
+            logger.info("remotePath:{} 接口：{} 文件不存在！！！！",remotePath,interfaceId);
         }
         ftpClient.logout();
         if (ftpClient.isConnected()) {

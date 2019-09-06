@@ -31,7 +31,7 @@ layui.use(['table', 'form'], function(){
                         return html;
                     }
                 }}
-            , {field: 'runStep', align: 'center', width: '10%', title: '运行步骤',
+            , {field: 'runStep', align: 'center', width: '8%', title: '运行步骤',
                 templet: function (data) {
                     if (data.runStep == "1") {
                         var html = '文件生成/下载'
@@ -46,11 +46,13 @@ layui.use(['table', 'form'], function(){
                     }
                 }}
             , {field: 'fileName', align: 'center', width: '25%', title: '文件名称'}
-            , {field: 'fileNum', align: 'center', width: '10%', title: '文件行数'}
-            , {field: 'fileSuccessNum', align: 'center', width: '12%', title: '文件操作成功记录数'}
+            , {field: 'fileNum', align: 'center', width: '8%', title: '文件行数'}
+            , {field: 'fileSuccessNum', align: 'center', width: '8%', title: '文件操作成功记录数'}
             , {field: 'errorDesc', align: 'center', width: '13%', title: '错误描述'}
             , {field: 'updateTime', align: 'center', width: '13%', title: '记录时间'}
+            ,{field: 'fileTime', align: 'center', width: '8%', title: '文件周期'}
         ]]
+
     });
     //数据重载（模糊搜索）
     var $ = layui.$, active = {

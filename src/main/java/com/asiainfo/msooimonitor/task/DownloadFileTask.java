@@ -13,13 +13,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @Author H
@@ -52,94 +52,102 @@ public class DownloadFileTask {
      * 月接口 每月一次
      */
     @RequestMapping("/dotask")
-    @Scheduled(cron = "0 0/5 09-23 * * ?")
-    public void downloadFile() {
+    @Scheduled(fixedDelay = 1000 * 60 * 30)
+    public void downloadFile(@RequestParam("interfaceId") String interfaceId, @RequestParam("startTime") String startTime) {
         // 查询需要处理的下载接口
         List<InterfaceInfo> interfaceInfos = downloadInterfaceServic.listDownloadFileInterface();
-        interfaceInfos.stream()
-                .filter(Objects::nonNull)
-                .forEach(info -> {
-                    try {
-                        String yesterday = TimeUtil.getLastDaySql(new Date());
-                        String lastMonth = TimeUtil.getLastMonthSql(new Date());
-                        String remotePathDay = path228 + File.separator + info.getInterfaceRemotePath() + File.separator + yesterday + File.separator + "day";
-                        String remotePathMon = path228 + File.separator + info.getInterfaceRemotePath() + File.separator + lastMonth + File.separator + "month";
-                        String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + yesterday + File.separator + "day";
-                        String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + lastMonth + File.separator + "month";
+        for (InterfaceInfo info :
+                interfaceInfos) {
 
-                        String interfaceId = info.getInterfaceId();
-                        // 查询此接口成功入库的最大时间
-                        String startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
+            try {
+                String yesterday = TimeUtil.getLastDaySql(new Date());
+                String lastMonth = TimeUtil.getLastMonthSql(new Date());
+                String remotePathDay = path228 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
+                String remotePathMon = path228 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
+                String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
+                String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
 
-                        // 为空时初始化默认时间
-                        if(StringUtils.isEmpty(startTime)){
-                            startTime = "20190101";
-                        }
+                if (StringUtils.isEmpty(interfaceId)) {
+                    interfaceId = info.getInterfaceId();
+                }
+                log.info("开始处理[{}]接口数据", interfaceId);
 
-                        // 判断时间是否ok
-                        if (startTime.length() == 4){
-                           if(!TimeUtil.timeIsOk(startTime, lastMonth)){
-                               log.info("开始时间：{}大于结束时间;{}",startTime,lastMonth);
-                               return;
-                           }
-                        }else {
-                            if(!TimeUtil.timeIsOk(startTime,yesterday)){
-                                log.info("开始时间：{}大于结束时间;{}",startTime,yesterday);
-                                return;
-                            }
-                        }
+                // 查询此接口成功入库的最大时间
+                if (StringUtils.isEmpty(startTime)) {
+                    startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
+                }
 
+                if (StringUtils.isEmpty(startTime)) {
+                    continue;
+                }
 
-                        List<String> betweenTime = new ArrayList<>();
-                        String localPath = "";
-                        String remotePath = "";
-                        switch (info.getInterfaceCycle()) {
-                            case StateAndTypeConstant.DAY_INTERFACE:
-                                betweenTime = TimeUtil.getBetweenDate(startTime, yesterday);
-                                localPath = localPathDay;
-                                remotePath = remotePathDay;
-                                break;
-                            case StateAndTypeConstant.WEEK_INTERFACE:
-                                betweenTime = TimeUtil.getBetweenDate(startTime, yesterday);
-                                List<String> list = new ArrayList<>();
-                                for (String time :
-                                        betweenTime) {
-                                    int week = TimeUtil.getWeek(time);
-                                    Integer startInt = Integer.valueOf(startTime);
-                                    Integer nowInt = Integer.valueOf(time);
-                                    if (week > 0 && nowInt > startInt) {
-                                        list.add(time);
-                                    }
-                                }
-                                betweenTime.clear();
-                                betweenTime.addAll(list);
-                                localPath = localPathDay;
-                                remotePath = remotePathDay;
-                                break;
-                            case StateAndTypeConstant.MONTH_INTERFACE:
-                                betweenTime = TimeUtil.getBetweenMonth(startTime, lastMonth);
-                                localPath = localPathMon;
-                                remotePath = remotePathMon;
-                                break;
-                            default:
-                                break;
-                        }
-
-                        if (betweenTime.size() > 0) {
-                            for (String time :
-                                    betweenTime) {
-                                boolean isDownload = dealInterface(interfaceId, remotePath, localPath, time);
-                              //  boolean isDownload = true;
-                                if (isDownload) {
-                                    log.info("接口：{}准备入库！！！", info.getInterfaceId());
-                                    handleData.killFile(interfaceId, localPath, time);
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.error("接口：{}入库失败！！！！：{}", info.getInterfaceId(),e);
+                // 判断时间是否ok
+                if (startTime.length() == 4) {
+                    if (!TimeUtil.timeIsOk(startTime, lastMonth)) {
+                        log.info("开始时间：{}大于结束时间;{}", startTime, lastMonth);
+                        continue;
                     }
-                });
+                } else {
+                    if (!TimeUtil.timeIsOk(startTime, yesterday)) {
+                        log.info("开始时间：{}大于结束时间;{}", startTime, yesterday);
+                        continue;
+                    }
+                }
+
+                log.info("处理接口[{}],开始周期[{}]", interfaceId, startTime);
+                List<String> betweenTime = new ArrayList<>();
+                String localPath = "";
+                String remotePath = "";
+                switch (info.getInterfaceCycle()) {
+                    case StateAndTypeConstant.DAY_INTERFACE:
+                        betweenTime = TimeUtil.getBetweenDate(startTime, yesterday);
+                        localPath = localPathDay;
+                        remotePath = remotePathDay;
+                        break;
+                    case StateAndTypeConstant.WEEK_INTERFACE:
+                        betweenTime = TimeUtil.getBetweenDate(startTime, yesterday);
+                        List<String> list = new ArrayList<>();
+                        for (String time :
+                                betweenTime) {
+                            // 一周一次
+                            int week = TimeUtil.getWeek(time);
+                            Integer startInt = Integer.valueOf(startTime);
+                            Integer nowInt = Integer.valueOf(time);
+                            if (week > 0 && nowInt > startInt) {
+                                list.add(time);
+                            }
+                        }
+                        betweenTime.clear();
+                        betweenTime.addAll(list);
+                        localPath = localPathDay;
+                        remotePath = remotePathDay;
+                        break;
+                    case StateAndTypeConstant.MONTH_INTERFACE:
+                        betweenTime = TimeUtil.getBetweenMonth(startTime, lastMonth);
+                        localPath = localPathMon;
+                        remotePath = remotePathMon;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (betweenTime.size() > 0) {
+                    for (String time :
+                            betweenTime) {
+                        log.info("接口：{}准备下载周期:{}文件！！！", info.getInterfaceId(), time);
+                 //       boolean isDownload = dealInterface(interfaceId, remotePath.replace("replaceTime", time), localPath.replace("replaceTime", time), time);
+                          boolean isDownload = false;
+                        if (isDownload) {
+                            log.info("接口：{}准备入库周期:{}！！！", info.getInterfaceId(), time);
+                            handleData.killFile(interfaceId, localPath.replace("replaceTime", time), time);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("接口：{}入库失败！！！！：{}", info.getInterfaceId(), e);
+                continue;
+            }
+        }
     }
 
     /**

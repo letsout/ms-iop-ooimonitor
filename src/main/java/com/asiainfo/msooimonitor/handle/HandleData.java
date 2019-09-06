@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -29,7 +30,11 @@ public class HandleData {
     private static final Logger logger = LoggerFactory.getLogger(HandleData.class);
 
     @Autowired
+    private ReadFileThread readFileThread;
+
+    @Autowired
     private LoadService loadService;
+
 
     /**
      * 根据接口号过滤文件并读取过滤之后的
@@ -45,9 +50,15 @@ public class HandleData {
 
         if(!(list==null||list.size()==0)){
             List<String> collect = list.stream().filter(name -> name.contains(interfaceId)).collect(Collectors.toList());
+            // 加载文件之前先删除当天入库文件
+            loadService.deleteSql("delete from " +  "IOP_" + interfaceId + " where data_time='" + date + "'");
             if (collect.size() > 0) {
-                ExecutorService executorService = Executors.newFixedThreadPool(collect.size());
-                collect.forEach(fileName -> executorService.execute(new ReadFileThread(fileName, localPath, interfaceId, loadService, date, new HandleData())));
+                //ExecutorService executorService = Executors.newFixedThreadPool(collect.size());
+               // collect.forEach(fileName -> executorService.execute(new ReadFileThread( loadService, , new HandleData())));
+                for (String fileName:
+                collect) {
+                    readFileThread.ReadFile(fileName,localPath,interfaceId,date);
+                }
             } else {
                 logger.info("接口：{" + interfaceId + "} 文件不存在！！！");
             }
