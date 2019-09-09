@@ -106,7 +106,7 @@ layui.use(['table', 'form'], function(){
             }
             if (data.length>0){
                 for (var i=0;i<data.length;i++){
-                    ids+=data[i].interfaceId+","
+                    ids+= '"' + data[i].interfaceId+'",';
                 }
                 layer.confirm('确定删除？', function(index) {
                     ids = ids.substring(0,ids.length-1);
@@ -345,6 +345,34 @@ layui.use(['table', 'form'], function(){
                     isEdit = false;
                 }
             })
+        },
+        runInterface: function () {
+            var interfaceId = $("#interfaceId").val();
+            var runStep = $("#runStep").val();
+            var runTime = $("#runTime").val();
+            if(interfaceId != '' && interfaceId != null && runStep != '-1' && runTime != '' && runTime != null) {
+                $.ajax({
+                    url: "runInterface",
+                    data: {
+                        interfaceId: interfaceId,
+                        step: runStep,
+                        time: runTime
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.closeAll();
+                            layer.msg("提交成功", {icon: 1});
+                            active.reload();
+                        } else {
+                            layer.closeAll();
+                            layer.msg("提交失败", {icon: 5});
+                            active.reload();
+                        }
+                    }
+                })
+            }else{
+                layer.msg("请将接口编码、运行步骤、运行时间填写完整", {icon: 5});
+            }
         }
     };
     $('.demoTable .layui-btn').on('click', function(){
@@ -359,7 +387,7 @@ layui.use(['table', 'form'], function(){
             layer.confirm('是否删除！', function(index){
                 //向服务端发送删除指令
                 var ids = dataCur.interfaceId;
-                ids = '(' + ids + ')';
+                ids = '("' + ids + '")';
                 $.ajax({
                     url: "deleteInterfaceInfoById",
                     data: {
