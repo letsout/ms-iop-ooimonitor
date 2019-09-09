@@ -34,4 +34,6 @@ public interface InterfaceInfoMapper {
     void insertInterfaceInfo(InterfaceInfo interfaceInfo);
 
     int thisIdIsHave(String interfaceId);
+
+    InterfaceInfo listInterfaceInfoById(String interfaceId);
 }

@@ -49,4 +49,10 @@ public class InterfaceInfoServiceImpl implements InterfaceInfoService {
         return interfaceInfoMapper.thisIdIsHave(interfaceId);
     }
 
+    @Override
+    public InterfaceInfo listInterfaceInfoById(String interfaceId) {
+
+        return interfaceInfoMapper.listInterfaceInfoById(interfaceId);
+    }
+
 }

@@ -33,4 +33,10 @@ public interface InterfaceInfoService {
     void insertInterfaceInfo(InterfaceInfo interfaceInfo);
 
     int thisIdIsHave(String interfaceId);
+
+    /**
+     * 根据接口号查询接口信息
+     * @param interfaceId
+     */
+    InterfaceInfo listInterfaceInfoById(String interfaceId);
 }

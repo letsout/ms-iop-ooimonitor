@@ -52,8 +52,8 @@ public class DownloadFileTask {
      * 月接口 每月一次
      */
     @RequestMapping("/dotask")
-    @Scheduled(fixedDelay = 1000 * 60 * 30)
-    public void downloadFile(@RequestParam("interfaceId") String interfaceId, @RequestParam("startTime") String startTime) {
+    @Scheduled(fixedDelay = 1000 * 60 * 5)
+    public void downloadFile() {
         // 查询需要处理的下载接口
         List<InterfaceInfo> interfaceInfos = downloadInterfaceServic.listDownloadFileInterface();
         for (InterfaceInfo info :
@@ -67,15 +67,11 @@ public class DownloadFileTask {
                 String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
                 String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
 
-                if (StringUtils.isEmpty(interfaceId)) {
-                    interfaceId = info.getInterfaceId();
-                }
-                log.info("开始处理[{}]接口数据", interfaceId);
+                 String   interfaceId = info.getInterfaceId();
+
 
                 // 查询此接口成功入库的最大时间
-                if (StringUtils.isEmpty(startTime)) {
-                    startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
-                }
+                  String  startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
 
                 if (StringUtils.isEmpty(startTime)) {
                     continue;
@@ -83,11 +79,13 @@ public class DownloadFileTask {
 
                 // 判断时间是否ok
                 if (startTime.length() == 4) {
+                    log.info("开始处理[{}]接口数据，开始时间[{}]，结束时间[{}]", interfaceId,startTime,lastMonth);
                     if (!TimeUtil.timeIsOk(startTime, lastMonth)) {
                         log.info("开始时间：{}大于结束时间;{}", startTime, lastMonth);
                         continue;
                     }
                 } else {
+                    log.info("开始处理[{}]接口数据，开始时间[{}]，结束时间[{}]", interfaceId,startTime,yesterday);
                     if (!TimeUtil.timeIsOk(startTime, yesterday)) {
                         log.info("开始时间：{}大于结束时间;{}", startTime, yesterday);
                         continue;
@@ -135,8 +133,8 @@ public class DownloadFileTask {
                     for (String time :
                             betweenTime) {
                         log.info("接口：{}准备下载周期:{}文件！！！", info.getInterfaceId(), time);
-                 //       boolean isDownload = dealInterface(interfaceId, remotePath.replace("replaceTime", time), localPath.replace("replaceTime", time), time);
-                          boolean isDownload = false;
+                        boolean isDownload = dealInterface(interfaceId, remotePath.replace("replaceTime", time), localPath.replace("replaceTime", time), time);
+                 //         boolean isDownload = false;
                         if (isDownload) {
                             log.info("接口：{}准备入库周期:{}！！！", info.getInterfaceId(), time);
                             handleData.killFile(interfaceId, localPath.replace("replaceTime", time), time);
