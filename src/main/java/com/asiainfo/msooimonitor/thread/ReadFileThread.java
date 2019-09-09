@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.xml.ws.Action;
 import java.io.BufferedReader;
@@ -35,7 +36,14 @@ public class ReadFileThread {
 
     public void ReadFile(String fileName, String dir, String interfaceId, String date) {
 
-        String tableName = "IOP_" + interfaceId;
+        // 根据接口号查询表名
+        String tableName =   loadService.getInterfaceTableName(interfaceId);
+
+        if (StringUtils.isEmpty(tableName)){
+
+            throw new RuntimeException("接口号["+interfaceId+"]对应表名不存在！！");
+
+        }
 
         Map<String, Object> sMap = loadService.sqlTemplate(tableName);
 

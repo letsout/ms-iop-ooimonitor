@@ -27,4 +27,7 @@ public interface DownloadFileMapper {
      * @return
      */
     String getMaxSuccessTime(String interfaceId);
+
+
+    String getInterfaceTableName(String interfaceId);
 }

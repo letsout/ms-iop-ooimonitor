@@ -87,7 +87,7 @@ public class InterfaceInfoController {
 
 
     @RequestMapping("/runInterface")
-    public Result runInterface(@RequestParam("interfaceId") String interfaceId, @RequestParam("time") String time) {
+    public Result runInterface(@RequestParam("interfaceId") String interfaceId, @RequestParam("time") String time,String step) {
         try {
             InterfaceInfo interfaceInfo = interfaceInfoService.listInterfaceInfoById(interfaceId);
 
