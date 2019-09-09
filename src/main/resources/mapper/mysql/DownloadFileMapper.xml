@@ -33,4 +33,8 @@
     <select id="getMaxSuccessTime" parameterType="string" resultType="string">
     SELECT max(file_time) from ooi_interfacae_run_record_dtl where interface_id = #{interfaceId} and type_desc = 0 and run_step = 2;
     </select>
+
+    <select id="getInterfaceTableName" parameterType="string" resultType="string">
+    select distinct table_name from ooi_interface_rel_table where data_state = 'U'
+    </select>
 </mapper>
