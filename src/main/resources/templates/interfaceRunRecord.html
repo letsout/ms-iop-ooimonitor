@@ -43,6 +43,22 @@
         </select>
     </div>
     <button class="layui-btn" data-type="reload">搜索</button>
+    <div class="layui-inline" style="margin-left: 30px;width: 150px;">
+        <input class="layui-input" name="id" id="interfaceId" autocomplete="off" placeholder="运行接口编码">
+    </div>
+    <div style="width: 170px;" class="layui-input-inline">
+        <select lay-search name="" id="runStep1" pm_id="runStep"
+                lay-filter="runStep">
+            <option value="-1">请选择运行步骤</option>
+            <option value="1">文件生成/下载</option>
+            <option value="2">文件上传/入库</option>
+            <option value="3">文件校验</option>
+        </select>
+    </div>
+    <div class="layui-input-inline" style="width: 150px;">
+        <input class="layui-input" name="id" id="runTime" autocomplete="off" placeholder="运行时间">
+    </div>
+    <button class="layui-btn" data-type="runInterface">提交</button>
 </div>
 
 <table class="layui-hide" id="interfaceRunRecord" lay-filter="interfaceRunRecord"></table>
