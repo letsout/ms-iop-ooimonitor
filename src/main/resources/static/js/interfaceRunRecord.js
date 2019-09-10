@@ -73,6 +73,34 @@ layui.use(['table', 'form'], function(){
                     runStep: $("#runStep").val()
                 }
             });
+        },
+        runInterface: function () {
+            var interfaceId = $("#interfaceId").val();
+            var runStep = $("#runStep1").val();
+            var runTime = $("#runTime").val();
+            if(interfaceId != '' && interfaceId != null && runStep != '-1' && runTime != '' && runTime != null) {
+                $.ajax({
+                    url: "runInterface",
+                    data: {
+                        interfaceId: interfaceId,
+                        step: runStep,
+                        time: runTime
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.closeAll();
+                            layer.msg("提交成功", {icon: 1});
+                            active.reload();
+                        } else {
+                            layer.closeAll();
+                            layer.msg("提交失败", {icon: 5});
+                            active.reload();
+                        }
+                    }
+                })
+            }else{
+                layer.msg("请将接口编码、运行步骤、运行时间填写完整", {icon: 5});
+            }
         }
     };
     $('.demoTable .layui-btn').on('click', function(){
