@@ -74,11 +74,4 @@ public class LoadServiceImpl implements LoadService {
     public void insertRecord(InterfaceRecord interfaceRecord) {
         downloadFileMapper.insertRecord(interfaceRecord);
     }
-
-    @Override
-    public String getInterfaceTableName(String interfaceId) {
-        return downloadFileMapper.getInterfaceTableName(interfaceId);
-    }
-
-
 }

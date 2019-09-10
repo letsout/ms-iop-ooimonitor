@@ -1,5 +1,8 @@
 package com.asiainfo.msooimonitor.utils;
 
+import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
+import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
+import com.asiainfo.msooimonitor.service.LoadService;
 import com.jcraft.jsch.*;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -280,16 +283,15 @@ public class FtpUtil {
     /**
      * ftp上传文件
      *
-     * @param pathname    远程文件路径
-     * @param fileName    文件名
-     * @param inputStream 文件流
+     * @param pathName    远程文件路径
+     * @param interfaceId 接口id
+     * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String pathname, String fileName,
-                                        InputStream inputStream) {
+    public static boolean uploadFileFTP(String pathName, String interfaceId, LoadService loadService) {
 
         FTPClient ftpClient = new FTPClient();
-
+        FileInputStream inputStream = null;
         try {
             int reply;
 
@@ -311,9 +313,9 @@ public class FtpUtil {
             logger.info("登陆成功！！！");
 
             // 切换到上传目录
-            if (!ftpClient.changeWorkingDirectory(pathname)) {
+            if (!ftpClient.changeWorkingDirectory(pathName)) {
                 // 如果目录不存在创建目录
-                String[] dirs = pathname.split("/");
+                String[] dirs = pathName.split("/");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {
@@ -329,34 +331,73 @@ public class FtpUtil {
                             return false;
                         } else {
                             //目录存在，则直接进入该目录
-
                             logger.info("进入：{}", tempPath);
                             ftpClient.changeWorkingDirectory(tempPath);
-
                         }
                     }
                 }
             }
-
             //设置上传文件的类型为二进制类型
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-            logger.info("开始上传文件：{}", fileName);
-            //上传文件
-            if (!ftpClient.storeFile(fileName, inputStream)) {
-                return false;
+            String[] fileNames = FileUtil.listUploadFile(pathName);
+            boolean flag = true;
+            for (String fileName :
+                    fileNames) {
+                if (fileName.contains(interfaceId)) {
+                    logger.info("开始上传文件：{}", fileName);
+                    inputStream = new FileInputStream(new File(pathName + File.separator + fileName));
+                    if (ftpClient.storeFile(fileName, inputStream)) {
+                        logger.info("文件[{}]上传成功！！！", fileName);
+                    } else {
+                        flag = false;
+                    }
+                }
             }
-            inputStream.close();
             ftpClient.logout();
+
+            if (flag) {
+                logger.info("文件[]接口成功！！！", interfaceId);
+                InterfaceRecord interfaceRecord = new InterfaceRecord();
+                interfaceRecord.setInterfaceId(interfaceId);
+                interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+                interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
+                interfaceRecord.setFileName("");
+                interfaceRecord.setFileNum("");
+                interfaceRecord.setFileSuccessNum("");
+                interfaceRecord.setFileTime("");
+                loadService.insertRecord(interfaceRecord);
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("文件上传出现异常{}", e);
+            InterfaceRecord interfaceRecord = new InterfaceRecord();
+            interfaceRecord.setInterfaceId(interfaceId);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
+            interfaceRecord.setFileName("");
+            interfaceRecord.setFileNum("");
+            interfaceRecord.setFileTime("");
+            interfaceRecord.setFileSuccessNum("0");
+            interfaceRecord.setErrorDesc("文件上传出现异常:" + e.getMessage().substring(0, 470));
+            loadService.insertRecord(interfaceRecord);
+
         } finally {
             if (ftpClient.isConnected()) {
                 try {
                     ftpClient.disconnect();
                 } catch (IOException ioe) {
+                    logger.error("ftp 断开链接出现异常{}", ioe);
                 }
             }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error("输入流关闭出现异常{}", e);
+                }
+            }
+
         }
         return true;
     }
@@ -371,9 +412,9 @@ public class FtpUtil {
      */
     public static boolean downloadFileFTP(String remotePath, String localPath, String interfaceId) throws RuntimeException, IOException {
 
-        logger.info("remotePath:{};localPath{};interfaceId{}",remotePath,localPath,interfaceId);
+        logger.info("remotePath:{};localPath{};interfaceId{}", remotePath, localPath, interfaceId);
 
-        boolean flag= false;
+        boolean flag = false;
 
         FTPClient ftpClient = new FTPClient();
 
@@ -401,7 +442,7 @@ public class FtpUtil {
 
         FTPFile[] ftpFiles = ftpClient.listFiles();
 
-       // ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        // ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
         if (ftpFiles.length > 0) {
             for (FTPFile file :
@@ -419,13 +460,13 @@ public class FtpUtil {
                     out.close();
                 }
             }
-        }else {
-            logger.info("remotePath:{} 接口：{} 文件不存在！！！！",remotePath,interfaceId);
+        } else {
+            logger.info("remotePath:{} 接口：{} 文件不存在！！！！", remotePath, interfaceId);
         }
         ftpClient.logout();
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
         }
-     return flag;
+        return flag;
     }
 }

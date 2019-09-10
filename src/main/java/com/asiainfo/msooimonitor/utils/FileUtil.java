@@ -66,7 +66,7 @@ public class FileUtil {
     }
 
     /**
-     * 计算文件大小（字节）
+     * 计算文件大小（M）
      *
      * @param filePath 文件全路径
      * @return
@@ -82,37 +82,14 @@ public class FileUtil {
      * @param filePath 文件路径
      * @return
      */
-    public static int getFileRows(String filePath) {
+    public static String getFileRows(String filePath) {
         int rows = 0;
         try {
             File file = new File(filePath);
             FileReader fileReader = new FileReader(file);
             LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
             lineNumberReader.skip(Long.MAX_VALUE);
-            rows = lineNumberReader.getLineNumber();
-            fileReader.close();
-            lineNumberReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rows;
-    }
-
-    /**
-     * 判断生成文件的数量
-     *
-     * @param filePath
-     * @param fileName
-     * @return
-     */
-    public static String getFileRows(String filePath, String fileName) {
-        int rows = 0;
-        try {
-            File file1 = new File(filePath + File.separator + fileName);
-            FileReader fileReader = new FileReader(file1);
-            LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
-            lineNumberReader.skip(Long.MAX_VALUE);
-            rows = lineNumberReader.getLineNumber();
+            rows = lineNumberReader.getLineNumber() + 1;
             fileReader.close();
             lineNumberReader.close();
         } catch (Exception e) {
@@ -120,7 +97,6 @@ public class FileUtil {
         }
         return String.valueOf(rows);
     }
-
 
     /**
      * 遍历指定文件夹下的文件名
@@ -139,6 +115,20 @@ public class FileUtil {
             logger.error("遍历指定文件夹下的文件名出错：{}", dir);
         }
         return dat;
+    }
+
+    /**
+     * 遍历指定文件夹下的文件名
+     *
+     * @param dir
+     * @return List文件名
+     */
+    public static String[]  listUploadFile(String dir) {
+        List<String> dat = null;
+        // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+        File file = new File(dir);
+        String[] list = file.list();
+        return list;
     }
 
 
@@ -228,7 +218,7 @@ public class FileUtil {
     /**
      * 删除文件最后一行为空行的
      *
-     * @param file file全路径
+     * @param path file全路径
      *             a_13000_20190214_IOP-93001_00_001.dat
      *             a_13000_20190214_IOP-93002_00.verf
      */

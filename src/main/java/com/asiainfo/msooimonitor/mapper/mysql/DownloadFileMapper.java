@@ -28,6 +28,4 @@ public interface DownloadFileMapper {
      */
     String getMaxSuccessTime(String interfaceId);
 
-
-    String getInterfaceTableName(String interfaceId);
 }

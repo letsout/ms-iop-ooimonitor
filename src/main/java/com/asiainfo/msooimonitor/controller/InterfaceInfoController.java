@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.controller;
 
+import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.handle.HandleData;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.Result;
@@ -87,30 +88,31 @@ public class InterfaceInfoController {
 
 
     @RequestMapping("/runInterface")
-    public Result runInterface(@RequestParam("interfaceId") String interfaceId, @RequestParam("time") String time,String step) {
+    public Result runInterface(@RequestParam("interfaceId") String interfaceId, @RequestParam("time") String time, @RequestParam("step") String step) {
         try {
-            InterfaceInfo interfaceInfo = interfaceInfoService.listInterfaceInfoById(interfaceId);
-
-            String remotePath = "";
-            String localPath = "";
-            if (time.length() == 4) {
-                remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
-                localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
-            } else if (time.length() == 6) {
-                remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
-                localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
-            }
-            log.info("接口：{}准备下载周期:{}文件！！！", interfaceInfo.getInterfaceId(), time);
-            boolean isDownload = downloadFileTask.dealInterface(interfaceId, remotePath, localPath, time);
-            if (isDownload) {
-                log.info("接口：{}准备入库周期:{}！！！", interfaceInfo.getInterfaceId(), time);
-                handleData.killFile(interfaceId, localPath.replace("replaceTime", time), time);
+            if (StateAndTypeConstant.FILE_UPLOAD_OR_RK.equals(step)) {
+                InterfaceInfo interfaceInfo = interfaceInfoService.listInterfaceInfoById(interfaceId);
+                String tableName = interfaceInfo.getFileName();
+                String remotePath = "";
+                String localPath = "";
+                if (time.length() == 4) {
+                    remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
+                    localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
+                } else if (time.length() == 6) {
+                    remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
+                    localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
+                }
+                log.info("接口：{}准备下载周期:{}文件！！！", interfaceInfo.getInterfaceId(), time);
+                boolean isDownload = downloadFileTask.dealInterface(interfaceId, remotePath, localPath, time);
+                if (isDownload) {
+                    log.info("接口：{}准备入库周期:{}！！！", interfaceInfo.getInterfaceId(), time);
+                    handleData.killFile(interfaceId, localPath.replace("replaceTime", time), tableName, time);
+                }
             }
         } catch (Exception e) {
             log.error("重跑数据异常！！！[{}]", e);
             return ResultUtil.error("重跑数据异常" + e.getMessage());
         }
-
         return ResultUtil.success();
     }
 

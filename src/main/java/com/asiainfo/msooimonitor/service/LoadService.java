@@ -20,6 +20,4 @@ public interface LoadService {
     int getrows(String tableName);
 
     void insertRecord(InterfaceRecord interfaceRecord);
-
-    String getInterfaceTableName(String interfaceId);
 }
