@@ -27,6 +27,7 @@ import java.util.*;
  * @Date 2019/1/7 16:27
  * @Desc 解析xml处理上传数据
  **/
+@Deprecated
 @Component
 public class HandleXml {
 

@@ -34,10 +34,7 @@ public class ReadFileThread {
     @Autowired
     HandleData handleData;
 
-    public void ReadFile(String fileName, String dir, String interfaceId, String date) {
-
-        // 根据接口号查询表名
-        String tableName =   loadService.getInterfaceTableName(interfaceId);
+    public void ReadFile(String fileName, String dir, String interfaceId,String tableName, String date) {
 
         if (StringUtils.isEmpty(tableName)){
 
@@ -95,7 +92,7 @@ public class ReadFileThread {
                 }
                 mapList.add(hashMap);
                 count++;
-                if (10000 == mapList.size()) {
+                if (50000 == mapList.size()) {
                     handleData.batchInsert(sqlTemplate, mapList);
                     mapList.clear();
                     logger.info("入库条数{}", count);
@@ -105,7 +102,7 @@ public class ReadFileThread {
             //整个表数据循环完后，如果list中还有数据，就要再执行一次入表操作。（最后一批次数据不满10000）
             if (0 != mapList.size()) {
                 handleData.batchInsert(sqlTemplate, mapList);
-                logger.info("剩余条数不足10000，入库{}", mapList.size());
+                logger.info("剩余条数不足50000，入库{}", mapList.size());
                 mapList.clear();
             }
 
@@ -115,7 +112,7 @@ public class ReadFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir+File.separator+fileName));
             interfaceRecord.setFileSuccessNum(String.valueOf(count));
             interfaceRecord.setFileTime(date);
             loadService.insertRecord(interfaceRecord);
@@ -130,7 +127,7 @@ public class ReadFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(dir,fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir+File.separator+fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             interfaceRecord.setErrorDesc("文件解析出错:"+e.getMessage().substring(0,470));
