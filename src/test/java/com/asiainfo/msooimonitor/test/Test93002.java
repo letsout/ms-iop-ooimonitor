@@ -422,7 +422,7 @@ public class Test93002 {
             map.put("A21", "");
             //22,目标客户筛选标准,必填
             map.put("A22", mapEffect.get("customer_filter_rule"));
-            List<Map<String, String>> offerMaps = fileDataService.getOfferBo(mapEffect.get("campaign_id"));
+            List<Map<String, String>> offerMaps = fileDataService.getOfferBo(activity.get("activity_id"));
             Map<String, String> offerMap = offerMaps.get(0);
             //23,产品编码,必填,比如0200100xxxx,02：一级分类,001：二级分类,00：三级分类,Xxxx：自定义产品编号,编码规则参考8.1产品编码规则
             String proCode = offerMap.get("offer_code");
