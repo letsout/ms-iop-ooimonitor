@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper">
+    <!--<select id="getValue" parameterType="string" resultType="string">-->
+    <!--${sql}-->
+    <!--</select>-->
+
+
+    <select id="getPhoneFromBlackRed" resultType="map">
+        select substr(phone_no, 1, 11)
+        from REBUILD_BLACK_RED_WHITE_USER
+        where phone_no like '1%'
+    </select>
+
+    <select id="getPhone" resultType="list">
+        select substr(APPEAL_TEL, 1, 11)
+        from iop_93011_phone_ods_cct
+        where APPEAL_TEL like '1%' "
+    </select>
+    <select id="getBaseInfo" resultType="map">
+        select city_id,activity_id,activity_name,final_obj_table_name
+        from activity_base_info a
+                 inner join activity_obj_user b on a.activity_id = b.activity_id
+    </select>
+    <select id="getPhone93006" parameterType="string" resultType="map">
+        select *
+        from ${tableName}
+
+    </select>
+    <select id="getCustGroupInfo" resultType="map">
+        select b.*
+        FROM activity_rel_custgroup a
+                 inner JOIN cust_group_info b ON a.cust_group_id = b.cust_group_id
+        where ACTIVITY_ID = #{activityId }   </select>
+    <select id="getBaseInfo93006" resultType="map">
+        select a.*,city_code,b.final_obj_table_name
+        from activity_base_info a
+                 inner join activity_obj_user b on a.activity_id = b.activity_id
+                 inner join activity_rel_channel c on a.activity_id = c.activity_id
+                 inner JOIN base_channel d on c.channel_id = d.channel_id
+                 inner join base_city_code e on e.city_id = a.city_id
+        where d.is_syn = 'E'
+          and a.activity_state = '6' limit 1
+
+    </select>
+    <select id="getMarkenInfo93006" resultType="map">
+        select *
+        from ooi_MARKING_ACTIVITY_INFO
+        where activity_id = '28020190827085181'
+    </select>
+    <select id="getMarkingInfo93001" resultType="map">
+        select *
+        from ooi_MARKING_ACTIVITY_INFO
+        where activity_id
+            = '28020190827085181'
+    </select>
+    <select id="getMarkingInfo93002" resultType="map">
+        select *
+        from ooi_MARKING_ACTIVITY_INFO
+        where activity_id
+            = '28020190827085181'
+    </select>
+    <select id="getBaseInfo93002" resultType="map">
+        select *
+        from activity_base_info
+        where activity_id
+            = '28020190827085181'
+    </select>
+
+    <select id="getCampaignedInfo" resultType="map">
+        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
+        from ooi_MARKING_CAMPAIGN_INFO a
+                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
+        where a.activity_id = #{activity_id}
+    </select>
+    <select id="getDetailEffect" resultType="map">
+        select *
+        from ooi_activity_detail_effect_${date}
+        where activity_id = #{activity_id}
+    </select>
+    <select id="getSummaryEffect" resultType="map">
+        select *
+        from ooi_activity_summary_effect
+        where activity_id = #{activity_id}
+    </select>
+    <select id="getOfferBo" resultType="map">
+        select *
+        from ooi_marking_campaign_offerBO_info
+        where campaign_id = #{campaign_id}
+    </select>
+    <select id="getBaseInfo93005" resultType="map">
+        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
+        from activity_base_infoa
+                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
+        where a.activity_id = '28020190827085181'
+    </select>
+    <select id="getBaseInfo93001" resultType="map">
+        select *
+        from activity_base_info
+        where activity_id = '28020190827085181'
+    </select>
+    <select id="getMarkingInfo93005" resultType="map">
+        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
+        from ooi_MARKING_ACTIVITY_INFO a
+                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
+        where a.activity_id = '28020190827085181'
+    </select>
+
+</mapper>

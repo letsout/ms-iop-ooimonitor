@@ -29,7 +29,10 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getBaseInfo93006();
 
     //93006查询一级策划省级执行的
-    List<Map<String, String>> getBaseInfo93001();
+    List<Map<String, String>> getMarkingInfo93001();
+
+    List<Map<String, String>> getMarkingInfo93002();
+
     List<Map<String, String>> getBaseInfo93002();
 
     List<Map<String, String>> getMarkenInfo93006();
@@ -44,5 +47,9 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getOfferBo(String campaign_id);
 
     List<Map<String, String>> getBaseInfo93005();
+
+    List<Map<String, String>> getBaseInfo93001();
+
+    List<Map<String, String>> getMarkingInfo93005();
 
 }

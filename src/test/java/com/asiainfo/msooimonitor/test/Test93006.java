@@ -51,14 +51,10 @@ public class Test93006 {
             map.put("A12", null);
             //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
             map.put("A16", null);
-//            activity.put("final_obj_table_name", "OBJ_284576966837831");
-//            final List<Map<String, String>> phones = fileDataService.getPhone93006(activity.get("final_obj_table_name"));
-////            System.out.println("phones=="+phones);
             List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDaySql(new Date()));
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
                 mapresult.put("A5", mapEffect.get("phone_no"));
-
                 //13 是否成功接触 必填,口径：运营活动中，通过各触点，是否成功接触到该用户，如短信下发成功下发给该用户、外呼成功接通该用户、APP成功在该用户终端弹出等
                 mapresult.put("A13", mapEffect.get("is_touch"));
                 //14 是否参与运营活动 必填,标识该用户是否参与运营活动
@@ -79,7 +75,7 @@ public class Test93006 {
 
 
     @Test
-    public void testsavemarken93006() {
+    public void testsavemarking93006() {
 
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = null;
@@ -94,7 +90,7 @@ public class Test93006 {
             //3 省份 必填，长度3位
             map.put("A3", "280");
             //4 地市 必填,长度： 3位或4位
-            map.put("A4", "028");
+           map.put("A4", activity.getOrDefault("city_code","028"));
             //6 营销活动编号 必填,前三位必须为省份编码
             String activity_id = activity.get("activity_id");
             map.put("A6", activity_id);
@@ -129,7 +125,6 @@ public class Test93006 {
                 //17 0x0D0A 行间分隔符－回车换行符
                 mapresult.putAll(map);
                 list.add(mapresult);
-
             }
         }
         String sql = SqlUtil.getInsert("93006", list);

@@ -16,10 +16,11 @@ public interface FileDataService {
     List<Map<String, String>> getBaseInfo();
 
     List<Map<String, String>> getBaseInfo93005();
+    List<Map<String, String>> getMarkingInfo93005();
 
     Map<String, String> getCustGroupInfo(String activityId);
 
-    List<Map<String, String>> getBaseInfo93001();
+    List<Map<String, String>> getMarkingInfo93001();
 
     List<Map<String, String>> getBaseInfo93006();
 
@@ -35,5 +36,10 @@ public interface FileDataService {
 
     List<Map<String, String>> getOfferBo(String campaign_id);
 
+    List<Map<String, String>> getMarkingInfo93002();
     List<Map<String, String>> getBaseInfo93002();
+
+    List<Map<String, String>> getMarkenInfo93006();
+
+    List<Map<String, String>> getBaseInfo93001();
 }
