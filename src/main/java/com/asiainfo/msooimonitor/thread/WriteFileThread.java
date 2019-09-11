@@ -116,7 +116,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            FtpUtil.uploadFileFTP(localPath,interfaceId,loadService);
+            FtpUtil.uploadFileFTP(localPath, interfaceId, loadService);
 
         } catch (Exception e) {
             log.error("message：{}", e);
@@ -125,10 +125,10 @@ public class WriteFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath+File.separator+fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
-            interfaceRecord.setErrorDesc("文件生成出错:"+e.getMessage().substring(0,470));
+            interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage().substring(0, 470));
             loadService.insertRecord(interfaceRecord);
 
             log.error("接口[{}]文件[{}]生成出现异常{}", interfaceId, fileNameTmp, e);
@@ -146,7 +146,8 @@ public class WriteFileThread {
         }
     }
 
-    /**e
+    /**
+     * e
      * 生成校验文件信息
      *
      * @param fileName
