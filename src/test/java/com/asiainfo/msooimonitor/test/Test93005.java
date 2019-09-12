@@ -275,8 +275,8 @@ public class Test93005 {
             map.put("A80", "");
             list.add(map);
         }
-        String sql = SqlUtil.getInsert("93005", list);
-        //fileDataService.saveresultList(sql);
+        SqlUtil.getInsert("93005", list);
+        //
     }
 
     @Test
@@ -524,8 +524,8 @@ public class Test93005 {
             map.put("A80", "");
             list.add(map);
         }
-        String sql = SqlUtil.getInsertObj("93005", list);
+        SqlUtil.getInsertObj("93005", list);
         //System.out.println(sql);
-        //fileDataService.saveresultList(sql);
+        //
     }
 }

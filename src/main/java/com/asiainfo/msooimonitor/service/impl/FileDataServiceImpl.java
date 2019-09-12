@@ -163,7 +163,6 @@ public class FileDataServiceImpl implements FileDataService {
                 campaignName = campaignName.substring(1);
             markingmap.put("campaign_id", campaignId);
             markingmap.put("campaign_name", campaignName);
-//            markingmap.putAll(getSummaryEffect(activity_id));
         });
         return markingInfo93006;
     }

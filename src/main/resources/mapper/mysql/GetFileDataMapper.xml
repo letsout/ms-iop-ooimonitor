@@ -39,7 +39,7 @@
                  inner join activity_rel_channel c on a.activity_id = c.activity_id
                  inner JOIN base_channel d on c.channel_id = d.channel_id
                  inner join base_city_code e on e.city_id = a.city_id
-        where a.activity_state = '6'
+        where d.is_syn = 'E' and a.activity_state = '9'
           and a.end_time = #{date}
         --         select a.*,city_code,b.final_obj_table_name
         --         from activity_base_info a
@@ -59,7 +59,7 @@
     <select id="getMarkingInfo93001" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where SUBSTR(activity_endtime, 1, 10) = #{date}
+        where SUBSTR(activity_endtime, 1, 10) >= #{date}
     </select>
     <select id="getMarkingInfo93002" resultType="map">
         select *
@@ -94,12 +94,12 @@
     <select id="getBaseInfo93001" resultType="map">
         select *
         from activity_base_info
-        where activity_id = '28020190903086718'
+
     </select>
     <select id="getMarkingInfo93005" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO a
-        where SUBSTR(activity_endtime, 1, 10) = #{date}
+        where SUBSTR(activity_endtime, 1, 10) >= #{date}
     </select>
 
 </mapper>

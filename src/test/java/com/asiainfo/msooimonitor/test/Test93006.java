@@ -70,8 +70,9 @@ public class Test93006 {
             }
         }
 
-        String sql = SqlUtil.getInsert("93006", list);
-//        fileDataService.saveresultList(sql);
+
+        SqlUtil.getInsert("93006", list);
+//
 
     }
 
@@ -128,7 +129,7 @@ public class Test93006 {
                 list.add(mapresult);
             }
         }
-        String sql = SqlUtil.getInsert("93006", list);
-//        fileDataService.saveresultList(sql);
+        SqlUtil.getInsert("93006", list);
+
     }
 }
