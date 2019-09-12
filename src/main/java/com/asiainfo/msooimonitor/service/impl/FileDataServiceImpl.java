@@ -30,27 +30,25 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(date);
         markingInfo93005.forEach(map -> {
             final String activity_id = map.get("activity_id");
+            final Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(activity_id);
+            map.putAll(summaryEffect);
             final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
-            String campaignedIds = "";
             Map<String, String> campaignedMap = new HashMap<>();
-            String[] keyList = {"campaign_starttime", "campaign_endtime", "customer_group_id", "customer_group_name", "customer_num", "customer_filter_rule"};
             String campaign_id = "";
             String campaign_name = "";
+            String campaign_starttime = "";
+            String campaign_endtime = "";
             if (campaignedInfo.size() > 0) {
                 for (Map<String, String> map1 : campaignedInfo) {
                     campaign_id += "," + map1.get("campaign_id");
                     campaign_name += "," + map1.get("campaign_name");
-                    final Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map1.get("campaign_id"));
-                    for (String key : keyList) {
-                        String value = "," + summaryEffect.get(key);
-                        campaignedMap.put(key, campaignedMap.getOrDefault(key, "") + value);
-                    }
+                    campaign_starttime += "," + map1.get("campaign_starttime");
+                    campaign_endtime += "," + map1.get("campaign_endtime");
+
                     campaignedMap.put("campaign_id", campaign_id.substring(1));
                     campaignedMap.put("campaign_name", campaign_name.substring(1));
-                }
-
-                for (String key : keyList) {
-                    campaignedMap.put(key, campaignedMap.get(key).substring(1));
+                    campaignedMap.put("campaign_starttime", campaign_starttime.substring(1));
+                    campaignedMap.put("campaign_endtime", campaign_endtime.substring(1));
                 }
                 map.putAll(campaignedMap);
             }
