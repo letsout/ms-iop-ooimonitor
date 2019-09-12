@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service("fileDataService")
+@Service
 @Slf4j
 public class FileDataServiceImpl implements FileDataService {
     @Autowired
@@ -19,76 +19,34 @@ public class FileDataServiceImpl implements FileDataService {
     @Autowired
     CommonMapper commonMapper;
 
-    @Override
-    public void getPhone() {
-        final List<String> phoneFromBlackRed = getFileDataMapper.getPhoneFromBlackRed();
-        final List<String> phone = getFileDataMapper.getPhone();
-
-    }
-
-
-    @Override
-    public List<Map<String, String>> getPhone93006(String tableName) {
-        return commonMapper.getMap("select * from " + tableName);
-    }
-
-    @Override
-    public List<Map<String, String>> getBaseInfo() {
-        return getFileDataMapper.getBaseInfo();
-    }
 
     @Override
     public List<Map<String, String>> getMarkingInfo93005() {
-        List<Map<String, String>> markingInfo93005 = getFileDataMapper.getBaseInfo93005();
+        List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005();
         markingInfo93005.forEach(map -> {
             final String activity_id = map.get("activity_id");
             final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
             Map<String, String> campaignedMap = new HashMap<>();
-            String[] keyList = {"campaign_id", "campaign_name", "campaign_starttime", "campaign_endtime"};
+            String[] keyList = {"campaign_id", "campaign_name", "campaign_starttime", "campaign_endtime","customer_group_id","customer_group_name","customer_num","customer_filter_rule"};
             if (campaignedInfo.size() > 0) {
                 for (Map<String, String> map1 : campaignedInfo) {
                     for (String key : keyList) {
                         String value = "," + map1.get(key);
-                        campaignedMap.put(key, value);
+                        campaignedMap.put(key, campaignedMap.getOrDefault(key, "") + value);
                     }
                 }
                 for (String key : keyList) {
                     campaignedMap.put(key, campaignedMap.get(key).substring(1));
                 }
+                map.putAll(campaignedMap);
             }
-//            String campaign_name = "";
-//            String campaign_starttime = "";
-//            String campaign_endtime = "";
-//            String cust_group_id = "";
-//            String cust_group_name = "";
-//            String cust_group_count = "";
-//            String cust_group_createrule_desc = "";
-//            String sgmt_sift_rule = "";
-//            for (Map<String, String> map1 : campaignedInfo) {
-//                campaign_name += map1.get("campaign_name") + ",";
-//                campaign_starttime += map1.get("campaign_starttime").replace("-", "").replace(":", "").replace(" ", "") + ",";
-//                campaign_endtime += map1.get("campaign_endtime").replace("-", "").replace(":", "").replace(" ", "") + ",";
-//                cust_group_id += map1.get("cust_group_id") + ",";
-//                cust_group_name += map1.get("cust_group_name") + ",";
-//                cust_group_count += map1.get("cust_group_count") + ",";
-//                cust_group_createrule_desc += map1.get("cust_group_createrule_desc") + ",";
-//                sgmt_sift_rule += map1.get("sgmt_sift_rule") + ",";
-//            }
-//            map.put("campaign_name", campaign_name);
-//            map.put("campaign_starttime", campaign_starttime);
-//            map.put("campaign_endtime", campaign_endtime);
-//            map.put("cust_group_id", cust_group_id);
-//            map.put("cust_group_name", cust_group_name);
-//            map.put("cust_group_count", cust_group_count);
-//            map.put("cust_group_createrule_desc", cust_group_createrule_desc);
-//            map.put("sgmt_sift_rule", sgmt_sift_rule);
         });
         return markingInfo93005;
     }
 
     @Override
-    public List<Map<String, String>> getBaseInfo93005() {
-        List<Map<String, String>> baseInfo93005 = getFileDataMapper.getBaseInfo93005();
+    public List<Map<String, Object>> getBaseInfo93005() {
+        List<Map<String, Object>> baseInfo93005 = getFileDataMapper.getBaseInfo93005();
         return baseInfo93005;
     }
 
@@ -117,14 +75,13 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93001;
     }
 
-    @Override
     public List<Map<String, String>> getMarkingInfo93002() {
         final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002();
         return markingInfo93002;
     }
-    @Override
-    public List<Map<String, String>> getBaseInfo93002() {
-        final List<Map<String, String>> baseInfo93002 = getFileDataMapper.getBaseInfo93002();
+
+    public List<Map<String, Object>> getBaseInfo93002() {
+        final List<Map<String, Object>> baseInfo93002 = getFileDataMapper.getBaseInfo93002();
         return baseInfo93002;
     }
 
@@ -138,35 +95,27 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public List<Map<String, String>> getBaseInfo93006() {
         List<Map<String, String>> baseInfo93006 = getFileDataMapper.getBaseInfo93006();
-
-
-//        baseInfo93004.addAll(markingInfo3004);
         return baseInfo93006;
     }
 
-    @Override
     public List<Map<String, String>> getDetailEffect(String activity_id, String date) {
 
         return getFileDataMapper.getDetailEffect(activity_id, date);
     }
 
-    @Override
     public Map<String, String> getSummaryEffect(String activity_id) {
 
         return getFileDataMapper.getSummaryEffect(activity_id);
     }
 
-    @Override
     public void saveresultList(String sql) {
         commonMapper.insertSql(sql);
     }
 
-    @Override
     public List<Map<String, String>> getResult(String sql) {
         return commonMapper.getMap(sql);
     }
 
-    @Override
     public List<Map<String, String>> getOfferBo(String campaign_id) {
         return getFileDataMapper.getOfferBo(campaign_id);
 
@@ -190,14 +139,14 @@ public class FileDataServiceImpl implements FileDataService {
             if (campaignName.length() > 0)
                 campaignName = campaignName.substring(1);
             markingmap.put("campaign_id", campaignId);
-            markingmap.put("activity_name", campaignName);
+            markingmap.put("campaign_name", campaignName);
         });
         return markingInfo93006;
     }
 
     public List<Map<String, String>> getBaseInfo93001() {
         List<Map<String, String>> baseInfo93001 = getFileDataMapper.getBaseInfo93001();
-        return null;
+        return baseInfo93001;
     }
 
 

@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.test;
 
+import com.alibaba.fastjson.JSON;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
@@ -21,25 +22,6 @@ import java.util.*;
 public class Test93005 {
     @Resource
     FileDataService fileDataService;
-    /**
-     * 时间后缀
-     */
-    private String suffix = "0000000";
-    /**
-     * 分隔符
-     */
-    private String splite = new String(new byte[]{(byte) 0X80});
-
-    /**
-     * 换行符
-     */
-    private String enter = new String(new byte[]{(byte) 0x0D0A});
-
-    String date = "";
-    //本地存储文件路径
-    String localPath = "";
-    String checkFileName = "";
-    String filePreName = "";
 
     @Test
     public void testsaveMarking93005() {
@@ -51,6 +33,7 @@ public class Test93005 {
 
 //        属性编码 5-13、18-33为营销活动相关信息，14-17子活动相关信息，40-84营销活动效果评估指标
         for (Map<String, String> activity : activitys) {
+            map = new HashMap<>();
             //1 行号
             //2 统计时间 必填,长度14位,为数据生成时间
             map.put("A2", TimeUtil.getLongSeconds(new Date()));
@@ -144,9 +127,11 @@ public class Test93005 {
             //15 子活动名称 可为空，当营销活动涉及多子活动时，以逗号分隔
             map.put("A15", activity.get("campaign_name"));
             //16 子活动开始时间 可为空,格式：YYYYMMDDHH24MISS,示例：20170213161140
-            map.put("A16", activity.get("campaign_starttime"));
+            final String campaign_starttime = activity.get("campaign_starttime").replace(" ", "").replace("-", "").replace(":", "");
+            map.put("A16", campaign_starttime.split(",")[0]);
             //17 子活动结束时间 可为空,格式：YYYYMMDDHH24MISS,子活动结束时间不早于子活动开始时间,示例：20170213161140
-            map.put("A17", activity.get("campaign_endtime"));
+            final String campaign_endtime = activity.get("campaign_starttime").replace(" ", "").replace("-", "").replace(":", "");
+            map.put("A17", campaign_endtime.split(",")[0]);
 
 
             //34 PV 可为空，
@@ -350,17 +335,19 @@ public class Test93005 {
             list.add(map);
         }
         String sql = SqlUtil.getInsert("93005", list);
-        fileDataService.saveresultList(sql);
+//        fileDataService.saveresultList(sql);
     }
 
-
+    @Test
     public void testBase93005() {
-        List<Map<String, String>> list = new ArrayList<>();
-        Map<String, String> map = null;
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = null;
         Map<String, String> mapresult = null;
-        List<Map<String, String>> activitys = fileDataService.getBaseInfo93005();
-
-        for (Map<String, String> activity : activitys) {
+        List<Map<String, Object>> activitys = fileDataService.getBaseInfo93005();
+        System.out.println("json:");
+        System.out.println(JSON.toJSONString(activitys));
+        for (Map<String, Object> activity : activitys) {
+            map = new HashMap<>();
             //1 行号
             //2 统计时间 必填,长度14位,为数据生成时间
             map.put("A2", TimeUtil.getLongSeconds(new Date()));
@@ -369,14 +356,18 @@ public class Test93005 {
             //4 地市 必填 ,长度： 每个地市长度3位或4位（未知地市为00000除外）
             map.put("A4", activity.get("city_code"));
             //5 营销活动编号 必填,前三位必须为省份编码
-            String activityId = activity.get("activity_id");
+            String activityId = activity.get("activity_id").toString();
             map.put("A5", "280" + activityId.substring(1));
             //6 营销活动名称 必填
             map.put("A6", activity.get("activity_name"));
             //7 活动开始时间 必填,长度14位
-            map.put("A7", activity.get("start_time").replace("-", "") + "000000");
+            String start_time = activity.get("start_time").toString();
+            map.put("A7", start_time);
             //8 活动结束时间 必填，长度14位，活动结束时间不早于活动开始时间
-            map.put("A8", activity.get("end_time").replace("-", "") + "000000");
+            String end_time = activity.get("end_time").toString();
+            System.out.println("start_time:" + start_time);
+            System.out.println("end_time:" + end_time);
+            map.put("A8", end_time);
             //9 营销活动类型 必填，填写枚举值ID
             map.put("A9", activity.getOrDefault("activity_type", "9"));
             //10 营销活动目的 必填，填写枚举值ID
@@ -477,7 +468,7 @@ public class Test93005 {
             map.put("A39", activity.get("spetopic_id"));
 
 
-            Map<String, String> mapEffect = fileDataService.getSummaryEffect(activity.get("activity_id"));
+            Map<String, String> mapEffect = fileDataService.getSummaryEffect(activity.get("activity_id").toString());
 
             //40 成功接触客户数 必填
             //口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
@@ -653,8 +644,8 @@ public class Test93005 {
             //87 0x0D0A 行间分隔符－回车换行符
             list.add(map);
         }
-        String sql = SqlUtil.getInsert("93005", list);
-        System.out.println(sql);
-        fileDataService.saveresultList(sql);
+        String sql = SqlUtil.getInsertObj("93005", list);
+//        System.out.println(sql);
+//        fileDataService.saveresultList(sql);
     }
 }

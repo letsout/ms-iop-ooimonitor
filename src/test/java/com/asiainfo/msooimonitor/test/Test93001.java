@@ -61,15 +61,15 @@ public class Test93001 {
 
 
             //37	PV	可为空，,口径：页面曝光量、接触量、浏览量。,电子渠道效果指标
-            map.put("A37", null);
+            map.put("A37", "");
             //38	点击量	可为空，,口径：页面内容被点击的次数。,电子渠道效果指标
-            map.put("A38", null);
+            map.put("A38", "");
             //39	UV（剔重）	可为空，,口径：独立用户/独立访客。,电子渠道效果指标
-            map.put("A39", null);
+            map.put("A39", "");
             //40	办理量	可为空，,口径：业务办理次数。,电子渠道效果指标
-            map.put("A40", null);
+            map.put("A40", "");
             //41	用户号码明细	互联网特有，可为空
-            map.put("A41", null);
+            map.put("A41", "");
             //42	活动专题ID	当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
             map.put("A42", activity.get("spetopic_id"));
 
@@ -144,9 +144,9 @@ public class Test93001 {
                 //34	时机识别描述	可为空
                 resultmap.put("A34", campaignedmap.get("time_distindes"));
                 //35	客户质量情况	描述性信息,可为空
-                resultmap.put("A35", null);
+                resultmap.put("A35", "");
                 //36	资源使用情况	描述性信息,可为空
-                resultmap.put("A36", null);
+                resultmap.put("A36", "");
                 resultmap.putAll(map);
                 list.add(resultmap);
             }
@@ -194,23 +194,23 @@ public class Test93001 {
 //            //11	营销活动描述	对产品、服务等信息进行简要描述
 //            map.put("A11", activity.get("activity_name"));
 //            //12	PCC策略编码	（当采用了PCC能力时，相关内容必填）
-//            map.put("A12", null);
+//            map.put("A12", "");
 //            //13	所属流程	必填,数字枚举值
 //            map.put("A13", "1");
 //
 //
 //            //37	PV	可为空，,口径：页面曝光量、接触量、浏览量。,电子渠道效果指标
-//            map.put("A37", null);
+//            map.put("A37", "");
 //            //38	点击量	可为空，,口径：页面内容被点击的次数。,电子渠道效果指标
-//            map.put("A38", null);
+//            map.put("A38", "");
 //            //39	UV（剔重）	可为空，,口径：独立用户/独立访客。,电子渠道效果指标
-//            map.put("A39", null);
+//            map.put("A39", "");
 //            //40	办理量	可为空，,口径：业务办理次数。,电子渠道效果指标
-//            map.put("A40", null);
+//            map.put("A40", "");
 //            //41	用户号码明细	互联网特有，可为空
-//            map.put("A41", null);
+//            map.put("A41", "");
 //            //42	活动专题ID	当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
-//            map.put("A42", null);
+//            map.put("A42", "");
 //
 //
 //            /**
@@ -297,7 +297,7 @@ public class Test93001 {
 //                //35	客户质量情况	描述性信息,可为空
 //                resultmap.put("A35", "");
 //                //36	资源使用情况	描述性信息,可为空
-//                resultmap.put("A36", null);
+//                resultmap.put("A36", "");
 //                resultmap.putAll(map);
 //                list.add(resultmap);
 //            }
