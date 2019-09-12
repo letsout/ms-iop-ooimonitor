@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.test;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class Test93006 {
     @Autowired
     FileDataService fileDataService;
@@ -40,17 +42,17 @@ public class Test93006 {
             //7 营销活动名称 必填
             map.put("A7", activity.get("activity_name"));
             //8 子活动编号 可为空，参考附录1统一编码规则中的营销子活动编号编码规则；当营销活动涉及多子活动时，以逗号分隔
-            map.put("A8", null);
+            map.put("A8", "");
             //9 子活动名称 可为空，当营销活动涉及多子活动时，以逗号分隔
-            map.put("A9", null);
+            map.put("A9", "");
             //10 PV 可为空,口径：该用户打开网页次数,电子渠道效果指标
-            map.put("A10", null);
+            map.put("A10", "");
             //11 用户点击量 可为空,口径：页面内容被该用户点击的次数,电子渠道效果指标
-            map.put("A11", null);
+            map.put("A11", "");
             //12 用户办理量 可为空,口径：该用户业务办理次数,电子渠道效果指标
-            map.put("A12", null);
+            map.put("A12", "");
             //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
-            map.put("A16", null);
+            map.put("A16", "");
             List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDaySql(new Date()));
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
@@ -69,7 +71,7 @@ public class Test93006 {
         }
 
         String sql = SqlUtil.getInsert("93006", list);
-        fileDataService.saveresultList(sql);
+//        fileDataService.saveresultList(sql);
 
     }
 
@@ -81,7 +83,7 @@ public class Test93006 {
         Map<String, String> map = null;
         Map<String, String> mapresult = null;
         List<Map<String, String>> activitys = fileDataService.getMarkenInfo93006();
-        System.out.println("activitys.size=" + activitys.size());
+        System.out.println("activitys:" + activitys);
         //1 行号
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>();
@@ -90,7 +92,7 @@ public class Test93006 {
             //3 省份 必填，长度3位
             map.put("A3", "280");
             //4 地市 必填,长度： 3位或4位
-           map.put("A4", activity.getOrDefault("city_code","028"));
+            map.put("A4", activity.getOrDefault("city_code", "028"));
             //6 营销活动编号 必填,前三位必须为省份编码
             String activity_id = activity.get("activity_id");
             map.put("A6", activity_id);
@@ -101,17 +103,16 @@ public class Test93006 {
             //9 子活动名称 可为空，当营销活动涉及多子活动时，以逗号分隔
             map.put("A9", activity.get("campaign_name"));
             //10 PV 可为空,口径：该用户打开网页次数,电子渠道效果指标
-            map.put("A10", null);
+            map.put("A10", "");
             //11 用户点击量 可为空,口径：页面内容被该用户点击的次数,电子渠道效果指标
-            map.put("A11", null);
+            map.put("A11", "");
             //12 用户办理量 可为空,口径：该用户业务办理次数,电子渠道效果指标
-            map.put("A12", null);
+            map.put("A12", "");
             //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
             map.put("A16", activity.get("spetopic_id"));
-//            activity.put("final_obj_table_name", "OBJ_284576966837831");
-//            final List<Map<String, String>> phones = fileDataService.getPhone93006(activity.get("final_obj_table_name"));
-////            System.out.println("phones=="+phones);
             List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDaySql(new Date()));
+            System.out.println("detaileffect:" + detaileffect);
+
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
                 //5 用户号码 必填,运营对象手机号码

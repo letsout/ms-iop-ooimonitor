@@ -242,17 +242,17 @@ public class Test93002 {
             }
         }
         String sql = SqlUtil.getInsert("93002", list);
-        fileDataService.saveresultList(sql);
+//        fileDataService.saveresultList(sql);
     }
 
     @Test
     public void testsavebase93002() {
-        List<Map<String, String>> list = new ArrayList<>();
-        Map<String, String> map = null;
-        Map<String, String> resultmap = null;
-        List<Map<String, String>> activitys = fileDataService.getBaseInfo93002();
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = null;
+        Map<String, Object> resultmap = null;
+        List<Map<String, Object>> activitys = fileDataService.getBaseInfo93002();
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-90子活动效果评估指标
-        for (Map<String, String> activity : activitys) {
+        for (Map<String, Object> activity : activitys) {
             map = new HashMap<>();
             //2,统计时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
             map.put("A2", TimeUtil.getLongSeconds(new Date()));
@@ -265,14 +265,14 @@ public class Test93002 {
              * 5-13为营销活动相关信息
              */
             //5,营销活动编号参考附录1统一编码规则中的编号规则，当涉及到一级策划省级执行时，营销活动编号需要与IOP-92001接口营销活动编码一致。当涉及省级策划一级执行时，营销活动编号需要与IOP-92004接口的营销活动编号一致,必填,前三位必须为省份编码
-            String activity_id = activity.get("activity_id");
+            String activity_id = activity.get("activity_id").toString();
             map.put("A5", "280" + activity_id.substring(1));
             //6,营销活动名称,必填
             map.put("A6", activity.get("activity_name"));
             //7,活动开始时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
-            map.put("A7", activity.get("start_time").replace("-", ""));
+            map.put("A7", activity.get("start_time").toString().replace("-", "") + "000000");
             //8,活动结束时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间,活动结束时间不早于活动开始时间
-            map.put("A8", activity.get("end_time").replace("-", ""));
+            map.put("A8", activity.get("end_time").toString().replace("-", "") + "000000");
             //9,营销活动类型,1：入网类,必填，填写枚举值ID,2：终端类,3：流量类,4：数字化服务类,5：基础服务类,6：客户保有类,7：宽带类,8：融合套餐类,9：其它类
             map.put("A9", activity.getOrDefault("activity_type", "9"));
             //10,营销活动目的,1：新增客户类,必填，填写枚举值ID,2：存量保有类,3：价值提升类,4：离网预警类,9：其它类
@@ -405,13 +405,13 @@ public class Test93002 {
  * 14-36子活动相关信息
  */
             //14,子活动编号,必填,参考附录1 统一编码规则中的营销子活动编号编码规则
-            map.put("A14", "280" + activity.get("activity_id").substring(1));
+            map.put("A14", "280" + activity.get("activity_id").toString().substring(1));
             //15,子活动名称,必填
             map.put("A15", activity.get("activity_name"));
             //16,子活动开始时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
-            map.put("A16", activity.get("start_time").replace("-", "") + "000000");
+            map.put("A16", activity.get("start_time").toString().replace("-", "") + "000000");
             //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
-            map.put("A17", activity.get("end_time").replace("-", "") + "000000");
+            map.put("A17", activity.get("end_time").toString().replace("-", "") + "000000");
             //18,目标客户群编号,必填
             map.put("A18", mapEffect.get("customer_group_id"));
             //19,目标客户群名称,必填
@@ -422,7 +422,7 @@ public class Test93002 {
             map.put("A21", "");
             //22,目标客户筛选标准,必填
             map.put("A22", mapEffect.get("customer_filter_rule"));
-            List<Map<String, String>> offerMaps = fileDataService.getOfferBo(activity.get("activity_id"));
+            List<Map<String, String>> offerMaps = fileDataService.getOfferBo(activity.get("activity_id").toString());
             Map<String, String> offerMap = offerMaps.get(0);
             //23,产品编码,必填,比如0200100xxxx,02：一级分类,001：二级分类,00：三级分类,Xxxx：自定义产品编号,编码规则参考8.1产品编码规则
             String proCode = offerMap.get("offer_code");
@@ -456,8 +456,8 @@ public class Test93002 {
             list.add(resultmap);
         }
 
-        String sql = SqlUtil.getInsert("93002", list);
-        fileDataService.saveresultList(sql);
+        String sql = SqlUtil.getInsertObj("93002", list);
+//        fileDataService.saveresultList(sql);
     }
 
 }

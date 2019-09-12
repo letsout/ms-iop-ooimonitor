@@ -9,13 +9,10 @@ import java.util.Map;
  * Description
  */
 public interface FileDataService {
-    void getPhone();
 
-    List<Map<String, String>> getPhone93006(String tableName);
 
-    List<Map<String, String>> getBaseInfo();
+    List<Map<String, Object>> getBaseInfo93005();
 
-    List<Map<String, String>> getBaseInfo93005();
     List<Map<String, String>> getMarkingInfo93005();
 
     Map<String, String> getCustGroupInfo(String activityId);
@@ -37,7 +34,8 @@ public interface FileDataService {
     List<Map<String, String>> getOfferBo(String campaign_id);
 
     List<Map<String, String>> getMarkingInfo93002();
-    List<Map<String, String>> getBaseInfo93002();
+
+    List<Map<String, Object>> getBaseInfo93002();
 
     List<Map<String, String>> getMarkenInfo93006();
 
