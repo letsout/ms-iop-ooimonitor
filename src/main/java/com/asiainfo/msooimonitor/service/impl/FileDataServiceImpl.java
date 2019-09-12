@@ -27,6 +27,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
 
+    @Override
     public List<Map<String, String>> getPhone93006(String tableName) {
         return commonMapper.getMap("select * from " + tableName);
     }
@@ -116,10 +117,12 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93001;
     }
 
+    @Override
     public List<Map<String, String>> getMarkingInfo93002() {
         final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002();
         return markingInfo93002;
     }
+    @Override
     public List<Map<String, String>> getBaseInfo93002() {
         final List<Map<String, String>> baseInfo93002 = getFileDataMapper.getBaseInfo93002();
         return baseInfo93002;
@@ -141,24 +144,29 @@ public class FileDataServiceImpl implements FileDataService {
         return baseInfo93006;
     }
 
+    @Override
     public List<Map<String, String>> getDetailEffect(String activity_id, String date) {
 
         return getFileDataMapper.getDetailEffect(activity_id, date);
     }
 
+    @Override
     public Map<String, String> getSummaryEffect(String activity_id) {
 
         return getFileDataMapper.getSummaryEffect(activity_id);
     }
 
+    @Override
     public void saveresultList(String sql) {
         commonMapper.insertSql(sql);
     }
 
+    @Override
     public List<Map<String, String>> getResult(String sql) {
         return commonMapper.getMap(sql);
     }
 
+    @Override
     public List<Map<String, String>> getOfferBo(String campaign_id) {
         return getFileDataMapper.getOfferBo(campaign_id);
 
