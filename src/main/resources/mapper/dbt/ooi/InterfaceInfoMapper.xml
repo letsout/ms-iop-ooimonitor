@@ -176,4 +176,14 @@
         where
         interface_id=#{interfaceId}
     </select>
+    <select id="getDetailEffect" resultType="map" >
+        select *
+        from ooi_activity_detail_effect_${date}
+        where activity_id = #{activity_id}
+    </select>
+    <select id="getSummaryEffect" resultType="map">
+        select *
+        from ooi_activity_summary_effect
+        where activity_id = #{activity_id}
+    </select>
 </mapper>

@@ -13,6 +13,7 @@ public interface InterfaceInfoMpper {
 
     /**
      * 获取接口信息
+     *
      * @param params
      * @return
      */
@@ -22,7 +23,7 @@ public interface InterfaceInfoMpper {
 
     void saveInterfceInfo(InterfaceInfo params);
 
- /*   List<InterfaceRecord> getInterfaceRecord(@Param("start") int start,@Param("end") int end);*/
+    /*   List<InterfaceRecord> getInterfaceRecord(@Param("start") int start,@Param("end") int end);*/
 
     List<InterfaceRecord> getInterfaceRecord(Map params);
 
@@ -44,5 +45,10 @@ public interface InterfaceInfoMpper {
                                                     @Param("updateType") String updateType,
                                                     @Param("state") String state,
                                                     @Param("updateTime") String updateTime);
+
     String getInterfaceIdType(@Param("interfaceId") String interfaceId);
+
+    List<Map<String, String>> getDetailEffect(String activity_id, String date);
+
+    Map<String, String> getSummaryEffect(String activity_id);
 }

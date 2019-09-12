@@ -1,8 +1,5 @@
 package com.asiainfo.msooimonitor.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.asiainfo.msooimonitor.service.FileDataService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,10 +17,10 @@ public class SqlUtil {
     public static Map<String, Integer> tableMap = new HashMap<>();
 
     static {
-        tableMap.put("93001", 50);
+        tableMap.put("93001", 48);
         tableMap.put("93002", 90);
-        tableMap.put("93005", 86);
-        tableMap.put("93006", 16);
+        tableMap.put("93005", 80);
+        tableMap.put("93006", 15);
     }
 
     public static String getInsert(String interfaceName, List<Map<String, String>> list) {
@@ -46,13 +43,13 @@ public class SqlUtil {
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
                 String value = mapinsert.getOrDefault(key, "");
+                if (value == null) {
+                    value = "";
+                }
+                if (value.equals("null")) {
+                    value = "";
+                }
                 System.out.println(key + "->" + value);
-//                if (value == null) {
-//                    System.out.println("---------------null-----------------");
-//                    value = "";
-//                }
-//                if (value.equals("null"))
-//                    value = "";
                 if (a != columSize) {
                     sbvalue.append(value).append("','");
                 } else {
@@ -93,6 +90,12 @@ public class SqlUtil {
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
                 Object value = mapinsert.getOrDefault(key, "");
+                if (value == null) {
+                    value = "";
+                }
+                if (value.equals("null")) {
+                    value = "";
+                }
                 System.out.println(key + "->" + value);
                 if (value == null)
                     value = "";
