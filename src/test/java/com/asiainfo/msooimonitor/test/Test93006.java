@@ -21,11 +21,11 @@ public class Test93006 {
 
     @Test
     public void testsavebase93006() {
-
+        String date = "2019-09-11";
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = null;
         Map<String, String> mapresult = null;
-        List<Map<String, String>> activitys = fileDataService.getBaseInfo93006();
+        List<Map<String, String>> activitys = fileDataService.getBaseInfo93006(date);
         System.out.println("activitys.size=" + activitys.size());
         //1 行号
         for (Map<String, String> activity : activitys) {
@@ -51,8 +51,8 @@ public class Test93006 {
             map.put("A11", "");
             //12 用户办理量 可为空,口径：该用户业务办理次数,电子渠道效果指标
             map.put("A12", "");
-            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
-            map.put("A16", "");
+//            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
+//            map.put("A16", "");
             List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDaySql(new Date()));
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
@@ -70,19 +70,20 @@ public class Test93006 {
             }
         }
 
-        String sql = SqlUtil.getInsert("93006", list);
-//        fileDataService.saveresultList(sql);
+
+        SqlUtil.getInsert("93006", list);
+//
 
     }
 
 
     @Test
     public void testsavemarking93006() {
-
+        String date = "2019/12/31";
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = null;
         Map<String, String> mapresult = null;
-        List<Map<String, String>> activitys = fileDataService.getMarkenInfo93006();
+        List<Map<String, String>> activitys = fileDataService.getMarkenInfo93006(date);
         System.out.println("activitys:" + activitys);
         //1 行号
         for (Map<String, String> activity : activitys) {
@@ -108,8 +109,8 @@ public class Test93006 {
             map.put("A11", "");
             //12 用户办理量 可为空,口径：该用户业务办理次数,电子渠道效果指标
             map.put("A12", "");
-            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
-            map.put("A16", activity.get("spetopic_id"));
+//            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
+//            map.put("A16", activity.get("spetopic_id"));
             List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDaySql(new Date()));
             System.out.println("detaileffect:" + detaileffect);
 
@@ -128,7 +129,7 @@ public class Test93006 {
                 list.add(mapresult);
             }
         }
-        String sql = SqlUtil.getInsert("93006", list);
-        fileDataService.saveresultList(sql);
+        SqlUtil.getInsert("93006", list);
+
     }
 }

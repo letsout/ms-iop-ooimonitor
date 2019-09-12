@@ -34,77 +34,72 @@
                  inner JOIN cust_group_info b ON a.cust_group_id = b.cust_group_id
         where ACTIVITY_ID = #{activityId }   </select>
     <select id="getBaseInfo93006" resultType="map">
-        select a.*,city_code,b.final_obj_table_name
+        select a.*,city_code
         from activity_base_info a
-                 inner join activity_obj_user b on a.activity_id = b.activity_id
                  inner join activity_rel_channel c on a.activity_id = c.activity_id
                  inner JOIN base_channel d on c.channel_id = d.channel_id
                  inner join base_city_code e on e.city_id = a.city_id
-        where d.is_syn = 'E'
-          and a.activity_state = '6' limit 1
+        where d.is_syn = 'E' and a.activity_state = '9'
+          and a.end_time = #{date}
+        --         select a.*,city_code,b.final_obj_table_name
+        --         from activity_base_info a
+        --                  inner join activity_obj_user b on a.activity_id = b.activity_id
+        --                  inner join activity_rel_channel c on a.activity_id = c.activity_id
+        --                  inner JOIN base_channel d on c.channel_id = d.channel_id
+        --                  inner join base_city_code e on e.city_id = a.city_id
+        --         where d.is_syn = 'E'
+        --           and a.activity_state = '6' limit 1
 
     </select>
     <select id="getMarkenInfo93006" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where activity_id = '28020190827085181'
+        where SUBSTR(activity_endtime, 1, 10) = #{date}
     </select>
     <select id="getMarkingInfo93001" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where activity_id
-            = '28020190827085181'
+        where SUBSTR(activity_endtime, 1, 10) >= #{date}
     </select>
     <select id="getMarkingInfo93002" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
         where activity_id
-            = '28020190827085181'
+            = '28020190903086718'
     </select>
     <select id="getBaseInfo93002" resultType="map">
         select *
-        from activity_base_info
-        where activity_id
-            = '28020190827085181'
+        from activity_base_info a
+        where
+                a.activity_id in ('A606488988886237184', 'A606499909297766400', 'A608255698274353152')
     </select>
 
     <select id="getCampaignedInfo" resultType="map">
-        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
+        select *
         from ooi_MARKING_CAMPAIGN_INFO a
-                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
         where a.activity_id = #{activity_id}
     </select>
-    <select id="getDetailEffect" resultType="map">
-        select *
-        from ooi_activity_detail_effect_${date}
-        where activity_id = #{activity_id}
-    </select>
-    <select id="getSummaryEffect" resultType="map">
-        select *
-        from ooi_activity_summary_effect
-        where activity_id = #{activity_id}
-    </select>
+
     <select id="getOfferBo" resultType="map">
         select *
         from ooi_marking_campaign_offerBO_info
         where campaign_id = #{campaign_id}
     </select>
     <select id="getBaseInfo93005" resultType="map">
-        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
-        from activity_base_infoa
-                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
-        where a.activity_id = '28020190827085181'
+        select a.*
+        from activity_base_info a
+        where a.end_time = #{date}
+
     </select>
     <select id="getBaseInfo93001" resultType="map">
         select *
         from activity_base_info
-        where activity_id = '28020190827085181'
+
     </select>
     <select id="getMarkingInfo93005" resultType="map">
-        select a.*,customer_group_id,customer_group_name,customer_num,customer_filter_rule
+        select *
         from ooi_MARKING_ACTIVITY_INFO a
-                 left join ooi_activity_summary_effect b on a.activity_id = b.activity_id
-        where a.activity_id = '28020190827085181'
+        where SUBSTR(activity_endtime, 1, 10) >= #{date}
     </select>
 
 </mapper>

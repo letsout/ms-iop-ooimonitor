@@ -26,30 +26,26 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
     //93006查询省级策划省级执行的
-    List<Map<String, String>> getBaseInfo93006();
+    List<Map<String, String>> getBaseInfo93006(String date);
 
     //93006查询一级策划省级执行的
-    List<Map<String, String>> getMarkingInfo93001();
+    List<Map<String, String>> getMarkingInfo93001(String date);
 
     List<Map<String, String>> getMarkingInfo93002();
 
     List<Map<String, Object>> getBaseInfo93002();
 
-    List<Map<String, String>> getMarkenInfo93006();
+    List<Map<String, String>> getMarkenInfo93006(String date);
 
 
     List<Map<String, String>> getCampaignedInfo(String activity_id);
 
-    List<Map<String, String>> getDetailEffect(String activity_id, String date);
-
-    Map<String, String> getSummaryEffect(String activity_id);
-
     List<Map<String, String>> getOfferBo(String campaign_id);
 
-    List<Map<String, Object>> getBaseInfo93005();
+    List<Map<String, Object>> getBaseInfo93005(String date);
 
     List<Map<String, String>> getBaseInfo93001();
 
-    List<Map<String, String>> getMarkingInfo93005();
+    List<Map<String, String>> getMarkingInfo93005(String date);
 
 }

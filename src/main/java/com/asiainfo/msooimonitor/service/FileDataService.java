@@ -11,15 +11,15 @@ import java.util.Map;
 public interface FileDataService {
 
 
-    List<Map<String, Object>> getBaseInfo93005();
+    List<Map<String, Object>> getBaseInfo93005(String date);
 
-    List<Map<String, String>> getMarkingInfo93005();
+    List<Map<String, String>> getMarkingInfo93005(String date);
 
     Map<String, String> getCustGroupInfo(String activityId);
 
-    List<Map<String, String>> getMarkingInfo93001();
+    List<Map<String, String>> getMarkingInfo93001(String date);
 
-    List<Map<String, String>> getBaseInfo93006();
+    List<Map<String, String>> getBaseInfo93006(String date);
 
     List<Map<String, String>> getCampaignedInfo(String activityId);
 
@@ -37,7 +37,7 @@ public interface FileDataService {
 
     List<Map<String, Object>> getBaseInfo93002();
 
-    List<Map<String, String>> getMarkenInfo93006();
+    List<Map<String, String>> getMarkenInfo93006(String date);
 
     List<Map<String, String>> getBaseInfo93001();
 }
