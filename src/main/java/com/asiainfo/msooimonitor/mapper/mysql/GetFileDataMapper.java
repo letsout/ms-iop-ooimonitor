@@ -60,4 +60,7 @@ public interface GetFileDataMapper {
 
     void insertFailInterface(Map<String, String> map);
 
+    List<String> getIOPActivityIds(String activityId);
+
+    List<String> getZHDIOPActivityIds(String activityId);
 }

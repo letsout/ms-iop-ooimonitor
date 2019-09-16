@@ -179,12 +179,25 @@
     <select id="getDetailEffect" resultType="map" >
         select *
         from ooi_activity_detail_effect_${date}
-        where activity_id = #{activity_id}
+        where activity_id in (${activityIds})
+        limit #{start},#{limit}
     </select>
+
+    <select id="getSummaryEffects" parameterType="string" resultType="map">
+            select *
+        from ooi_activity_summary_effect
+        where activity_id in (${activityIds})
+          and data_time = #{date}
+    </select>
+
     <select id="getSummaryEffect" resultType="map">
         select *
         from ooi_activity_summary_effect
-        where activity_id = #{activity_id}
+        where activity_id = #{activityIds}
           and data_time = #{date}
+    </select>
+
+    <select id="getTableRows" parameterType="string" resultType="int">
+        select count(*) from ooi_activity_detail_effect_${dateTimeFormat} where activity_id in (${activityIds})
     </select>
 </mapper>

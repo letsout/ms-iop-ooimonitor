@@ -9,10 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -116,15 +114,58 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public List<Map<String, String>> getDetailEffect(String activity_id, String activityEndDate) {
+    public List<Map<String, String>> getDetailEffect(String activityIds, String activityEndDate,  int start , int limit) {
 
-        return interfaceInfoMpper.getDetailEffect(activity_id, activityEndDate);
+        return interfaceInfoMpper.getDetailEffect(activityIds, activityEndDate,start,limit);
     }
 
     @Override
-    public Map<String, String> getSummaryEffect(String activity_id, String activityEndDate) {
+    public Map<String, String> getSummaryEffect(String activityId, String activityEndDate) {
+        // 根据自互动取
+       Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(activityId, activityEndDate);
+        return summaryEffect;
+    }
 
-        return interfaceInfoMpper.getSummaryEffect(activity_id, activityEndDate);
+    @Override
+    public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate,String type) {
+        List<String> iopActivityIds;
+        // 根据集团下发活动查询iop关联活动
+        if("ZHD".equals(type)){
+            iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
+        }else {
+            iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId);
+        }
+        String activityIds = "'"+StringUtils.join(iopActivityIds, "','")+"'";
+        List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
+        int customerNum = 0;
+        int touchNum = 0;
+        int vicNum = 0;
+        float inOutRate = 0;
+        float terminalFlowRate = 0;
+        int i = 0;
+        for (Map<String,String> map:
+                summaryEffect) {
+            customerNum += Integer.valueOf(map.get("customer_num")) ;
+            touchNum += Integer.valueOf(map.get("touch_num")) ;
+            vicNum += Integer.valueOf(map.get("vic_num")) ;
+            inOutRate += Float.valueOf(map.get("in_out_rate")) ;
+            terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate")) ;
+            i++;
+        }
+
+        Map<String, String> map = summaryEffect.get(0);
+        map.put("customer_num",String.valueOf(customerNum));
+        map.put("touch_num",String.valueOf(touchNum));
+        map.put("vic_num",String.valueOf(vicNum));
+
+        DecimalFormat df=new DecimalFormat("0.000000");
+        map.put("touhe_rate",df.format((float)touchNum/customerNum));
+        map.put("response_rate",df.format((float)touchNum/customerNum));
+        map.put("vic_rate",df.format((float)vicNum/touchNum));
+        map.put("in_out_rate",df.format(inOutRate/i));
+        map.put("terminal_flow_rate",df.format(terminalFlowRate/i));
+
+        return map;
     }
 
     @Override
@@ -143,7 +184,7 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public List<Map<String, String>> getMarkingInfo93006(String activityEndDate) {
-
+        // 一级策划省级执行
         List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
@@ -154,10 +195,12 @@ public class FileDataServiceImpl implements FileDataService {
                 campaignId += "," + map.get("campaign_id");
                 campaignName += "," + map.get("campaign_name");
             }
-            if (campaignId.length() > 0)
+            if (campaignId.length() > 0){
                 campaignId = campaignId.substring(1);
-            if (campaignName.length() > 0)
+            }
+            if (campaignName.length() > 0){
                 campaignName = campaignName.substring(1);
+            }
             markingmap.put("campaign_id", campaignId);
             markingmap.put("campaign_name", campaignName);
         });
@@ -179,8 +222,21 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
+    public int getTableRows(String activityIds, String dateTimeFormat) {
+        return interfaceInfoMpper.getTableRows(activityIds,dateTimeFormat);
+    }
+
+    @Override
+    public String getIOPActivityIds(String activityId) {
+        List<String> iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId);
+        String activitys = "'"+StringUtils.join(iopActivityIds, "','")+"'";
+        return activitys ;
+    }
+
+    @Override
     public void insertFailInterface(Map<String, String> map){
         getFileDataMapper.insertFailInterface(map);
     }
-
 }
+
+

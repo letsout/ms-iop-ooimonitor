@@ -23,9 +23,11 @@ public interface FileDataService {
 
     List<Map<String, String>> getCampaignedInfo(String activityId);
 
-    List<Map<String, String>> getDetailEffect(String activity_id, String nowDate);
+    List<Map<String, String>> getDetailEffect(String activityIds, String nowDatem, int start , int limit);
 
     Map<String, String> getSummaryEffect(String activity_id, String summaryDate);
+
+    Map<String, String> getSummaryEffectJT(String activity_id, String summaryDate,String type);
 
     List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
 
@@ -46,4 +48,19 @@ public interface FileDataService {
     List<Map<String, String>> getBaseInfo93001();
 
     void insertFlow();
+
+    /**
+     * 查询表中数据条数 用于分页查询
+     * @param activityIds
+     * @param dateTimeFormat
+     * @return
+     */
+    int getTableRows(String activityIds, String dateTimeFormat);
+
+    /**
+     * 根据集团下发id获取关联iop的活动id
+     * @param activityId
+     * @return
+     */
+    String getIOPActivityIds(String activityId);
 }

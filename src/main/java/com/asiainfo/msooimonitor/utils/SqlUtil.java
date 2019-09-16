@@ -4,7 +4,6 @@ import com.asiainfo.msooimonitor.service.FileDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ public class SqlUtil {
     public SqlUtil(FileDataService fileDataService) {
         SqlUtil.fileDataService = fileDataService;
     }
+
 static {
     tableMap.put("93001", 48);
     tableMap.put("93002", 90);

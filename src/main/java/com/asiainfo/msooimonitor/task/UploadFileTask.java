@@ -20,7 +20,7 @@ import java.util.Map;
 @Component
 public class UploadFileTask {
 
-    @Value("${path17}")
+    @Value("${file.path17}")
     private String path17;
 
     @Autowired

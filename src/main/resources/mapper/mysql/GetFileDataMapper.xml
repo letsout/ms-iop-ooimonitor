@@ -41,6 +41,9 @@
                  inner join base_city_code e on e.city_id = a.city_id
         where d.is_syn = 'E'
           and a.activity_state = '9'
+          and a.is_deleted = 0
+          and a.is_paused = 0
+          and a.is_send_approval = 1
           and a.end_time = #{activityEndDate}
     </select>
     <select id="getMarkingInfo93006" resultType="map">
@@ -126,10 +129,19 @@
 
     <update id="insertFailInterface" parameterType="java.util.HashMap">
 
-        INSERT INTO `activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,
+        INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,
                                                   error_desc)
         VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});
 
     </update>
+
+    <select id="getIOPActivityIds" parameterType="string" resultType="string">
+        select distinct  iop_activity_id from ooi_iop_rel_activity_info where ooi_activity_id = #{activityId} and data_state = 'U' and is_feedback = '2'
+    </select>
+
+
+    <select id="getZHDIOPActivityIds" parameterType="string" resultType="string">
+        select distinct  iop_activity_id from ooi_iop_rel_activity_info where ooi_campaign_id = #{activityId} and data_state = 'U' and is_feedback = '2'
+    </select>
 
 </mapper>

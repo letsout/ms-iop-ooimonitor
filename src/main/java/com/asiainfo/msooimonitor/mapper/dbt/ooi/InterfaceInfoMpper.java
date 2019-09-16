@@ -48,7 +48,11 @@ public interface InterfaceInfoMpper {
 
     String getInterfaceIdType(@Param("interfaceId") String interfaceId);
 
-    List<Map<String, String>> getDetailEffect(String activity_id, String date);
+    List<Map<String, String>> getDetailEffect(@Param("activityIds") String activityIds,@Param("date") String date,@Param("start") int start ,@Param("limit") int limit);
 
-    Map<String, String> getSummaryEffect(String activity_id, String date);
+    Map<String, String> getSummaryEffect(@Param("activityIds") String activityIds,@Param("date") String date);
+
+    int getTableRows(@Param("activityIds") String activityIds,@Param("dateTimeFormat") String dateTimeFormat);
+
+    List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds,@Param("date") String date);
 }
