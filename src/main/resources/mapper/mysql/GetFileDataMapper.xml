@@ -121,6 +121,11 @@
     <select id="getChannelInfo" resultType="map">
         select *
         from activity_rel_channel_parameter a
+        where a.activity_id = #{activity_id} limit 1
+    </select>
+    <select id="getPositionInfo" resultType="map">
+        select *
+        from activity_rel_channel_parameter a
                  inner join marking_activity_iop_info b on a.`value` = b.POSITIONID
         where a.parameter = 'internet_base_pos_name'
           and a.activity_id = #{activity_id}

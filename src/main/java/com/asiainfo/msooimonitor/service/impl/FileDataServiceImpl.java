@@ -214,6 +214,17 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
+    public Map<String, String> getChannelInfo(String activity_id) {
+        Map<String, String> channelInfo = getFileDataMapper.getChannelInfo(activity_id);
+        return channelInfo;
+    }
+    @Override
+    public Map<String, String> getPositionInfo(String activity_id) {
+        Map<String, String> positionInfo = getFileDataMapper.getPositionInfo(activity_id);
+        return positionInfo;
+    }
+
+    @Override
     public void insertFlow() {
         final List<Map<String, String>> flowInfo1 = getFileDataMapper.getFlowInfo1();
         getFileDataMapper.insertFlow(flowInfo1);
@@ -237,6 +248,5 @@ public class FileDataServiceImpl implements FileDataService {
     public void insertFailInterface(Map<String, String> map){
         getFileDataMapper.insertFailInterface(map);
     }
+
 }
-
-

@@ -26,6 +26,7 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
     Map<String, String> getChannelInfo(String activity_id);
+    Map<String, String> getPositionInfo(String activity_id);
 
     //93006查询省级策划省级执行的
     List<Map<String, String>> getBaseInfo93006(String activityEndDate);

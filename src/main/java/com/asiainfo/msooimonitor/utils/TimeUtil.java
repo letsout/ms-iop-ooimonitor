@@ -66,6 +66,12 @@ public class TimeUtil {
         return format.format(date);
 
     }
+    public static String getDayDateFormat(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_DAY_FORMAT);
+
+        return format.format(date);
+
+    }
 
     /**
      * 将日期格式转化为yyyyMMdd

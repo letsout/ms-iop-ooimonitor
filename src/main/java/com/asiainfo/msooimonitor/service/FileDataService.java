@@ -47,6 +47,10 @@ public interface FileDataService {
 
     List<Map<String, String>> getBaseInfo93001();
 
+    Map<String, String> getChannelInfo(String activity_id);
+
+    Map<String, String> getPositionInfo(String activity_id);
+
     void insertFlow();
 
     /**
