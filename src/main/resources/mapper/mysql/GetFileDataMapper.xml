@@ -115,11 +115,20 @@
                  inner join base_channel b on a.channel_id = b.channel_id
         where a.activity_id not in (select activity_id from activity_flow)
     </select>
+    <select id="getChannelInfo" resultType="map">
+        select *
+        from activity_rel_channel_parameter a
+                 inner join marking_activity_iop_info b on a.`value` = b.POSITIONID
+        where a.parameter = 'internet_base_pos_name'
+          and a.activity_id = #{activity_id}
+    </select>
 
 
     <update id="insertFailInterface" parameterType="java.util.HashMap">
 
-        INSERT INTO `activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,error_desc) VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time},#{error_desc});
+        INSERT INTO `activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,
+                                                  error_desc)
+        VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});
 
     </update>
 
