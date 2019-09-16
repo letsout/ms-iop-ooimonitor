@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.controller;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.task.TaskSaveMethod;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,11 +50,12 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                fileDataService.truncateTable("93006");
+                fileDataService.truncateTable("93001");
                 try {
                     taskSaveMethod.saveMarking93001(activityEndDate, summaryDate, summaryDateBefore);
                 } catch (Exception e) {
-                    fileDataService.truncateTable("93006");
+                    log.error("93001 error :{}",e);
+                    fileDataService.truncateTable("93001");
                 }
             }
         }.run();
@@ -68,12 +70,12 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                fileDataService.truncateTable("93006");
+                fileDataService.truncateTable("93005");
                 try {
                     taskSaveMethod.saveBase93005(activityEndDate, summaryDate);
                     taskSaveMethod.saveMarking93005(activityEndDate, summaryDate);
-                } catch (Exception e) {
-                    fileDataService.truncateTable("93006");
+                } catch (Exception e) {log.error("93005 error :{}",e);
+                    fileDataService.truncateTable("93005");
                 }
             }
         }.run();
@@ -88,12 +90,12 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                fileDataService.truncateTable("93006");
+                fileDataService.truncateTable("93002");
                 try {
                     taskSaveMethod.saveMarking93002(activityEndDate, summaryDate, campaignedEndTime);
                     taskSaveMethod.savebase93002(activityEndDate, summaryDate);
-                } catch (Exception e) {
-                    fileDataService.truncateTable("93006");
+                } catch (Exception e) {log.error("93002 error :{}",e);
+                    fileDataService.truncateTable("93002");
                 }
             }
         }.run();
