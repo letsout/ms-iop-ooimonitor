@@ -105,7 +105,11 @@ public class TaskSaveMethod {
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93006");
                 failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e.getMessage());
+                if(e.getMessage().length() > 2000){
+                    failMap.put("error_desc",e.getMessage().substring(0,1999));
+                }else {
+                    failMap.put("error_desc",e.getMessage());
+                }
                 //System.out.println("json=" + JSON.toJSONString(failMap));
                 fileDataService.insertFailInterface(failMap);
                 throw new Exception("接口异常");
@@ -201,7 +205,12 @@ public class TaskSaveMethod {
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93006");
                 failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e.getMessage());
+                if(e.getMessage().length() > 2000){
+                    failMap.put("error_desc",e.getMessage().substring(0,1999));
+                }else {
+                    failMap.put("error_desc",e.getMessage());
+                }
+
                 fileDataService.insertFailInterface(failMap);
                 log.error("93006 error:{}", e);
                 throw new Exception("接口异常");
@@ -358,7 +367,7 @@ public class TaskSaveMethod {
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93001");
                 failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e1.getMessage());
+                failMap.put("error_desc", e1.getMessage().substring(0,1999));
                 e1.printStackTrace();
                 fileDataService.insertFailInterface(failMap);
                 log.error("93006 base 接口异常:{}",e1);

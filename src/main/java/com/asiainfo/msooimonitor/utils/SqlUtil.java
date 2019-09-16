@@ -33,8 +33,20 @@ static {
 }
 
     public static void getInsert(String interfaceName, List<Map<String, String>> list) {
+        // 每5000条插入一次
+        int start = 0;
+        int splitNum = 1500;
+        for (int i = 0; i <list.size()/splitNum ; i++) {
+            getInsertsql(interfaceName,list.subList(start,splitNum+start));
+            start +=splitNum;
+        }
+        getInsertsql(interfaceName,list.subList(start,list.size()));
+
+    }
+    public static void getInsertsql(String interfaceName, List<Map<String, String>> list) {
         if (list.size() == 0)
             return;
+
         int columSize = tableMap.get(interfaceName);
         StringBuilder sb = new StringBuilder();
 

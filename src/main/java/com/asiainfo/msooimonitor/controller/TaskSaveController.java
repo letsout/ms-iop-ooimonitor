@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.controller;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.task.TaskSaveMethod;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
