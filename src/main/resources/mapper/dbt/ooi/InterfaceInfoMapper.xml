@@ -217,6 +217,6 @@
         where activity_id in (${activityIds})
     </select>
     <delete id="truncateTable">
-        TRUNCATE iop_${tableName}
+        TRUNCATE TABLE iop_${tableName}
     </delete>
 </mapper>

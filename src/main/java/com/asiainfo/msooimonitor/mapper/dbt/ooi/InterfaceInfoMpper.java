@@ -56,5 +56,5 @@ public interface InterfaceInfoMpper {
 
     List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds,@Param("date") String date);
 
-    void truncateTable(String tableName);
+    void truncateTable(@Param("tableName") String tableName);
 }

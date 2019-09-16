@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.controller;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.task.TaskSaveMethod;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import java.util.Date;
  * Description
  */
 @RestController
+@Slf4j
 public class TaskSaveController {
     @Autowired
     TaskSaveMethod taskSaveMethod;
@@ -33,10 +35,11 @@ public class TaskSaveController {
                     taskSaveMethod.savebase93006(activityEndDate);
                     taskSaveMethod.savemarking93006(activityEndDate);
                 } catch (Exception e) {
+                    log.error("93006 error :{}",e);
                     fileDataService.truncateTable("93006");
                 }
             }
-        };
+        }.run();
         return "success：请查看日志";
     }
 
@@ -54,9 +57,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        }
-
-        ;
+        }.run();
         return "success：请查看日志";
     }
 

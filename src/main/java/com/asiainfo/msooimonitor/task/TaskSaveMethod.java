@@ -57,11 +57,11 @@ public class TaskSaveMethod {
                 map.put("A12", "");
 //            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
 //            map.put("A16", "");
-                int num = fileDataService.getTableRows(activity.get("activity_id"), TimeUtil.getDateTimeFormat(new Date()));
+                int num = fileDataService.getTableRows("'"+activity.get("activity_id")+"'", TimeUtil.getLastDaySql(new Date()));
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
-                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDateTimeFormat(new Date()), start, limitNum);
+                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getLastDaySql(new Date()), start, limitNum);
                     log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
@@ -78,10 +78,11 @@ public class TaskSaveMethod {
                         list.add(mapresult);
                     }
                     SqlUtil.getInsert("93006", list);
+                    list.clear();
                     start += limitNum;
                     end -= limitNum;
                 }
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getDateTimeFormat(new Date()), start, end);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'"+activity.get("activity_id")+"'", TimeUtil.getLastDaySql(new Date()), start, end);
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
                     mapresult.put("A5", mapEffect.get("phone_no"));
@@ -97,7 +98,9 @@ public class TaskSaveMethod {
                     list.add(mapresult);
                 }
                 SqlUtil.getInsert("93006", list);
+                list.clear();
             } catch (Exception e) {
+                log.error("93006 base 接口异常:{}",e);
                 Map<String, String> failMap = new HashMap();
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93006");
@@ -147,12 +150,15 @@ public class TaskSaveMethod {
 //            map.put("A16", activity.get("spetopic_id"));
                 // 根据集团下发活动查询关联iop的活动
                 String activityIds = fileDataService.getIOPActivityIds(activity.get("activity_id"));
+                if("''".equals(activityIds)){
+                    continue;
+                }
                 // 查询当前表中数据量
-                int num = fileDataService.getTableRows(activityIds, TimeUtil.getDateTimeFormat(new Date()));
+                int num = fileDataService.getTableRows(activityIds, TimeUtil.getLastDaySql(new Date()));
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
-                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activityIds"), TimeUtil.getDateTimeFormat(new Date()), start, limitNum);
+                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(new Date()), start, limitNum);
                     log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
@@ -169,10 +175,11 @@ public class TaskSaveMethod {
                         list.add(mapresult);
                     }
                     SqlUtil.getInsert("93006", list);
+                    list.clear();
                     start += limitNum;
                     end -= limitNum;
                 }
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activityIds"), TimeUtil.getDateTimeFormat(new Date()), start, end);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(new Date()), start, end);
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
                     //5 用户号码 必填,运营对象手机号码
@@ -188,6 +195,7 @@ public class TaskSaveMethod {
                     list.add(mapresult);
                 }
                 SqlUtil.getInsert("93006", list);
+                list.clear();
             } catch (Exception e) {
                 Map<String, String> failMap = new HashMap();
                 failMap.put("activity_id", activity.get("activity_id"));
@@ -341,6 +349,7 @@ public class TaskSaveMethod {
                         failMap.put("error_desc", e.getMessage());
                         e.printStackTrace();
                         fileDataService.insertFailInterface(failMap);
+                        log.error("93001 接口异常:{}",e);
                         throw new Exception("接口异常");
                     }
                 }
@@ -352,6 +361,7 @@ public class TaskSaveMethod {
                 failMap.put("error_desc", e1.getMessage());
                 e1.printStackTrace();
                 fileDataService.insertFailInterface(failMap);
+                log.error("93006 base 接口异常:{}",e1);
                 throw new Exception("接口异常");
             }
         }
