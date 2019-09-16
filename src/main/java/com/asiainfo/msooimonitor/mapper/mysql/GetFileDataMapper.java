@@ -25,27 +25,39 @@ public interface GetFileDataMapper {
 
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
+    Map<String, String> getChannelInfo(String activity_id);
+
     //93006查询省级策划省级执行的
-    List<Map<String, String>> getBaseInfo93006(String date);
+    List<Map<String, String>> getBaseInfo93006(String activityEndDate);
 
     //93006查询一级策划省级执行的
-    List<Map<String, String>> getMarkingInfo93001(String date);
+    List<Map<String, String>> getMarkingInfo93001(String activityEndDate);
 
-    List<Map<String, String>> getMarkingInfo93002();
+    List<Map<String, String>> getMarkingInfo93002(String activityEndDate);
 
-    List<Map<String, Object>> getBaseInfo93002();
+    List<Map<String, Object>> getBaseInfo93002(String activityEndDate);
 
-    List<Map<String, String>> getMarkenInfo93006(String date);
+    List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 
 
     List<Map<String, String>> getCampaignedInfo(String activity_id);
 
+    List<Map<String, String>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
+
     List<Map<String, String>> getOfferBo(String campaign_id);
 
-    List<Map<String, Object>> getBaseInfo93005(String date);
+    List<Map<String, Object>> getBaseInfo93005(String activityEndDate);
 
     List<Map<String, String>> getBaseInfo93001();
 
-    List<Map<String, String>> getMarkingInfo93005(String date);
+    List<Map<String, String>> getMarkingInfo93005(String activityEndDate);
+
+    void insertFlow(List<Map<String, String>> list);
+
+    List<Map<String, String>> getFlowInfo1();
+
+    List<Map<String, String>> getFlowInfo2();
+
+    void insertFailInterface(Map<String, String> map);
 
 }
