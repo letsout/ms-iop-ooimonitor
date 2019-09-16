@@ -216,7 +216,7 @@
         from ooi_activity_detail_effect_${dateTimeFormat}
         where activity_id in (${activityIds})
     </select>
-    <delete id="truncateTable">
+    <delete id="truncateTable" parameterType="string">
         TRUNCATE iop_${tableName}
     </delete>
 </mapper>

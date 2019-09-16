@@ -80,5 +80,10 @@ public class TaskSave {
 
     }
 
+    @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发
+    public void insertFlow() {
+        fileDataService.insertFlow();
+    }
+
 }
 

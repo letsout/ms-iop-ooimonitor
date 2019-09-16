@@ -40,7 +40,7 @@ public class TaskSaveController {
         return "success：请查看日志";
     }
 
-    @RequestMapping("/marking93001/{summaryDate}")
+    @RequestMapping("/93001/{summaryDate}")
     public String testsaveMarking93001(@PathVariable String summaryDate) {
         String activityEndDate = summaryDate.substring(0, 4) + "/" + summaryDate.substring(4, 6) + "/" + summaryDate.substring(6, 8);
         String summaryDateBefore = TimeUtil.getTwoDaySql(new Date());
@@ -79,7 +79,7 @@ public class TaskSaveController {
     }
 
 
-    @RequestMapping("/marking93002/{summaryDate}")
+    @RequestMapping("/93002/{summaryDate}")
     public String savemarking93002(@PathVariable String summaryDate) {
         String activityEndDate = summaryDate.substring(0, 4) + "/" + summaryDate.substring(4, 6) + "/" + summaryDate.substring(6, 8);
         String campaignedEndTime = activityEndDate;
@@ -98,4 +98,9 @@ public class TaskSaveController {
         return "success：请查看日志";
     }
 
+    @RequestMapping("/insertFlow")
+    public String insertFlow() {
+        fileDataService.insertFlow();
+        return "success";
+    }
 }
