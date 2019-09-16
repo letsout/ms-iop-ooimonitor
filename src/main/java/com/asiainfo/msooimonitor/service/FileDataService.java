@@ -23,11 +23,11 @@ public interface FileDataService {
 
     List<Map<String, String>> getCampaignedInfo(String activityId);
 
-    List<Map<String, String>> getDetailEffect(String activityIds, String nowDatem, int start , int limit);
+    List<Map<String, String>> getDetailEffect(String activityIds, String nowDatem, int start, int limit);
 
     Map<String, String> getSummaryEffect(String activity_id, String summaryDate);
 
-    Map<String, String> getSummaryEffectJT(String activity_id, String summaryDate,String type);
+    Map<String, String> getSummaryEffectJT(String activity_id, String summaryDate, String type);
 
     List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
 
@@ -55,6 +55,7 @@ public interface FileDataService {
 
     /**
      * 查询表中数据条数 用于分页查询
+     *
      * @param activityIds
      * @param dateTimeFormat
      * @return
@@ -63,8 +64,11 @@ public interface FileDataService {
 
     /**
      * 根据集团下发id获取关联iop的活动id
+     *
      * @param activityId
      * @return
      */
     String getIOPActivityIds(String activityId);
+
+    void truncateTable(String tableName);
 }

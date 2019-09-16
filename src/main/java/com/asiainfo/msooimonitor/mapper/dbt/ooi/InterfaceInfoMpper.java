@@ -55,4 +55,6 @@ public interface InterfaceInfoMpper {
     int getTableRows(@Param("activityIds") String activityIds,@Param("dateTimeFormat") String dateTimeFormat);
 
     List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds,@Param("date") String date);
+
+    void truncateTable(String tableName);
 }
