@@ -27,7 +27,7 @@
     <select id="checkInterface" parameterType="string" resultType="int">
         select count(*) from FCM.INTERFACE_INFO
         where
-        interface_id = #{interfaceId}
+            interface_id = #{interfaceId}
     </select>
 
     <insert id="saveInterfceInfo" parameterType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
@@ -185,5 +185,6 @@
         select *
         from ooi_activity_summary_effect
         where activity_id = #{activity_id}
+          and data_time = #{date}
     </select>
 </mapper>
