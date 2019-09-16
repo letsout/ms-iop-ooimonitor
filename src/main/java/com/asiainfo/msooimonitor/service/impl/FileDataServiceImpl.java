@@ -135,8 +135,13 @@ public class FileDataServiceImpl implements FileDataService {
         } else {
             iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId);
         }
+        if (iopActivityIds == null || iopActivityIds.size() == 0) {
+            return null;
+        }
         String activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
         List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
+        if (summaryEffect.size() == 0)
+            return null;
         int customerNum = 0;
         int touchNum = 0;
         int vicNum = 0;
@@ -222,6 +227,8 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public Map<String, String> getPositionInfo(String activity_id) {
         Map<String, String> positionInfo = getFileDataMapper.getPositionInfo(activity_id);
+        if (positionInfo == null)
+            positionInfo= new HashMap<>();
         return positionInfo;
     }
 

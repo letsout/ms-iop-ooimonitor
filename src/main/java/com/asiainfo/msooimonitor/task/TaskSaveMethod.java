@@ -82,7 +82,7 @@ public class TaskSaveMethod {
                     start += limitNum;
                     end -= limitNum;
                 }
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'"+activity.get("activity_id")+"'", TimeUtil.getLastDaySql(new Date()), start, end);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(new Date()), start, end);
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
                     mapresult.put("A5", mapEffect.get("phone_no"));
@@ -100,7 +100,7 @@ public class TaskSaveMethod {
                 SqlUtil.getInsert("93006", list);
                 list.clear();
             } catch (Exception e) {
-                log.error("93006 base 接口异常:{}",e);
+                log.error("93006 base 接口异常:{}", e);
                 Map<String, String> failMap = new HashMap();
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93006");
@@ -154,7 +154,7 @@ public class TaskSaveMethod {
 //            map.put("A16", activity.get("spetopic_id"));
                 // 根据集团下发活动查询关联iop的活动
                 String activityIds = fileDataService.getIOPActivityIds(activity.get("activity_id"));
-                if("''".equals(activityIds)){
+                if ("''".equals(activityIds)) {
                     continue;
                 }
                 // 查询当前表中数据量
@@ -275,18 +275,22 @@ public class TaskSaveMethod {
                 //子活动效果评估指标
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, summaryDate, "ZHD");
                 Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(activity_id, summaryDateBefore, "ZHD");
+                if (mapEffect == null)
+                    return;
+                if (mapEffect1 == null)
+                    return;
                 //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
-                map.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect.get("touch_num"))));
+                map.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
                 //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
-                map.put("A43", String.valueOf(Integer.parseInt(mapEffect.get("touhe_rate")) - Integer.parseInt(mapEffect.get("touhe_rate"))));
+                map.put("A43", String.valueOf(Integer.parseInt(mapEffect.get("touhe_rate")) - Integer.parseInt(mapEffect1.get("touhe_rate"))));
                 //44	响应率	日指标，必填且取值小于1；,口径：运营活动参与用户/成功接触用户,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                map.put("A44", String.valueOf(Integer.parseInt(mapEffect.get("response_rate")) - Integer.parseInt(mapEffect.get("response_rate"))));
+                map.put("A44", String.valueOf(Integer.parseInt(mapEffect.get("response_rate")) - Integer.parseInt(mapEffect1.get("response_rate"))));
                 //45	营销成功用户数	日指标，必填；,口径：根据运营目的，成功办理或者成功使用的用户数
-                map.put("A45", String.valueOf(Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect.get("vic_num"))));
+                map.put("A45", String.valueOf(Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"))));
                 //46	营销成功率	NUMBER (20,6)日指标,必填且取值小于1；,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%
-                map.put("A46", String.valueOf(Integer.parseInt(mapEffect.get("vic_rate")) - Integer.parseInt(mapEffect.get("vic_rate"))));
+                map.put("A46", String.valueOf(Integer.parseInt(mapEffect.get("vic_rate")) - Integer.parseInt(mapEffect1.get("vic_rate"))));
                 //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                map.put("A47", String.valueOf(Integer.parseInt(mapEffect.get("terminal_flow_rate")) - Integer.parseInt(mapEffect.get("terminal_flow_rate"))));
+                map.put("A47", String.valueOf(Integer.parseInt(mapEffect.get("terminal_flow_rate")) - Integer.parseInt(mapEffect1.get("terminal_flow_rate"))));
                 //48 4G流量客户数,日指标，选填，口径：统计周期内，使用4G网络产生4G流量的客户数
                 map.put("A48", "");
 
@@ -304,6 +308,8 @@ public class TaskSaveMethod {
                         //17	子活动结束时间	必填,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
                         resultmap.put("A17", campaignedmap.get("campaign_endtime").replace("/", "").replace(":", "").replace(" ", ""));
                         Map<String, String> mapCampaignedEffect = fileDataService.getSummaryEffectJT(campaignedmap.get("campaign_id"), summaryDate, "ZHD");
+                        if (mapCampaignedEffect == null)
+                            return;
                         //18	目标客户群编号	必填
                         resultmap.put("A18", mapCampaignedEffect.get("customer_group_id"));
                         //19	目标客户群名称	必填
@@ -355,10 +361,10 @@ public class TaskSaveMethod {
                         failMap.put("interface_name", "93001");
                         failMap.put("campaign_id", campaignedmap.get("campaign_id"));
                         failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                        failMap.put("error_desc", e.getMessage());
+                        failMap.put("error_desc", e.getMessage().substring(0, 2000));
                         e.printStackTrace();
                         fileDataService.insertFailInterface(failMap);
-                        log.error("93001 接口异常:{}",e);
+                        log.error("93001 接口异常:{}", e);
                         throw new Exception("接口异常");
                     }
                 }
@@ -367,10 +373,10 @@ public class TaskSaveMethod {
                 failMap.put("activity_id", activity.get("activity_id"));
                 failMap.put("interface_name", "93001");
                 failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e1.getMessage().substring(0,1999));
+                failMap.put("error_desc", e1.getMessage());
                 e1.printStackTrace();
                 fileDataService.insertFailInterface(failMap);
-                log.error("93006 base 接口异常:{}",e1);
+                log.error("93006 base 接口异常:{}", e1);
                 throw new Exception("接口异常");
             }
         }
@@ -420,7 +426,8 @@ public class TaskSaveMethod {
                 map.put("A13", "1");     //待定
                 // 根据集团下发活动获取效果信息
                 final Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activityId, summaryDate, "HD");
-
+                if (mapEffect == null)
+                    return;
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", mapEffect.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -886,7 +893,7 @@ public class TaskSaveMethod {
                 failMap.put("activity_id", activity.get("activity_id").toString());
                 failMap.put("interface_name", "93005");
                 failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e.getMessage());
+                failMap.put("error_desc", e.getMessage().substring(0, 2000));
                 e.printStackTrace();
                 fileDataService.insertFailInterface(failMap);
                 throw new Exception("接口异常");
@@ -956,6 +963,8 @@ public class TaskSaveMethod {
                  * 43-90子活动效果评估指标
                  */
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, summaryDate, "ZHD");
+                if (mapEffect==null)
+                    return;
                 //42,成功接触客户数,必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", mapEffect.get("touch_num"));
                 //43,接触成功率,必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -1062,7 +1071,8 @@ public class TaskSaveMethod {
                         //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
                         resultmap.put("A17", campaignedmap.get("campaign_endtime").replace("/", "").replace(":", "").replace(" ", ""));
                         Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(campaignedmap.get("campaign_id"), summaryDate, "ZHD");
-
+if(mapEffect1==null)
+    return;
                         //18,目标客户群编号,必填
                         resultmap.put("A18", mapEffect1.get("customer_group_id"));
                         //19,目标客户群名称,必填
@@ -1113,7 +1123,7 @@ public class TaskSaveMethod {
                         failMap.put("interface_name", "93002");
                         failMap.put("campaign_id", campaignedmap.get("campaign_id"));
                         failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                        failMap.put("error_desc", e.getMessage());
+                        failMap.put("error_desc", e.getMessage().substring(0, 2000));
                         e.printStackTrace();
                         fileDataService.insertFailInterface(failMap);
                         throw new Exception("接口异常");
@@ -1345,7 +1355,7 @@ public class TaskSaveMethod {
                 failMap.put("error_desc", e1.getMessage());
                 e1.printStackTrace();
                 fileDataService.insertFailInterface(failMap);
-                throw new Exception("接口异常");
+                throw new Exception("93002接口异常");
             }
         }
         SqlUtil.getInsertObj("93002", list);
