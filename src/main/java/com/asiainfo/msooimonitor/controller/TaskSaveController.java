@@ -36,7 +36,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        };
+        }.run();
         return "success：请查看日志";
     }
 
@@ -54,7 +54,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        }
+        }.run();
 
         ;
         return "success：请查看日志";
@@ -74,7 +74,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        };
+        }.run();
         return "success：请查看日志";
     }
 
@@ -94,7 +94,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        };
+        }.run();
         return "success：请查看日志";
     }
 
