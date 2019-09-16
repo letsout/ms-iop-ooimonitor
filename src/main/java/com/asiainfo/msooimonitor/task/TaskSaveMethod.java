@@ -267,9 +267,9 @@ public class TaskSaveMethod {
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, summaryDate, "ZHD");
                 Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(activity_id, summaryDateBefore, "ZHD");
                 if (mapEffect == null)
-                    return;
+                    continue;
                 if (mapEffect1 == null)
-                    return;
+                    continue;
                 //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
                 //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -300,7 +300,7 @@ public class TaskSaveMethod {
                         resultmap.put("A17", campaignedmap.get("campaign_endtime").replace("/", "").replace(":", "").replace(" ", ""));
                         Map<String, String> mapCampaignedEffect = fileDataService.getSummaryEffectJT(campaignedmap.get("campaign_id"), summaryDate, "ZHD");
                         if (mapCampaignedEffect == null)
-                            return;
+                            continue;
                         //18	目标客户群编号	必填
                         resultmap.put("A18", mapCampaignedEffect.get("customer_group_id"));
                         //19	目标客户群名称	必填
@@ -416,9 +416,9 @@ public class TaskSaveMethod {
                 //13 所属流程 必填，填写枚举值ID
                 map.put("A13", "1");     //待定
                 // 根据集团下发活动获取效果信息
-                final Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activityId, summaryDate, "HD");
+                final Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activityId, summaryDate, "ZHD");
                 if (mapEffect == null)
-                    return;
+                    continue;
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", mapEffect.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -678,7 +678,7 @@ public class TaskSaveMethod {
                 //13 所属流程 必填，填写枚举值ID
                 map.put("A13", activity.get("flow").toString());     //待定
 
-                final Map<String, String> effectMap = fileDataService.getSummaryEffect(activity.get("activity_id").toString(), summaryDate);
+                final Map<String, String> effectMap = fileDataService.getSummaryEffectJT(activity.get("activity_id").toString(), summaryDate, "HD");
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", effectMap.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -954,8 +954,8 @@ public class TaskSaveMethod {
                  * 43-90子活动效果评估指标
                  */
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, summaryDate, "ZHD");
-                if (mapEffect==null)
-                    return;
+                if (mapEffect == null)
+                    continue;
                 //42,成功接触客户数,必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", mapEffect.get("touch_num"));
                 //43,接触成功率,必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -1062,8 +1062,8 @@ public class TaskSaveMethod {
                         //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
                         resultmap.put("A17", campaignedmap.get("campaign_endtime").replace("/", "").replace(":", "").replace(" ", ""));
                         Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(campaignedmap.get("campaign_id"), summaryDate, "ZHD");
-if(mapEffect1==null)
-    return;
+                        if (mapEffect1 == null)
+                            continue;
                         //18,目标客户群编号,必填
                         resultmap.put("A18", mapEffect1.get("customer_group_id"));
                         //19,目标客户群名称,必填
@@ -1138,7 +1138,6 @@ if(mapEffect1==null)
     public void savebase93002(String activityEndDate, String summaryDate) throws Exception {
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> map = null;
-        Map<String, Object> resultmap = null;
         List<Map<String, Object>> activitys = fileDataService.getBaseInfo93002(activityEndDate);
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-90子活动效果评估指标
         for (Map<String, Object> activity : activitys) {
@@ -1192,7 +1191,14 @@ if(mapEffect1==null)
                 /**
                  * 43-90子活动效果评估指标
                  */
-                Map<String, String> mapEffect = fileDataService.getSummaryEffect(activity_id, summaryDate);
+                Map<String, String> mapEffect = null;
+                if (activity.get("flow").equals("2")) {
+                    mapEffect = fileDataService.getSummaryEffect(activity_id, summaryDate);
+                } else {
+                    mapEffect = fileDataService.getSummaryEffectJT(activity_id, summaryDate, "HD");
+                }
+                if (mapEffect == null)
+                    continue;
                 //42,成功接触客户数,必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", mapEffect.get("touch_num"));
                 //43,接触成功率,必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -1337,7 +1343,7 @@ if(mapEffect1==null)
                 map.put("A35", "");
                 //36,资源使用情况,描述性信息,可为空
                 map.put("A36", "");
-                list.add(resultmap);
+                list.add(map);
             } catch (Exception e1) {
                 Map<String, String> failMap = new HashMap();
                 failMap.put("activity_id", activity.get("activity_id").toString());
