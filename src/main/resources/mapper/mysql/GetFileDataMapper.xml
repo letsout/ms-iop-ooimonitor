@@ -39,45 +39,41 @@
                  inner join activity_rel_channel c on a.activity_id = c.activity_id
                  inner JOIN base_channel d on c.channel_id = d.channel_id
                  inner join base_city_code e on e.city_id = a.city_id
-        where d.is_syn = 'E' and a.activity_state = '9'
-          and a.end_time = #{date}
-        --         select a.*,city_code,b.final_obj_table_name
-        --         from activity_base_info a
-        --                  inner join activity_obj_user b on a.activity_id = b.activity_id
-        --                  inner join activity_rel_channel c on a.activity_id = c.activity_id
-        --                  inner JOIN base_channel d on c.channel_id = d.channel_id
-        --                  inner join base_city_code e on e.city_id = a.city_id
-        --         where d.is_syn = 'E'
-        --           and a.activity_state = '6' limit 1
-
+        where d.is_syn = 'E'
+          and a.activity_state = '9'
+          and a.end_time = #{activityEndDate}
     </select>
-    <select id="getMarkenInfo93006" resultType="map">
+    <select id="getMarkingInfo93006" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where SUBSTR(activity_endtime, 1, 10) = #{date}
+        where SUBSTR(activity_endtime, 1, 10) = #{activityEndDate}
     </select>
     <select id="getMarkingInfo93001" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where SUBSTR(activity_endtime, 1, 10) >= #{date}
+        where SUBSTR(activity_endtime, 1, 10) >= #{activityEndDate}
     </select>
     <select id="getMarkingInfo93002" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where activity_id
-            = '28020190903086718'
+        where SUBSTR(activity_endtime, 1, 10) = #{activityEndDate}
     </select>
     <select id="getBaseInfo93002" resultType="map">
         select *
         from activity_base_info a
-        where
-                a.activity_id in ('A606488988886237184', 'A606499909297766400', 'A608255698274353152')
+        where a.end_time = #{activityEndDate}
     </select>
 
     <select id="getCampaignedInfo" resultType="map">
         select *
         from ooi_MARKING_CAMPAIGN_INFO a
         where a.activity_id = #{activity_id}
+    </select>
+    <select id="getCampaignedEndInfo" resultType="map">
+        select *
+        from ooi_MARKING_CAMPAIGN_INFO a
+        where a.activity_id = #{activity_id}
+          and SUBSTR(campaign_endtime, 1, 10) = #{campaignedEndTime}
     </select>
 
     <select id="getOfferBo" resultType="map">
@@ -86,9 +82,10 @@
         where campaign_id = #{campaign_id}
     </select>
     <select id="getBaseInfo93005" resultType="map">
-        select a.*
+        select a.*,b.flow
         from activity_base_info a
-        where a.end_time = #{date}
+                 inner join activity_flow b on a.activity_id = b.activity_id
+        where a.end_time = #{activityEndDate}
 
     </select>
     <select id="getBaseInfo93001" resultType="map">
@@ -99,7 +96,31 @@
     <select id="getMarkingInfo93005" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO a
-        where SUBSTR(activity_endtime, 1, 10) >= #{date}
+        where SUBSTR(activity_endtime, 1, 10) = #{activityEndDate}
     </select>
+    <update id="insertFlow" parameterType="java.util.HashMap">
+        INSERT INTO `activity_flow`(`activity_id`, `flow`)values
+        <foreach collection="list" item="map" separator=",">
+            (#{map.activity_id}, #{map.flow})
+        </foreach>
+    </update>
+    <select id="getFlowInfo1" resultType="map">
+        select a.activity_id,'1' as flow
+        from activity_base_info a
+                 inner join ooi_iop_rel_activity_info b on a.activity_id = b.iop_activity_id
+        where a.activity_id not in (select activity_id from activity_flow)</select>
+    <select id="getFlowInfo2" resultType="map">
+        select a.activity_id, CASE b.is_syn WHEN 'U' THEN '2' ELSE '3' END as flow
+        from activity_rel_channel a
+                 inner join base_channel b on a.channel_id = b.channel_id
+        where a.activity_id not in (select activity_id from activity_flow)
+    </select>
+
+
+    <update id="insertFailInterface" parameterType="java.util.HashMap">
+
+        INSERT INTO `activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,error_desc) VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time},#{error_desc});
+
+    </update>
 
 </mapper>

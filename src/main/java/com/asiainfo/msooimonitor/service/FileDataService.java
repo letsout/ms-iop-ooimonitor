@@ -11,21 +11,25 @@ import java.util.Map;
 public interface FileDataService {
 
 
-    List<Map<String, Object>> getBaseInfo93005(String date);
+    List<Map<String, Object>> getBaseInfo93005(String activityEndDate);
 
-    List<Map<String, String>> getMarkingInfo93005(String date);
+    List<Map<String, String>> getMarkingInfo93005(String activityEndDate);
 
     Map<String, String> getCustGroupInfo(String activityId);
 
-    List<Map<String, String>> getMarkingInfo93001(String date);
+    List<Map<String, String>> getMarkingInfo93001(String activityEndDate);
 
-    List<Map<String, String>> getBaseInfo93006(String date);
+    List<Map<String, String>> getBaseInfo93006(String activityEndDate);
 
     List<Map<String, String>> getCampaignedInfo(String activityId);
 
-    List<Map<String, String>> getDetailEffect(String activity_id, String date);
+    List<Map<String, String>> getDetailEffect(String activity_id, String nowDate);
 
-    Map<String, String> getSummaryEffect(String activity_id);
+    Map<String, String> getSummaryEffect(String activity_id, String summaryDate);
+
+    List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
+
+    void insertFailInterface(Map<String, String> map);
 
     void saveresultList(String sql);
 
@@ -33,11 +37,13 @@ public interface FileDataService {
 
     List<Map<String, String>> getOfferBo(String campaign_id);
 
-    List<Map<String, String>> getMarkingInfo93002();
+    List<Map<String, String>> getMarkingInfo93002(String activityEndDate);
 
-    List<Map<String, Object>> getBaseInfo93002();
+    List<Map<String, Object>> getBaseInfo93002(String activityEndDate);
 
-    List<Map<String, String>> getMarkenInfo93006(String date);
+    List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 
     List<Map<String, String>> getBaseInfo93001();
+
+    void insertFlow();
 }

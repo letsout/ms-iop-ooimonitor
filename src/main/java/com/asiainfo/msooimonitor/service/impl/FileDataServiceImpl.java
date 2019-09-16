@@ -26,12 +26,10 @@ public class FileDataServiceImpl implements FileDataService {
 
 
     @Override
-    public List<Map<String, String>> getMarkingInfo93005(String date) {
-        List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(date);
+    public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) {
+        List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);
         markingInfo93005.forEach(map -> {
             final String activity_id = map.get("activity_id");
-            final Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(activity_id);
-            map.putAll(summaryEffect);
             final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
             Map<String, String> campaignedMap = new HashMap<>();
             String campaign_id = "";
@@ -57,12 +55,8 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public List<Map<String, Object>> getBaseInfo93005(String date) {
-        List<Map<String, Object>> baseInfo93005 = getFileDataMapper.getBaseInfo93005(date);
-        baseInfo93005.forEach(map -> {
-            final Map<String, String> effectMap = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString());
-            map.putAll(effectMap);
-        });
+    public List<Map<String, Object>> getBaseInfo93005(String activityEndDate) {
+        List<Map<String, Object>> baseInfo93005 = getFileDataMapper.getBaseInfo93005(activityEndDate);
         return baseInfo93005;
     }
 
@@ -86,18 +80,19 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public List<Map<String, String>> getMarkingInfo93001(String date) {
-        final List<Map<String, String>> markingInfo93001 = getFileDataMapper.getMarkingInfo93001(date);
+    public List<Map<String, String>> getMarkingInfo93001(String activityEndDate) {
+        final List<Map<String, String>> markingInfo93001 = getFileDataMapper.getMarkingInfo93001(activityEndDate);
         return markingInfo93001;
     }
 
-    public List<Map<String, String>> getMarkingInfo93002() {
-        final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002();
+    public List<Map<String, String>> getMarkingInfo93002(String activityEndDate) {
+        final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002(activityEndDate);
         return markingInfo93002;
     }
 
-    public List<Map<String, Object>> getBaseInfo93002() {
-        final List<Map<String, Object>> baseInfo93002 = getFileDataMapper.getBaseInfo93002();
+    @Override
+    public List<Map<String, Object>> getBaseInfo93002(String activityEndDate) {
+        final List<Map<String, Object>> baseInfo93002 = getFileDataMapper.getBaseInfo93002(activityEndDate);
         return baseInfo93002;
     }
 
@@ -105,30 +100,34 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public List<Map<String, String>> getCampaignedInfo(String activityId) {
         final List<Map<String, String>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
-        campaignedInfo93001.forEach(map -> {
-            final String activity_id = map.get("activity_id");
-            final Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(activity_id);
-            map.putAll(summaryEffect);
-        });
         return campaignedInfo93001;
     }
 
     @Override
-    public List<Map<String, String>> getBaseInfo93006(String date) {
-        List<Map<String, String>> baseInfo93006 = getFileDataMapper.getBaseInfo93006(date);
+    public List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
+        final List<Map<String, String>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId,campaignedEndTime);
+        return campaignedInfo93001;
+    }
+
+    @Override
+    public List<Map<String, String>> getBaseInfo93006(String activityEndDate) {
+        List<Map<String, String>> baseInfo93006 = getFileDataMapper.getBaseInfo93006(activityEndDate);
         return baseInfo93006;
     }
 
-    public List<Map<String, String>> getDetailEffect(String activity_id, String date) {
+    @Override
+    public List<Map<String, String>> getDetailEffect(String activity_id, String activityEndDate) {
 
-        return interfaceInfoMpper.getDetailEffect(activity_id, date);
+        return interfaceInfoMpper.getDetailEffect(activity_id, activityEndDate);
     }
 
-    public Map<String, String> getSummaryEffect(String activity_id) {
+    @Override
+    public Map<String, String> getSummaryEffect(String activity_id, String activityEndDate) {
 
-        return interfaceInfoMpper.getSummaryEffect(activity_id);
+        return interfaceInfoMpper.getSummaryEffect(activity_id, activityEndDate);
     }
 
+    @Override
     public void saveresultList(String sql) {
         commonMapper.insertSql(sql);
     }
@@ -143,9 +142,9 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public List<Map<String, String>> getMarkenInfo93006(String date) {
+    public List<Map<String, String>> getMarkingInfo93006(String activityEndDate) {
 
-        List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkenInfo93006(date);
+        List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
             final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
@@ -165,10 +164,23 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93006;
     }
 
+    @Override
     public List<Map<String, String>> getBaseInfo93001() {
         List<Map<String, String>> baseInfo93001 = getFileDataMapper.getBaseInfo93001();
         return baseInfo93001;
     }
 
+    @Override
+    public void insertFlow() {
+        final List<Map<String, String>> flowInfo1 = getFileDataMapper.getFlowInfo1();
+        getFileDataMapper.insertFlow(flowInfo1);
+        final List<Map<String, String>> flowInfo2 = getFileDataMapper.getFlowInfo2();
+        getFileDataMapper.insertFlow(flowInfo2);
+    }
+
+    @Override
+    public void insertFailInterface(Map<String, String> map){
+        getFileDataMapper.insertFailInterface(map);
+    }
 
 }
