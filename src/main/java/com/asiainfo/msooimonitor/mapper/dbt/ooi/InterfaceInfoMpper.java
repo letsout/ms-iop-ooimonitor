@@ -50,5 +50,5 @@ public interface InterfaceInfoMpper {
 
     List<Map<String, String>> getDetailEffect(String activity_id, String date);
 
-    Map<String, String> getSummaryEffect(String activity_id);
+    Map<String, String> getSummaryEffect(String activity_id, String date);
 }
