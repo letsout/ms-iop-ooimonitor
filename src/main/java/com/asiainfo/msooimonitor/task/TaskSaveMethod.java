@@ -204,7 +204,7 @@ public class TaskSaveMethod {
                 failMap.put("error_desc", e.getMessage().substring(0, 2000));
                 fileDataService.insertFailInterface(failMap);
                 log.error("93006 error:{}", e);
-                throw new Exception("接口异常");
+                throw new Exception("93006接口异常");
             }
         }
     }
@@ -291,7 +291,7 @@ public class TaskSaveMethod {
                     try {
                         resultmap = new HashMap<>();
                         //14	子活动编号	必填,参考附录1统一编码规则中的营销子活动编号编码规则,所属流程为2、8、9、10时，前3位编号为省份编码
-                        resultmap.put("A14", campaignedmap.get("campaign_id"));
+                        resultmap.put("A14", "280" + campaignedmap.get("campaign_id") + campaignedmap.get("iop_activity_id").substring(1));
                         //15	子活动名称	必填
                         resultmap.put("A15", campaignedmap.get("campaign_name"));
                         //16	子活动开始时间	必填,长度14位,为数据生成时间
@@ -642,8 +642,6 @@ public class TaskSaveMethod {
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = null;
         List<Map<String, Object>> activitys = fileDataService.getBaseInfo93005(activityEndDate);
-        //System.out.println("json:");
-        //System.out.println(JSON.toJSONString(activitys));
         for (Map<String, Object> activity : activitys) {
             try {
                 map = new HashMap<>();
@@ -677,8 +675,14 @@ public class TaskSaveMethod {
                 map.put("A12", "");
                 //13 所属流程 必填，填写枚举值ID
                 map.put("A13", activity.get("flow").toString());     //待定
-
-                final Map<String, String> effectMap = fileDataService.getSummaryEffectJT(activity.get("activity_id").toString(), summaryDate, "HD");
+                Map<String, String> effectMap = null;
+                if (activity.get("flow").toString().equals("2")) {
+                    effectMap = fileDataService.getSummaryEffect(activity.get("activity_id").toString(), summaryDate);
+                } else {
+                    effectMap = fileDataService.getSummaryEffectJT(activity.get("activity_id").toString(), summaryDate, "HD");
+                }
+                if (effectMap == null)
+                    continue;
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", effectMap.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -1054,7 +1058,7 @@ public class TaskSaveMethod {
 
                         resultmap = new HashMap<>();
                         //14,子活动编号,必填,参考附录1 统一编码规则中的营销子活动编号编码规则
-                        resultmap.put("A14", campaignedmap.get("campaign_id"));
+                        resultmap.put("A14", "280" + campaignedmap.get("campaign_id") + campaignedmap.get("iop_activity_id").substring(1));
                         //15,子活动名称,必填
                         resultmap.put("A15", campaignedmap.get("campaign_name"));
                         //16,子活动开始时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
@@ -1073,7 +1077,7 @@ public class TaskSaveMethod {
                         //21,目标客户群描述,可为空
                         resultmap.put("A21", "");
                         //22,目标客户筛选标准,必填
-                        resultmap.put("A22", campaignedmap.get("customer_filter_rule"));
+                        resultmap.put("A22", mapEffect1.get("customer_filter_rule"));
                         List<Map<String, String>> offerMaps = fileDataService.getOfferBo(campaignedmap.get("campaign_id"));
 
                         Map<String, String> offerMap = offerMaps.get(0);

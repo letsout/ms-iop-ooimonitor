@@ -35,7 +35,7 @@ public class TaskSaveController {
                     taskSaveMethod.savebase93006(activityEndDate);
                     taskSaveMethod.savemarking93006(activityEndDate);
                 } catch (Exception e) {
-                    log.error("93006 error :{}",e);
+                    log.error("93006 error :{}", e);
                     fileDataService.truncateTable("93006");
                 }
             }
@@ -54,7 +54,7 @@ public class TaskSaveController {
                 try {
                     taskSaveMethod.saveMarking93001(activityEndDate, summaryDate, summaryDateBefore);
                 } catch (Exception e) {
-                    log.error("93001 error :{}",e);
+                    log.error("93001 error :{}", e);
                     fileDataService.truncateTable("93001");
                 }
             }
@@ -74,7 +74,8 @@ public class TaskSaveController {
                 try {
                     taskSaveMethod.saveBase93005(activityEndDate, summaryDate);
                     taskSaveMethod.saveMarking93005(activityEndDate, summaryDate);
-                } catch (Exception e) {log.error("93005 error :{}",e);
+                } catch (Exception e) {
+                    log.error("93005 error :{}", e);
                     fileDataService.truncateTable("93005");
                 }
             }
@@ -90,12 +91,13 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                fileDataService.truncateTable("93002");
+//                fileDataService.truncateTable("93002");
                 try {
                     taskSaveMethod.saveMarking93002(activityEndDate, summaryDate, campaignedEndTime);
-                    taskSaveMethod.savebase93002(activityEndDate, summaryDate);
-                } catch (Exception e) {log.error("93002 error :{}",e);
-                    fileDataService.truncateTable("93002");
+//                    taskSaveMethod.savebase93002(activityEndDate, summaryDate);
+                } catch (Exception e) {
+                    log.error("93002 error :{}", e);
+//                    fileDataService.truncateTable("93002");
                 }
             }
         }.run();

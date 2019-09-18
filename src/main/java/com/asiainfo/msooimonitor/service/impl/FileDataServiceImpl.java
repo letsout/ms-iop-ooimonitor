@@ -36,7 +36,7 @@ public class FileDataServiceImpl implements FileDataService {
             String campaign_endtime = "";
             if (campaignedInfo.size() > 0) {
                 for (Map<String, String> map1 : campaignedInfo) {
-                    campaign_id += "," + map1.get("campaign_id");
+                    campaign_id += ",280" + map1.get("campaign_id")+map1.get("iop_activity_id").substring(1);
                     campaign_name += "," + map1.get("campaign_name");
                     campaign_starttime += "," + map1.get("campaign_starttime");
                     campaign_endtime += "," + map1.get("campaign_endtime");
@@ -197,7 +197,7 @@ public class FileDataServiceImpl implements FileDataService {
             String campaignId = "";
             String campaignName = "";
             for (Map<String, String> map : campaignedInfo) {
-                campaignId += "," + map.get("campaign_id");
+                campaignId += ",280" + map.get("campaign_id")+map.get("iop_activity_id").substring(1);
                 campaignName += "," + map.get("campaign_name");
             }
             if (campaignId.length() > 0) {
