@@ -201,14 +201,14 @@
         select *
         from ooi_activity_summary_effect
         where activity_id in (${activityIds})
-          and data_time = #{date}
+          and  DATE_FORMAT(data_time,'%Y%m%d') = #{date}
     </select>
 
     <select id="getSummaryEffect" resultType="map">
         select *
         from ooi_activity_summary_effect
         where activity_id = #{activityIds}
-          and data_time = #{date}
+          and DATE_FORMAT(data_time,'%Y%m%d') = #{date}
     </select>
 
     <select id="getTableRows" parameterType="string" resultType="int">

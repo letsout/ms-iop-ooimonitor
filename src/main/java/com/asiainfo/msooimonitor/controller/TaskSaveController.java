@@ -2,14 +2,11 @@ package com.asiainfo.msooimonitor.controller;
 
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.task.TaskSaveMethod;
-import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 /**
  * @author yx
@@ -24,16 +21,21 @@ public class TaskSaveController {
     @Autowired
     FileDataService fileDataService;
 
-    @RequestMapping("/93006/{lastDaySql}")
-    public String testsav93006(@PathVariable String lastDaySql) {
-        String activityEndDate = lastDaySql.substring(0, 4) + "/" + lastDaySql.substring(4, 6) + "/" + lastDaySql.substring(6, 8);
+    @RequestMapping("/93006/{activityEndDate}/{type}")
+    public String testsav93006(@PathVariable String activityEndDate, @PathVariable String type) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93006");
                 try {
-                    taskSaveMethod.savebase93006(activityEndDate);
-                    taskSaveMethod.savemarking93006(activityEndDate);
+                    if (type.equals("1")) {
+                        taskSaveMethod.savebase93006(activityEndDate);
+                    } else if (type.equals("2")) {
+                        taskSaveMethod.saveMarking93006(activityEndDate);
+                    } else {
+                        taskSaveMethod.savebase93006(activityEndDate);
+                        taskSaveMethod.saveMarking93006(activityEndDate);
+                    }
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
                     fileDataService.truncateTable("93006");
@@ -43,37 +45,38 @@ public class TaskSaveController {
         return "success：请查看日志";
     }
 
-    @RequestMapping("/93001/{summaryDate}")
-    public String testsaveMarking93001(@PathVariable String summaryDate) {
-        String activityEndDate = summaryDate.substring(0, 4) + "/" + summaryDate.substring(4, 6) + "/" + summaryDate.substring(6, 8);
-        String summaryDateBefore = TimeUtil.getTwoDaySql(new Date());
+    @RequestMapping("/93001/{activityEndDate}")
+    public String testsaveMarking93001(@PathVariable String activityEndDate) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93001");
                 try {
-                    taskSaveMethod.saveMarking93001(activityEndDate, summaryDate, summaryDateBefore);
+                    taskSaveMethod.saveMarking93001(activityEndDate);
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
                     fileDataService.truncateTable("93001");
                 }
             }
         }.run();
-
-        ;
         return "success：请查看日志";
     }
 
-    @RequestMapping("/93005/{summaryDate}")
-    public String save93005(@PathVariable String summaryDate) {
-        String activityEndDate = summaryDate.substring(0, 4) + "/" + summaryDate.substring(4, 6) + "/" + summaryDate.substring(6, 8);
+    @RequestMapping("/93005/{activityEndDate}/{type}")
+    public String save93005(@PathVariable String activityEndDate, @PathVariable String type) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93005");
                 try {
-                    taskSaveMethod.saveBase93005(activityEndDate, summaryDate);
-                    taskSaveMethod.saveMarking93005(activityEndDate, summaryDate);
+                    if (type.equals("1")) {
+                        taskSaveMethod.saveBase93005(activityEndDate);
+                    } else if (type.equals("2")) {
+                        taskSaveMethod.saveMarking93005(activityEndDate);
+                    } else {
+                        taskSaveMethod.saveBase93005(activityEndDate);
+                        taskSaveMethod.saveMarking93005(activityEndDate);
+                    }
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
                     fileDataService.truncateTable("93005");
@@ -84,20 +87,24 @@ public class TaskSaveController {
     }
 
 
-    @RequestMapping("/93002/{summaryDate}")
-    public String savemarking93002(@PathVariable String summaryDate) {
-        String activityEndDate = summaryDate.substring(0, 4) + "/" + summaryDate.substring(4, 6) + "/" + summaryDate.substring(6, 8);
-        String campaignedEndTime = activityEndDate;
+    @RequestMapping("/93002/{activityEndDate}/{type}")
+    public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type) {
         new Runnable() {
             @Override
             public void run() {
-//                fileDataService.truncateTable("93002");
+                fileDataService.truncateTable("93002");
                 try {
-                    taskSaveMethod.saveMarking93002(activityEndDate, summaryDate, campaignedEndTime);
-//                    taskSaveMethod.savebase93002(activityEndDate, summaryDate);
+                    if (type.equals("1")) {
+                        taskSaveMethod.savebase93002(activityEndDate);
+                    } else if (type.equals("2")) {
+                        taskSaveMethod.saveMarking93002(activityEndDate);
+                    } else {
+                        taskSaveMethod.savebase93002(activityEndDate);
+                        taskSaveMethod.saveMarking93002(activityEndDate);
+                    }
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
-//                    fileDataService.truncateTable("93002");
+                    fileDataService.truncateTable("93002");
                 }
             }
         }.run();
