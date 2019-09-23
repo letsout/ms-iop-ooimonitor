@@ -57,11 +57,11 @@ public class TaskSaveMethod {
                 map.put("A12", "");
 //            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
 //            map.put("A16", "");
-                int num = fileDataService.getTableRows("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(new Date()));
+                int num = fileDataService.getTableRows("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
-                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getLastDaySql(new Date()), start, limitNum);
+                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
                     log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
@@ -82,7 +82,7 @@ public class TaskSaveMethod {
                     start += limitNum;
                     end -= limitNum;
                 }
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(new Date()), start, end);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, end);
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
                     mapresult.put("A5", mapEffect.get("phone_no"));
@@ -154,11 +154,11 @@ public class TaskSaveMethod {
                     continue;
                 }
                 // 查询当前表中数据量
-                int num = fileDataService.getTableRows(activityIds, TimeUtil.getLastDaySql(new Date()));
+                int num = fileDataService.getTableRows(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
-                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(new Date()), start, limitNum);
+                    List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
                     log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
@@ -179,7 +179,7 @@ public class TaskSaveMethod {
                     start += limitNum;
                     end -= limitNum;
                 }
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(new Date()), start, end);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, end);
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
                     //5 用户号码 必填,运营对象手机号码
