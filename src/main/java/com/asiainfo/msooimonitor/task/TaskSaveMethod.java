@@ -25,11 +25,17 @@ public class TaskSaveMethod {
     private final int limitNum = 10000;
 
     public void savebase93006(String activityEndDate) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
+        List<Map<String, String>> maps = new LinkedList<>();
         Map<String, Object> map = null;
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93006");
+        failmapdemo.put("activity_type", "base");
+        failmapdemo.put("fail_time", activityEndDate);
         Map<String, Object> mapresult = null;
+
         List<Map<String, String>> activitys = fileDataService.getBaseInfo93006(activityEndDate);
-        log.debug("activitys.size=" + activitys.size());
+//        log.debug("activitys.size=" + activitys.size());
         //1 行号
         for (Map<String, String> activity : activitys) {
             try {
@@ -58,11 +64,19 @@ public class TaskSaveMethod {
 //            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
 //            map.put("A16", "");
                 int num = fileDataService.getTableRows("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
+                if (num == 0) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+                    failmap.put("fail_desc", "效果数据表ooi_activity_ detail_effect_" + activityEndDate + "为空");
+                    failmap.put("activity_id", activity_id);
+                    maps.add(failmap);
+                    continue;
+                }
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
                     List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activity.get("activity_id"), TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
-                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
+//                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
                         mapresult.put("A5", mapEffect.get("phone_no"));
@@ -111,14 +125,25 @@ public class TaskSaveMethod {
                 throw new Exception("接口异常");
             }
         }
-        SqlUtil.getInsert("93006", list);
 
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93006");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", activitys.size() - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
     public void saveMarking93006(String activityEndDate) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
+        List<Map<String, String>> maps = new LinkedList<>();
         Map<String, Object> map = null;
         Map<String, Object> mapresult = null;
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93006");
+        failmapdemo.put("activity_type", "marking");
+        failmapdemo.put("fail_time", activityEndDate);
         List<Map<String, String>> activitys = fileDataService.getMarkingInfo93006(activityEndDate);
         //System.out.println("activitys:" + activitys);
         //1 行号
@@ -151,15 +176,29 @@ public class TaskSaveMethod {
                 // 根据集团下发活动查询关联iop的活动
                 String activityIds = fileDataService.getIOPActivityIds(activity.get("activity_id"));
                 if ("''".equals(activityIds)) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+                    failmap.put("fail_desc", "没有对应的省级子活动");
+                    failmap.put("activity_id", activity_id);
+                    maps.add(failmap);
                     continue;
                 }
                 // 查询当前表中数据量
                 int num = fileDataService.getTableRows(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
+                if (num == 0) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+                    failmap.put("fail_desc", "效果数据表ooi_activity_ detail_effect_" + activityEndDate + "为空");
+                    failmap.put("activity_id", activity_id);
+                    maps.add(failmap);
+                    continue;
+                }
+
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
                     List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
-                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
+//                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                     for (Map<String, String> mapEffect : detaileffect) {
                         mapresult = new HashMap<>(map);
                         //5 用户号码 必填,运营对象手机号码
@@ -207,15 +246,26 @@ public class TaskSaveMethod {
                 throw new Exception("93006接口异常");
             }
         }
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93006");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", activitys.size() - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
-
     public void saveMarking93001(String date) throws Exception {
-
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
         Map<String, String> map = null;
         Map<String, Object> resultmap = null;
+        List<Map<String, String>> maps = new LinkedList<>();
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93001");
+        failmapdemo.put("activity_type", "marking");
+        failmapdemo.put("fail_time", date);
         List<Map<String, String>> activitys = fileDataService.getMarkingInfo93001(date);
+        int failcount = 0;
         //属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-50子活动效果评估指标
         for (Map<String, String> activity : activitys) {
             try {
@@ -267,10 +317,24 @@ public class TaskSaveMethod {
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, date, "ZHD");
                 String beforeDate = TimeUtil.getLastDaySql(TimeUtil.strToDate(date));
                 Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(activity_id, beforeDate, "ZHD");
-                if (mapEffect == null)
+                if (mapEffect == null) {
+//                    Map<String, String> failmap = new HashMap<>();
+//                    failmap.putAll(failmapdemo);
+//                    failmap.put("fail_desc", "效果数据表ooi_activity_summary_effect当天为空");
+//                    failmap.put("activity_id", activity_id);
+//                    maps.add(failmap);
+//                    failcount++;
                     continue;
-                if (mapEffect1 == null)
+                }
+                if (mapEffect1 == null) {
+//                    Map<String, String> failmap = new HashMap<>();
+//                    failmap.putAll(failmapdemo);
+//                    failmap.put("fail_desc", "效果数据表ooi_activity_summary_effec前一天为空");
+//                    failmap.put("activity_id", activity_id);
+//                    maps.add(failmap);
+//                    failcount++;
                     continue;
+                }
                 //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
                 //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -300,8 +364,15 @@ public class TaskSaveMethod {
                         //17	子活动结束时间	必填,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
                         resultmap.put("A17", campaignedmap.get("end_time").toString().replace("-", "") + "000000");
                         Map<String, String> mapCampaignedEffect = fileDataService.getSummaryEffect(campaignedmap.get("iop_activity_id").toString(), date);
-                        if (mapCampaignedEffect == null)
+                        if (mapCampaignedEffect == null) {
+                            Map<String, String> failmap = new HashMap<>();
+                            failmap.putAll(failmapdemo);
+                            failmap.put("fail_desc", "效果数据表ooi_activity_summary_effec前一天为空");
+                            failmap.put("activity_id", campaignedmap.get("iop_activity_id").toString());
+                            maps.add(failmap);
+                            failcount++;
                             continue;
+                        }
                         //18	目标客户群编号	必填
                         resultmap.put("A18", mapCampaignedEffect.get("customer_group_id"));
                         //19	目标客户群名称	必填
@@ -314,6 +385,15 @@ public class TaskSaveMethod {
                         resultmap.put("A22", mapCampaignedEffect.get("customer_filter_rule"));
 
                         List<Map<String, String>> offerMaps = fileDataService.getOfferBo(campaignedmap.get("campaign_id").toString());
+                        if (offerMaps == null || offerMaps.size() == 0) {
+                            Map<String, String> failmap = new HashMap<>();
+                            failmap.putAll(failmapdemo);
+                            failmap.put("fail_desc", "该活动对应子活动产品信息OfferBo为空");
+                            failmap.put("activity_id", campaignedmap.get("iop_activity_id").toString());
+                            maps.add(failmap);
+                            failcount++;
+                            continue;
+                        }
                         Map<String, String> offerMap = offerMaps.get(0);
                         //23	产品编码	必填,前七位需符合8.1产品编码规则
                         String proCode = offerMap.get("offer_code");
@@ -373,15 +453,24 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93001", list);
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93006");
+        mapcount.put("upload_time", date);
+        mapcount.put("upload_num", failcount - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
-
     public void saveMarking93005(String activityEndDate) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
         Map<String, Object> map = null;
+        List<Map<String, String>> maps = new LinkedList<>();
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93005");
+        failmapdemo.put("activity_type", "base");
+        failmapdemo.put("fail_time", activityEndDate);
         List<Map<String, String>> activitys = fileDataService.getMarkingInfo93005(activityEndDate);
-
-
         //属性编码 5-13、18-33为营销活动相关信息，14-17子活动相关信息，40-84营销活动效果评估指标
         for (Map<String, String> activity : activitys) {
             try {
@@ -418,8 +507,14 @@ public class TaskSaveMethod {
                 map.put("A13", "1");     //待定
                 // 根据集团下发活动获取效果信息
                 final Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activityId, activityEndDate, "ZHD");
-                if (mapEffect == null)
+                if (mapEffect == null) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+                    failmap.put("fail_desc", "效果数据表SummaryEffect为空");
+                    failmap.put("activity_id", activityId);
+                    maps.add(failmap);
                     continue;
+                }
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", mapEffect.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -636,12 +731,24 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93005", list);
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93005");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", activitys.size() - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
     public void saveBase93005(String activityEndDate) throws Exception {
 
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
         Map<String, Object> map = null;
+        List<Map<String, String>> maps = new LinkedList<>();
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93005");
+        failmapdemo.put("activity_type", "base");
+        failmapdemo.put("fail_time", activityEndDate);
         List<Map<String, Object>> activitys = fileDataService.getBaseInfo93005(activityEndDate);
         for (Map<String, Object> activity : activitys) {
             try {
@@ -682,8 +789,14 @@ public class TaskSaveMethod {
                 } else {
                     effectMap = fileDataService.getSummaryEffectJT(activity.get("activity_id").toString(), activityEndDate, "HD");
                 }
-                if (effectMap == null)
+                if (effectMap == null) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+                    failmap.put("fail_desc", "效果数据表ooi_activity_summary_effect为空");
+                    failmap.put("activity_id", activityId);
+                    maps.add(failmap);
                     continue;
+                }
                 //18 目标客户群编号 可为空，当营销活动涉及多子活动时，以逗号分隔
                 map.put("A18", effectMap.get("customer_group_id"));
                 //19 目标客户群名称 可为空，当营销活动涉及多子活动时，以逗号分隔
@@ -896,15 +1009,26 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93005", list);
-        ////System.out.println(sql);
-        //
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93005");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", activitys.size() - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
     public void saveMarking93002(String activityEndDate) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
         Map<String, String> map = null;
         Map<String, Object> resultmap = null;
 
+        List<Map<String, String>> maps = new LinkedList<>();
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93002");
+        failmapdemo.put("activity_type", "marking");
+        failmapdemo.put("fail_time", activityEndDate);
+        int failcount = 0;
         List<Map<String, String>> activitys = fileDataService.getMarkingInfo93002(activityEndDate);
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-90子活动效果评估指标
         for (Map<String, String> activity : activitys) {
@@ -959,8 +1083,15 @@ public class TaskSaveMethod {
                  * 43-90子活动效果评估指标
                  */
                 Map<String, String> mapEffect = fileDataService.getSummaryEffectJT(activity_id, activityEndDate, "ZHD");
-                if (mapEffect == null)
+                if (mapEffect == null) {
+//                    Map<String, String> failmap = new HashMap<>();
+//                    failmap.putAll(failmapdemo);
+//                    failmap.put("fail_desc", "效果数据表ooi_activity_summary_effect为空");
+//                    failmap.put("activity_id", activity_id);
+//                    maps.add(failmap);
+//                    failcount++;
                     continue;
+                }
                 //42,成功接触客户数,必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", mapEffect.get("touch_num"));
                 //43,接触成功率,必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -1066,8 +1197,15 @@ public class TaskSaveMethod {
                         //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
                         resultmap.put("A17", campaignedmap.get("end_time").toString().replace("-", "") + "000000");
                         Map<String, String> mapEffect1 = fileDataService.getSummaryEffectJT(campaignedmap.get("campaign_id").toString(), activityEndDate, "ZHD");
-                        if (mapEffect1 == null)
+                        if (mapEffect1 == null) {
+                            Map<String, String> failmap = new HashMap<>();
+                            failmap.putAll(failmapdemo);
+                            failmap.put("fail_desc", "效果数据表ooi_activity_summary_effect为空");
+                            failmap.put("activity_id", campaignedmap.get("iop_activity_id").toString());
+                            maps.add(failmap);
+                            failcount++;
                             continue;
+                        }
                         //18,目标客户群编号,必填
                         resultmap.put("A18", mapEffect1.get("customer_group_id"));
                         //19,目标客户群名称,必填
@@ -1079,7 +1217,15 @@ public class TaskSaveMethod {
                         //22,目标客户筛选标准,必填
                         resultmap.put("A22", mapEffect1.get("customer_filter_rule"));
                         List<Map<String, String>> offerMaps = fileDataService.getOfferBo(campaignedmap.get("campaign_id").toString());
-
+                        if (offerMaps == null || offerMaps.size() == 0) {
+                            Map<String, String> failmap = new HashMap<>();
+                            failmap.putAll(failmapdemo);
+                            failmap.put("fail_desc", "活动的产品信息OfferBo为空");
+                            failmap.put("activity_id", campaignedmap.get("iop_activity_id").toString());
+                            failcount++;
+                            maps.add(failmap);
+                            continue;
+                        }
                         Map<String, String> offerMap = offerMaps.get(0);
                         //23,产品编码,必填,比如0200100xxxx,02：一级分类,001：二级分类,00：三级分类,Xxxx：自定义产品编号,编码规则参考8.1产品编码规则
                         String proCode = offerMap.get("offer_code");
@@ -1135,14 +1281,27 @@ public class TaskSaveMethod {
                 fileDataService.insertFailInterface(failMap);
                 throw new Exception("接口异常");
             }
-            SqlUtil.getInsert("93002", list);
         }
+        SqlUtil.getInsert("93002", list);
+
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93006");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", failcount - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 
-
     public void savebase93002(String activityEndDate) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new LinkedList<>();
         Map<String, Object> map = null;
+        List<Map<String, String>> maps = new LinkedList<>();
+        Map<String, String> failmapdemo = new HashMap<>();
+        failmapdemo.put("interface_name", "93002");
+        failmapdemo.put("activity_type", "base");
+        failmapdemo.put("fail_time", activityEndDate);
+        int failcount = 0;
         List<Map<String, Object>> activitys = fileDataService.getBaseInfo93002(activityEndDate);
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-90子活动效果评估指标
         for (Map<String, Object> activity : activitys) {
@@ -1202,8 +1361,16 @@ public class TaskSaveMethod {
                 } else {
                     mapEffect = fileDataService.getSummaryEffectJT(activity_id, activityEndDate, "HD");
                 }
-                if (mapEffect == null)
+                if (mapEffect == null) {
+                    Map<String, String> failmap = new HashMap<>();
+                    failmap.putAll(failmapdemo);
+//                    failmap.put("fail_desc", "活动的产品信息OfferBo为空");
+                    failmap.put("fail_desc", "效果数据表ooi_activity_summary_effect为空");
+                    failmap.put("activity_id", activity_id);
+                    failcount++;
+                    maps.add(failmap);
                     continue;
+                }
                 //42,成功接触客户数,必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                 map.put("A42", mapEffect.get("touch_num"));
                 //43,接触成功率,必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -1361,5 +1528,12 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93002", list);
+        fileDataService.insertFailDetail(maps);
+        Map<String, Object> mapcount = new HashMap<>();
+        mapcount.put("interface_name", "93002");
+        mapcount.put("upload_time", activityEndDate);
+        mapcount.put("upload_num", failcount - maps.size());
+        mapcount.put("fail_num", maps.size());
+        fileDataService.insertUploadCount(mapcount);
     }
 }

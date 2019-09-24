@@ -56,4 +56,6 @@ public interface GetFileDataMapper {
     List<String> getIOPActivityIds(String activityId);
 
     List<String> getZHDIOPActivityIds(String activityId);
+    void insertFailDetail(List<Map<String, String>> list);
+    void insertUploadCount(Map<String, Object> map);
 }

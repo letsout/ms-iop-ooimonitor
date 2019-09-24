@@ -262,4 +262,13 @@ public class FileDataServiceImpl implements FileDataService {
     public void truncateTable(String tableName) {
 //        interfaceInfoMpper.truncateTable(tableName);
     }
+
+    @Override
+    public void insertFailDetail(List<Map<String, String>> list) {
+        getFileDataMapper.insertFailDetail(list);
+    }
+    @Override
+    public void insertUploadCount(Map<String, Object> map) {
+        getFileDataMapper.insertUploadCount(map);
+    }
 }
