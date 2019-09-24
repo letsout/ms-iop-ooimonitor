@@ -70,4 +70,8 @@ public interface FileDataService {
     String getIOPActivityIds(String activityId);
 
     void truncateTable(String tableName);
+
+    void insertFailDetail(List<Map<String, String>> list);
+
+    void insertUploadCount(Map<String, Object> map);
 }
