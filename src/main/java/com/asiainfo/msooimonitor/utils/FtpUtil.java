@@ -447,7 +447,7 @@ public class FtpUtil {
         if (ftpFiles.length > 0) {
             for (FTPFile file :
                     ftpFiles) {
-                if (file.getName().contains(interfaceId) && file.getName().contains(".dat")) {
+                if (file.getName().contains(interfaceId) && (file.getName().endsWith(".dat")|| file.getName().endsWith(".txt"))) {
                     FileUtil.dirExit(localPath);
                     FileOutputStream out = new FileOutputStream(localPath + File.separator + file.getName());
                     boolean b = ftpClient.retrieveFile(file.getName(), out);

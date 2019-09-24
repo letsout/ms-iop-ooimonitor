@@ -110,7 +110,7 @@ public class FileUtil {
         File file = new File(dir);
         String[] list = file.list();
         try {
-            dat = Arrays.stream(list).filter(name -> name.endsWith("dat")).collect(Collectors.toList());
+            dat = Arrays.stream(list).filter(name -> name.endsWith("dat") || name.endsWith(".txt")).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("遍历指定文件夹下的文件名出错：{}", dir);
         }

@@ -1,18 +1,18 @@
 package com.asiainfo.msooimonitor.thread;
 
+import com.alibaba.fastjson.JSON;
 import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.handle.HandleData;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
 import com.asiainfo.msooimonitor.utils.FileUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import javax.xml.ws.Action;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,12 +34,12 @@ public class ReadFileThread {
     @Autowired
     HandleData handleData;
 
-    public void ReadFile(String fileName, String dir, String interfaceId,String tableName, String date) {
+    ArrayList<Map<String, String>> mapList = new ArrayList<>();
 
-        if (StringUtils.isEmpty(tableName)){
+    public void ReadFile(String fileName, String dir, String interfaceId, String tableName, String date) {
 
-            throw new RuntimeException("接口号["+interfaceId+"]对应表名不存在！！");
-
+        if (StringUtils.isEmpty(tableName)) {
+            throw new RuntimeException("接口号[" + interfaceId + "]对应表名不存在！！");
         }
 
         Map<String, Object> sMap = loadService.sqlTemplate(tableName);
@@ -60,9 +60,9 @@ public class ReadFileThread {
         try {
             logger.info("开始读取文件 [{}]", fileName);
 
-            // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+            //       dir = "C:\\Users\\40468\\Desktop\\";
 
-            FileInputStream fileInputStream = new FileInputStream(dir + File.separator+ fileName);
+            FileInputStream fileInputStream = new FileInputStream(dir + File.separator + fileName);
 
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "gb2312");
 
@@ -72,18 +72,13 @@ public class ReadFileThread {
 
             String[] str = null;
 
-            ArrayList<Map<String, String>> mapList = new ArrayList<>();
+            while (StringUtils.isNotBlank(line = bufferedReader.readLine())) {
 
-            while ((line = bufferedReader.readLine()) != null) {
-                if(count == 0 ){
-                    loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
+                str = splitLine(interfaceId, line, date);
+
+                if (str.length != paramList.size()) {
+                    continue;
                 }
-
-                //    logger.info("读取字符串信息：{},分割符{}", line, new String(new byte[]{(byte) 0x80}));
-
-                String s = line + new String(new byte[]{(byte) 0x80}) + date;
-
-                str = s.split(new String(new byte[]{(byte) 0x80}));
 
                 HashMap<String, String> hashMap = new HashMap<>();
 
@@ -112,14 +107,15 @@ public class ReadFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(dir+File.separator+fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir + File.separator + fileName));
             interfaceRecord.setFileSuccessNum(String.valueOf(count));
             interfaceRecord.setFileTime(date);
             loadService.insertRecord(interfaceRecord);
             logger.info("文件[{}]入库完成！！！", fileName);
 
         } catch (Exception e) {
-            logger.error("文件[{}]入库失败！！！错误行数{}", fileName, count);
+
+            // logger.error("文件[{}]入库失败！！！错误行数{}", fileName, JSON.toJSONString(mapList));
             logger.error("message：{}", e);
             loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
             InterfaceRecord interfaceRecord = new InterfaceRecord();
@@ -127,12 +123,38 @@ public class ReadFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(dir+File.separator+fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(dir + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
-            interfaceRecord.setErrorDesc("文件解析出错:"+e.getMessage().substring(0,470));
+            if (e.getMessage().length() > 1900) {
+                interfaceRecord.setErrorDesc("文件解析出错:" + e.getMessage().substring(0, 1900));
+            } else {
+                interfaceRecord.setErrorDesc("文件解析出错:" + e.getMessage());
+            }
             loadService.insertRecord(interfaceRecord);
         }
 
+    }
+
+    /**
+     * 分割字符串数组，文件分割符不同
+     *
+     * @param interfaceId
+     * @param line
+     * @param date
+     * @return
+     */
+    private String[] splitLine(String interfaceId, String line, String date) {
+        String split = "";
+        if (interfaceId.contains("migu") || interfaceId.contains("sichuan")) {
+            split = new String(new byte[]{(byte) 0x09});
+        } else {
+            split = new String(new byte[]{(byte) 0x80});
+        }
+
+        logger.debug("读取字符串信息：{},分割符{}", line,split);
+
+        String s = line + split + date;
+        return s.split(split);
     }
 }

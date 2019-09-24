@@ -27,12 +27,13 @@ public class TaskSaveController {
     @RequestMapping("/93006/{lastDaySql}")
     public String testsav93006(@PathVariable String lastDaySql) {
         String activityEndDate = lastDaySql.substring(0, 4) + "/" + lastDaySql.substring(4, 6) + "/" + lastDaySql.substring(6, 8);
+        String activityEndDate1 = lastDaySql.substring(0, 4) + "-" + lastDaySql.substring(4, 6) + "-" + lastDaySql.substring(6, 8);
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93006");
                 try {
-                    taskSaveMethod.savebase93006(activityEndDate);
+                    taskSaveMethod.savebase93006(activityEndDate1);
                     taskSaveMethod.savemarking93006(activityEndDate);
                 } catch (Exception e) {
                     log.error("93006 error :{}",e);
