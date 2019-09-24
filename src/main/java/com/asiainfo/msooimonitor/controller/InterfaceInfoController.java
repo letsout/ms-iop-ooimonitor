@@ -95,10 +95,10 @@ public class InterfaceInfoController {
                 String tableName = interfaceInfo.getFileName();
                 String remotePath = "";
                 String localPath = "";
-                if (time.length() == 4) {
+                if (StateAndTypeConstant.MONTH_INTERFACE.equals(interfaceInfo.getInterfaceCycle())) {
                     remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
                     localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "month";
-                } else if (time.length() == 6) {
+                } else  {
                     remotePath = path228 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
                     localPath = path17 + File.separator + interfaceInfo.getInterfaceLocalPath() + File.separator + time + File.separator + "day";
                 }
