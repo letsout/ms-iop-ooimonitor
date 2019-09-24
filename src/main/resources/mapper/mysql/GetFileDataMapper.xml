@@ -24,7 +24,7 @@
     <select id="getMarkingInfo93006" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where DATE_FORMAT(a.activity_endtime, '%Y%m%d') = #{activityEndDate}
+        where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
     </select>
     <select id="getMarkingInfo93001" resultType="map">
         select *
@@ -123,8 +123,7 @@
 
     <update id="insertFailInterface" parameterType="java.util.HashMap">
 
-        INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,
-                                                      error_desc)
+        INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`, error_desc)
         VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});
 
     </update>
