@@ -21,7 +21,7 @@ public interface FileDataService {
 
     List<Map<String, String>> getBaseInfo93006(String activityEndDate);
 
-    List<Map<String, String>> getCampaignedInfo(String activityId);
+    List<Map<String, Object>> getCampaignedInfo(String activityId);
 
     List<Map<String, String>> getDetailEffect(String activityIds, String nowDatem, int start, int limit);
 
@@ -29,7 +29,7 @@ public interface FileDataService {
 
     Map<String, String> getSummaryEffectJT(String activity_id, String summaryDate, String type);
 
-    List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
+    List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
 
     void insertFailInterface(Map<String, String> map);
 
@@ -45,7 +45,6 @@ public interface FileDataService {
 
     List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 
-    List<Map<String, String>> getBaseInfo93001();
 
     Map<String, String> getChannelInfo(String activity_id);
 

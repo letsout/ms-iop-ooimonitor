@@ -13,15 +13,8 @@ import java.util.Map;
  */
 @Repository
 public interface GetFileDataMapper {
-    //93011
-    List<String> getPhoneFromBlackRed();
 
-    //93011
-    List<String> getPhone();
 
-    List<Map<String, String>> getBaseInfo();
-
-    List<String> getPhone93006(String tableName);
 
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
@@ -41,15 +34,14 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 
 
-    List<Map<String, String>> getCampaignedInfo(String activity_id);
+    List<Map<String, Object>> getCampaignedInfo(String activity_id);
 
-    List<Map<String, String>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
+    List<Map<String, Object>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
 
     List<Map<String, String>> getOfferBo(String campaign_id);
 
     List<Map<String, Object>> getBaseInfo93005(String activityEndDate);
 
-    List<Map<String, String>> getBaseInfo93001();
 
     List<Map<String, String>> getMarkingInfo93005(String activityEndDate);
 

@@ -28,26 +28,32 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);
         markingInfo93005.forEach(map -> {
             final String activity_id = map.get("activity_id");
-            final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+//            iop_activity_id,c.activity_name,c.start_time,c.end_time
+            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
             Map<String, String> campaignedMap = new HashMap<>();
             String campaign_id = "";
             String campaign_name = "";
             String campaign_starttime = "";
             String campaign_endtime = "";
-            if (campaignedInfo.size() > 0) {
-                for (Map<String, String> map1 : campaignedInfo) {
-                    campaign_id += "," + map1.get("campaign_id");
-                    campaign_name += "," + map1.get("campaign_name");
-                    campaign_starttime += "," + map1.get("campaign_starttime");
-                    campaign_endtime += "," + map1.get("campaign_endtime");
-
-                    campaignedMap.put("campaign_id", campaign_id.substring(1));
-                    campaignedMap.put("campaign_name", campaign_name.substring(1));
-                    campaignedMap.put("campaign_starttime", campaign_starttime.substring(1));
-                    campaignedMap.put("campaign_endtime", campaign_endtime.substring(1));
-                }
-                map.putAll(campaignedMap);
+            String offer_code = "";
+            String offer_name = "";
+            String offer_type = "";
+            for (Map<String, Object> map1 : campaignedInfo) {
+                campaign_id += ",280" + map1.get("campaign_id") + map1.get("iop_activity_id").toString().substring(1);
+                campaign_name += "," + map1.get("activity_name");
+                campaign_starttime += "," + map1.get("start_time").toString().replaceAll("-", "") + "000000";
+                campaign_endtime += "," + map1.get("end_time").toString().replaceAll("-", "") + "000000";
             }
+            campaignedMap.put("campaign_id", campaign_id.substring(1));
+            campaignedMap.put("campaign_name", campaign_name.substring(1));
+            campaignedMap.put("campaign_starttime", campaign_starttime.substring(1));
+            campaignedMap.put("campaign_endtime", campaign_endtime.substring(1));
+            campaignedMap.put("offer_code", offer_code);
+            campaignedMap.put("offer_name", offer_name);
+            campaignedMap.put("offer_type", offer_type);
+
+            map.putAll(campaignedMap);
+
         });
         return markingInfo93005;
     }
@@ -96,14 +102,14 @@ public class FileDataServiceImpl implements FileDataService {
 
 
     @Override
-    public List<Map<String, String>> getCampaignedInfo(String activityId) {
-        final List<Map<String, String>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
+    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
+        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
         return campaignedInfo93001;
     }
 
     @Override
-    public List<Map<String, String>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
-        final List<Map<String, String>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId, campaignedEndTime);
+    public List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
+        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId, campaignedEndTime);
         return campaignedInfo93001;
     }
 
@@ -193,12 +199,12 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
-            final List<Map<String, String>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
             String campaignId = "";
             String campaignName = "";
-            for (Map<String, String> map : campaignedInfo) {
-                campaignId += "," + map.get("campaign_id");
-                campaignName += "," + map.get("campaign_name");
+            for (Map<String, Object> map : campaignedInfo) {
+                campaignId += ",280" + map.get("campaign_id") + map.get("iop_activity_id").toString().substring(1);
+                campaignName += "," + map.get("activity_name");
             }
             if (campaignId.length() > 0) {
                 campaignId = campaignId.substring(1);
@@ -212,11 +218,6 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93006;
     }
 
-    @Override
-    public List<Map<String, String>> getBaseInfo93001() {
-        List<Map<String, String>> baseInfo93001 = getFileDataMapper.getBaseInfo93001();
-        return baseInfo93001;
-    }
 
     @Override
     public Map<String, String> getChannelInfo(String activity_id) {
@@ -228,7 +229,7 @@ public class FileDataServiceImpl implements FileDataService {
     public Map<String, String> getPositionInfo(String activity_id) {
         Map<String, String> positionInfo = getFileDataMapper.getPositionInfo(activity_id);
         if (positionInfo == null)
-            positionInfo= new HashMap<>();
+            positionInfo = new HashMap<>();
         return positionInfo;
     }
 
@@ -259,6 +260,6 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void truncateTable(String tableName) {
-        interfaceInfoMpper.truncateTable(tableName);
+//        interfaceInfoMpper.truncateTable(tableName);
     }
 }
