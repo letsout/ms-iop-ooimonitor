@@ -19,9 +19,11 @@ import java.util.Map;
 @Repository
 public interface GetFileDataMapper {
 
+
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
     Map<String, String> getChannelInfo(String activity_id);
+
     Map<String, String> getPositionInfo(String activity_id);
 
     //93006查询省级策划省级执行的
@@ -79,4 +81,9 @@ public interface GetFileDataMapper {
     void insertFailDetails(List<UploadDetailInfo> list);
 
     List<ActivityProcessInfo> getYJCHBIG(String month);
+
+    void insertUploadCount(Map<String, Object> map);
+
+    Map<String, String> getAllOfferBo(String activityId);
+    Map<String, String> getBaseOfferBo(String activityId);
 }

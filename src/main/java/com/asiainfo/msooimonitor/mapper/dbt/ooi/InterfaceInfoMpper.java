@@ -62,4 +62,6 @@ public interface InterfaceInfoMpper {
     void insert93055(List<Map<String, String>> paramList);
 
     void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
+
+    String getSummaryEffectMaxDate(@Param("activityId")String activityId,@Param("beforeDate")String beforeDate);
 }
