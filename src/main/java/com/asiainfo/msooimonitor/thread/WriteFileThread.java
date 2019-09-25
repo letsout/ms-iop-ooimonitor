@@ -56,7 +56,7 @@ public class WriteFileThread {
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
         int sum = loadMapper.getrows(tableName);
         try {
-            dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
+            dataFileWriter = new FileOutputStream(localPath + File.separator  + fileNameTmp);
             verifyFileWriter = new FileOutputStream(localPath + File.separator + verifyFileName);
             // 分页读取文件
             List<String> sqlList = createsql(tableName);
@@ -124,8 +124,8 @@ public class WriteFileThread {
             interfaceRecord.setInterfaceId(interfaceId);
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
-            interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
+            interfaceRecord.setFileName(fileName);//localPath + File.separator
+            interfaceRecord.setFileNum(FileUtil.getFileRows( localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage().substring(0, 470));
@@ -174,7 +174,7 @@ public class WriteFileThread {
     private void dataWrite(FileOutputStream writer, Object[] line, String flag) throws Exception {
         byte[] bytes = {(byte) 0x80};
         for (int i = 0; i < line.length; i++) {
-            String cloumn = (String) line[i];
+            String cloumn = String.valueOf(line[i]);
             // 最后一个字符的写入方式
             if (i == line.length - 1) {
                 if (!"null".equals(cloumn)) {
@@ -241,11 +241,11 @@ public class WriteFileThread {
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {
-            sqlList.add("select " + columns + " from " + tableName + " limit " + start + "," + limitNum);
+            sqlList.add("select row_number() over(order by a.A2) as A1,a.* from " + tableName  +" a " + " limit " + start + "," + limitNum);
             start += limitNum;
             end -= limitNum;
         }
-        sqlList.add("select " + columns + " from " + tableName + " limit " + start + "," + end);
+        sqlList.add("select row_number() over(order by a.A2) as A1,a.* from " + tableName  +" a " + " limit " + start + "," + end);
 
         return sqlList;
     }
