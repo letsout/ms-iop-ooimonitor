@@ -1408,19 +1408,19 @@ public class TaskSaveMethod {
                 //26,产品分类,1：电信服务,必填，填写枚举值ID,2：客户服务,3：数字内容服务,4：实物,5：虚拟物品
                 map.put("A26", baseOfferBo.get("prc_type"));
 //                Map<String, String> positionInfo = fileDataService.getPositionInfo(activity_id);
-                String CHANNELID = "28016";// positionInfo.getOrDefault("CHANNELID", "28000" + channelInfo.get("channel_id"));
-                String CHANNELNAME = "";//positionInfo.getOrDefault("CHANNELNAME", channelInfo.get("channel_name"));
-                String CHANNETYPE = "";//positionInfo.getOrDefault("CHANNETYPE", channelInfo.get("channel_name"));
+                String channel_code = activity.get("channel_code").toString()+activity.get("channel_id");// positionInfo.getOrDefault("CHANNELID", "28000" + channelInfo.get("channel_id"));
+                String channel_name = activity.get("channel_name").toString();//positionInfo.getOrDefault("CHANNELNAME", channelInfo.get("channel_name"));
+                String channel_type = activity.get("channel_type").toString();//positionInfo.getOrDefault("CHANNETYPE", channelInfo.get("channel_name"));
                 //27,渠道编码,必填,比如,00108xxxx,001：一级分类,08：二级分类,Xxxx：自定义渠道编码,编码规则参考8.2渠道和运营位编码规则
-                map.put("A27", CHANNELID);//024800
+                map.put("A27", channel_code);//024800
                 //28,渠道编码一级分类,截取“渠道编码”前三位,必填,编码规则参考8.2渠道和运营位编码规则,长度3位,（省份截取前3位）
-                map.put("A28", CHANNELID.substring(0, 3));
+                map.put("A28", channel_code.substring(0, 3));
                 //29,渠道编码二级分类,截取“渠道编码”第四、五位,必填,编码规则参考8.2渠道和运营位编码规则,长度2位,（省份截取第4、5位）
-                map.put("A29", CHANNELID.substring(3, 5));
+                map.put("A29", channel_code.substring(3, 5));
                 //30,渠道名称,必填
-                map.put("A30", CHANNELNAME);
+                map.put("A30", channel_name);
                 //31,渠道类型,参考10附录3渠道类型编码,必填,渠道类型为偶数位
-                map.put("A31", CHANNETYPE);
+                map.put("A31", channel_type);
                 //32,渠道接触规则,可为空
                 map.put("A32", "");
                 //33,时机识别,1：互联网使用事件,必填，填写枚举值ID,2：社会事件,3：位置行踪事件,4：业务办理事件,5：业务使用事件,6：周期业务事件,7：自助系统接触事件,8：PCC事件,9：其它事件,0：无事件

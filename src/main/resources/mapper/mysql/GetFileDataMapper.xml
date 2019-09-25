@@ -16,7 +16,6 @@
                  inner join base_city_code e on e.city_id = a.city_id
         where a.activity_state = '9'
           and a.is_deleted = 0
-          and a.is_paused = 0
           and a.is_send_approval = 1
           and b.flow = '3'
           and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
@@ -37,10 +36,11 @@
         where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
     </select>
     <select id="getBaseInfo93002" resultType="map">
-        select a.*,c.flow
+        select a.*,c.flow,d.*
         from activity_base_info a
                  inner join activity_rel_channel b on a.activity_id = b.activity_id
                  inner join activity_flow c on b.channel_id = c.channel_id and b.activity_id = c.activity_id
+                 inner join base_channel_info d on b.channel_id=d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
     </select>

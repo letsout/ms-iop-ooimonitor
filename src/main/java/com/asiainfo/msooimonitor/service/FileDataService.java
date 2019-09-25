@@ -13,7 +13,7 @@ public interface FileDataService {
 
     List<Map<String, Object>> getBaseInfo93005(String activityEndDate);
 
-    List<Map<String, String>> getMarkingInfo93005(String activityEndDate);
+    List<Map<String, String>> getMarkingInfo93005(String activityEndDate) throws Exception;
 
     Map<String, String> getCustGroupInfo(String activityId);
 
@@ -27,6 +27,12 @@ public interface FileDataService {
 
     Map<String, String> getSummaryEffect(String activity_id, String summaryDate);
 
+    /**
+     * @param activity_id
+     * @param summaryDate
+     * @param type        ZHD根据主活动查找关联的子活动,HD上传的本来就是iop活动id
+     * @return
+     */
     Map<String, String> getSummaryEffectJT(String activity_id, String summaryDate, String type);
 
     List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
@@ -38,6 +44,8 @@ public interface FileDataService {
     List<Map<String, String>> getResult(String sql);
 
     List<Map<String, String>> getOfferBo(String campaign_id);
+
+    Map<String, String> getAllOfferBo(String activityId);
 
     List<Map<String, String>> getMarkingInfo93002(String activityEndDate);
 
@@ -74,6 +82,11 @@ public interface FileDataService {
     void insertFailDetail(List<Map<String, String>> list);
 
     void insertUploadCount(Map<String, Object> map);
+
+    String getSummaryEffectMaxDate(String activityId, String beforeDate);
+
+    Map<String, String> getBaseOfferBo(String activityId);
+
 
     /**
      * 省级IOP同步子活动结束次月效果评估数据给一级IOP
