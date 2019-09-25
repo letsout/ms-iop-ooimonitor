@@ -201,14 +201,14 @@
         select *
         from ooi_activity_summary_effect
         where activity_id in (${activityIds})
-          and  DATE_FORMAT(data_time,'%Y%m%d') = #{date}
+          and DATE_FORMAT(data_time, '%Y%m%d') = #{date}
     </select>
 
     <select id="getSummaryEffect" resultType="map">
         select *
         from ooi_activity_summary_effect
         where activity_id = #{activityIds}
-          and DATE_FORMAT(data_time,'%Y%m%d') = #{date}
+          and DATE_FORMAT(data_time, '%Y%m%d') = #{date}
     </select>
 
     <select id="getTableRows" parameterType="string" resultType="int">
@@ -219,4 +219,14 @@
     <delete id="truncateTable">
         TRUNCATE TABLE iop_${tableName}
     </delete>
+    <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">
+
+        select max(data_time)
+        from ooi_activity_summary_effect
+        where activity_id = #{activityId}
+          and data_time
+            &lt;
+              #{beforeDate}
+
+    </select>
 </mapper>

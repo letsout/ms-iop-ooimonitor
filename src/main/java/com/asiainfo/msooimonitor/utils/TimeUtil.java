@@ -29,6 +29,20 @@ public class TimeUtil {
     public static final String TIME_FORMAT = "HH:mm:ss";
     public static final String LONG_TIME_FORMAT = "yyyyMMddHHmmss";
 
+    public static String getOoiDate(String str) throws Exception {
+//    2019/09/03 00:00:00
+        /**
+         * 专门转化字符串为集团上传数据日期格式
+         */
+        str = str.replaceAll("/", "").replaceAll(":", "").replaceAll("-", "").replaceAll(" ", "");
+        if (str.length() == 14) {
+            return str;
+        } else if (str.length() == 8) {
+            return str + "000000";
+        } else {
+            throw new Exception("时间转换异常");
+        }
+    }
 
     /**
      * 字符串转日期格式
@@ -66,6 +80,7 @@ public class TimeUtil {
         return format.format(date);
 
     }
+
     public static String getDayDateFormat(Date date) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_DAY_FORMAT);
 
@@ -209,6 +224,12 @@ public class TimeUtil {
         return i;
     }
 
+    public static String getNowTime() {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
+
+        return format.format(new Date());
+    }
+
     public static int getWeek(String day) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(DATE_DAY_FORMAT_SQL);
         Date parse = format.parse(day);
@@ -295,7 +316,7 @@ public class TimeUtil {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(JSON.toJSONString(getBetweenMonth("201901","201902")));
+        System.out.println(JSON.toJSONString(getBetweenMonth("201901", "201902")));
     }
 
 }

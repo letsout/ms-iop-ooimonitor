@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
 import com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper;
 import com.asiainfo.msooimonitor.service.FileDataService;
+import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,15 @@ public class FileDataServiceImpl implements FileDataService {
 
 
     @Override
-    public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) {
+    public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) throws Exception {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);
-        markingInfo93005.forEach(map -> {
-            final String activity_id = map.get("activity_id");
+        for (Map<String, String> map : markingInfo93005) {
+            String activity_id = map.get("activity_id");
 //            iop_activity_id,c.activity_name,c.start_time,c.end_time
-            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+            List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+            if (campaignedInfo == null || campaignedInfo.size() == 0) {
+                continue;
+            }
             Map<String, String> campaignedMap = new HashMap<>();
             String campaign_id = "";
             String campaign_name = "";
@@ -38,23 +42,41 @@ public class FileDataServiceImpl implements FileDataService {
             String offer_code = "";
             String offer_name = "";
             String offer_type = "";
+            String channel_name = "";
+            String channel_id = "";
+            String channel_type = "";
+            String channel_rule = "";
+            String time_distindes = "";
             for (Map<String, Object> map1 : campaignedInfo) {
-                campaign_id += ",280" + map1.get("campaign_id") + map1.get("iop_activity_id").toString().substring(1);
+                campaign_id += ",280_" + map1.get("campaign_id") + "_" + map1.get("iop_activity_id").toString().substring(1);
                 campaign_name += "," + map1.get("activity_name");
-                campaign_starttime += "," + map1.get("start_time").toString().replaceAll("-", "") + "000000";
-                campaign_endtime += "," + map1.get("end_time").toString().replaceAll("-", "") + "000000";
+                campaign_starttime += "," + TimeUtil.getOoiDate(map1.get("campaign_starttime").toString());
+                campaign_endtime += "," + TimeUtil.getOoiDate(map1.get("end_time").toString());
+                offer_code += "," + map1.get("offer_code");
+                offer_name += "," + map1.get("offer_name");
+                offer_type += "," + map1.get("offer_type");
+                channel_name += "," + map1.get("channel_name");
+                channel_id += "," + map1.get("channel_id");
+                channel_type += "," + map1.get("channel_type");
+                channel_rule += "," + map1.get("channel_rule");
+                time_distindes += "," + map1.get("time_distindes");
             }
             campaignedMap.put("campaign_id", campaign_id.substring(1));
             campaignedMap.put("campaign_name", campaign_name.substring(1));
             campaignedMap.put("campaign_starttime", campaign_starttime.substring(1));
             campaignedMap.put("campaign_endtime", campaign_endtime.substring(1));
-            campaignedMap.put("offer_code", offer_code);
-            campaignedMap.put("offer_name", offer_name);
-            campaignedMap.put("offer_type", offer_type);
+            campaignedMap.put("offer_code", offer_code.substring(1));
+            campaignedMap.put("offer_name", offer_name.substring(1));
+            campaignedMap.put("offer_type", offer_type.substring(1));
+            campaignedMap.put("channel_name", channel_name.substring(1));
+            campaignedMap.put("channel_id", channel_id.substring(1));
+            campaignedMap.put("channel_type", channel_type.substring(1));
+            campaignedMap.put("channel_rule", channel_rule.substring(1));
+            campaignedMap.put("time_distindes", time_distindes.substring(1));
 
             map.putAll(campaignedMap);
 
-        });
+        }
         return markingInfo93005;
     }
 
@@ -128,25 +150,57 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public Map<String, String> getSummaryEffect(String activityId, String activityEndDate) {
         // 根据自互动取
-        Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(activityId, activityEndDate);
-        return summaryEffect;
+        Map<String, String> map = interfaceInfoMpper.getSummaryEffect(activityId, activityEndDate);
+//        int i = 1;
+//        customerNum += Integer.valueOf(map.get("customer_num"));
+//        touchNum += Integer.valueOf(map.get("touch_num"));
+//        vicNum += Integer.valueOf(map.get("vic_num"));
+//        inOutRate += Float.valueOf(map.get("in_out_rate"));
+//        terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
+//        map.put("customer_num", String.valueOf(customerNum));
+//        map.put("touch_num", String.valueOf(touchNum));
+//        map.put("vic_num", String.valueOf(vicNum));
+//
+//        DecimalFormat df = new DecimalFormat("0.000000");
+//        map.put("touhe_rate", df.format((float) touchNum / customerNum));
+//        map.put("response_rate", df.format((float) touchNum / customerNum));
+//        map.put("vic_rate", df.format((float) vicNum / touchNum));
+//        map.put("in_out_rate", df.format(inOutRate / i));
+//        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
+        return map;
     }
+
+    @Override
+    public String getSummaryEffectMaxDate(String activityId,String beforeDate) {
+        String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(activityId,beforeDate);
+        return maxDate;
+    }
+
+//    public static void main(String[] args) {
+//        List arrayList;
+//        System.out.println("'" + StringUtils.join(arrayList, "','") + "'");
+//        arrayList = new ArrayList();
+//        System.out.println("'" + StringUtils.join(arrayList, "','") + "'");
+//        arrayList.add("1");
+//        System.out.println("'" + StringUtils.join(arrayList, "','") + "'");
+//    }
 
     @Override
     public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
         List<String> iopActivityIds;
         // 根据集团下发活动查询iop关联活动
-        if ("ZHD".equals(type)) {
+        String activityIds = "";
+        if ("ZHD".equals(type)) {//根据主活动查找关联的子活动
             iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
-        } else {
-            iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId);
+            activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
+        } else {//上传的本来就是iop活动id
+            activityIds = "'" + activityId + "'";
         }
-        if (iopActivityIds == null || iopActivityIds.size() == 0) {
+        if (activityIds.equals("''") || activityIds.equals("'null'")) {
             return null;
         }
-        String activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
         List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
-        if (summaryEffect.size() == 0)
+        if (summaryEffect == null || summaryEffect.size() == 0)
             return null;
         int customerNum = 0;
         int touchNum = 0;
@@ -154,8 +208,15 @@ public class FileDataServiceImpl implements FileDataService {
         float inOutRate = 0;
         float terminalFlowRate = 0;
         int i = 0;
-        for (Map<String, String> map :
-                summaryEffect) {
+        String customer_group_id = "";
+        String customer_group_name = "";
+        String customer_num = "";
+        String customer_filter_rule = "";
+        for (Map<String, String> map : summaryEffect) {
+            customer_group_id += "," + map.get("customer_group_id");
+            customer_group_name += "," + map.get("customer_group_name");
+            customer_num += "," + map.get("customer_num");
+            customer_filter_rule = map.get("customer_filter_rule");
             customerNum += Integer.valueOf(map.get("customer_num"));
             touchNum += Integer.valueOf(map.get("touch_num"));
             vicNum += Integer.valueOf(map.get("vic_num"));
@@ -164,7 +225,14 @@ public class FileDataServiceImpl implements FileDataService {
             i++;
         }
 
-        Map<String, String> map = summaryEffect.get(0);
+
+        Map<String, String> map = new HashMap<>();
+        if (i > 0) {
+            map.put("customer_filter_rule", customer_filter_rule.substring(1));
+            map.put("customer_num", customer_num.substring(1));
+            map.put("customer_group_id", customer_group_id.substring(1));
+            map.put("customer_group_name", customer_group_name.substring(1));
+        }
         map.put("customer_num", String.valueOf(customerNum));
         map.put("touch_num", String.valueOf(touchNum));
         map.put("vic_num", String.valueOf(vicNum));
@@ -178,6 +246,7 @@ public class FileDataServiceImpl implements FileDataService {
 
         return map;
     }
+
 
     @Override
     public void saveresultList(String sql) {
@@ -193,6 +262,18 @@ public class FileDataServiceImpl implements FileDataService {
 
     }
 
+    public Map<String, String> getAllOfferBo(String activityId) {
+        getFileDataMapper.getAllOfferBo(activityId);
+        return null;
+
+    }
+    @Override
+    public Map<String, String> getBaseOfferBo(String activityId) {
+        final Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
+        return baseOfferBo;
+
+    }
+
     @Override
     public List<Map<String, String>> getMarkingInfo93006(String activityEndDate) {
         // 一级策划省级执行
@@ -203,13 +284,13 @@ public class FileDataServiceImpl implements FileDataService {
             String campaignId = "";
             String campaignName = "";
             for (Map<String, Object> map : campaignedInfo) {
-                campaignId += ",280" + map.get("campaign_id") + map.get("iop_activity_id").toString().substring(1);
+                campaignId += ",280_" + map.get("campaign_id") + "_" + map.get("iop_activity_id").toString().substring(1);
                 campaignName += "," + map.get("activity_name");
             }
-            if (campaignId.length() > 0) {
+            if (StringUtils.isNotEmpty(campaignId)) {
                 campaignId = campaignId.substring(1);
             }
-            if (campaignName.length() > 0) {
+            if (StringUtils.isNotEmpty(campaignName)) {
                 campaignName = campaignName.substring(1);
             }
             markingmap.put("campaign_id", campaignId);
@@ -217,7 +298,6 @@ public class FileDataServiceImpl implements FileDataService {
         });
         return markingInfo93006;
     }
-
 
     @Override
     public Map<String, String> getChannelInfo(String activity_id) {
@@ -236,9 +316,11 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public void insertFlow() {
         final List<Map<String, String>> flowInfo1 = getFileDataMapper.getFlowInfo1();
-        getFileDataMapper.insertFlow(flowInfo1);
+        if (flowInfo1.size() != 0)
+            getFileDataMapper.insertFlow(flowInfo1);
         final List<Map<String, String>> flowInfo2 = getFileDataMapper.getFlowInfo2();
-        getFileDataMapper.insertFlow(flowInfo2);
+        if (flowInfo2.size() != 0)
+            getFileDataMapper.insertFlow(flowInfo2);
     }
 
     @Override
@@ -265,8 +347,11 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void insertFailDetail(List<Map<String, String>> list) {
+        if (list == null || list.size() == 0)
+            return;
         getFileDataMapper.insertFailDetail(list);
     }
+
     @Override
     public void insertUploadCount(Map<String, Object> map) {
         getFileDataMapper.insertUploadCount(map);

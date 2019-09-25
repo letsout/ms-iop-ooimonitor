@@ -15,10 +15,10 @@ import java.util.Map;
 public interface GetFileDataMapper {
 
 
-
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
     Map<String, String> getChannelInfo(String activity_id);
+
     Map<String, String> getPositionInfo(String activity_id);
 
     //93006查询省级策划省级执行的
@@ -56,6 +56,11 @@ public interface GetFileDataMapper {
     List<String> getIOPActivityIds(String activityId);
 
     List<String> getZHDIOPActivityIds(String activityId);
+
     void insertFailDetail(List<Map<String, String>> list);
+
     void insertUploadCount(Map<String, Object> map);
+
+    Map<String, String> getAllOfferBo(String activityId);
+    Map<String, String> getBaseOfferBo(String activityId);
 }
