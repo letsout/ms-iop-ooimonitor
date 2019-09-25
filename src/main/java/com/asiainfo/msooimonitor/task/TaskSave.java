@@ -27,7 +27,7 @@ public class TaskSave {
     public void save93006() {
         fileDataService.truncateTable("93006");
         try {
-            final String activityEndDate = TimeUtil.getLastDaySql(new Date());
+            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
             taskSaveMethod.savebase93006(activityEndDate);
             taskSaveMethod.saveMarking93006(activityEndDate);
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class TaskSave {
     public void testsave93001() {
         fileDataService.truncateTable("93006");
         try {
-            final String activityEndDate = TimeUtil.getLastDaySql(new Date());
+            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
             taskSaveMethod.saveMarking93001(activityEndDate);
         } catch (Exception e) {
             fileDataService.truncateTable("93006");
@@ -52,7 +52,7 @@ public class TaskSave {
         fileDataService.truncateTable("93006");
         try {
 
-            final String activityEndDate = TimeUtil.getLastDaySql(new Date());
+            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
             taskSaveMethod.saveBase93005(activityEndDate);
             taskSaveMethod.saveMarking93005(activityEndDate);
         } catch (
@@ -65,13 +65,12 @@ public class TaskSave {
     public void savemarking93002() {
         fileDataService.truncateTable("93006");
         try {
-            final String activityEndDate = TimeUtil.getLastDaySql(new Date());
+            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
             taskSaveMethod.saveMarking93002(activityEndDate);
             taskSaveMethod.savebase93002(activityEndDate);
         } catch (Exception e) {
             fileDataService.truncateTable("93006");
         }
-
     }
 
     @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发

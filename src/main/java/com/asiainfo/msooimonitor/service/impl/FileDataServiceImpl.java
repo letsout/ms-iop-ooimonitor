@@ -80,7 +80,6 @@ public class FileDataServiceImpl implements FileDataService {
             campaignedMap.put("channel_type", channel_type.substring(1));
             campaignedMap.put("channel_rule", channel_rule.substring(1));
             campaignedMap.put("time_distindes", time_distindes.substring(1));
-
             map.putAll(campaignedMap);
 
         }

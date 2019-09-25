@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.utils;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -68,7 +69,7 @@ public class SqlUtil {
                 String key = "A" + a;
                 String value = (String) mapinsert.getOrDefault(key, "");
                 if (value == null || value.equals("null") || value.replaceAll("null", "").replaceAll(",", "").equals("")) {
-                    value = "";
+                    value = null;
                 }
                 System.out.println(key + "->" + value);
                 if (a != columSize) {

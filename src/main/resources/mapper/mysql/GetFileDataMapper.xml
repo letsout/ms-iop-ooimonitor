@@ -75,10 +75,11 @@
         where campaign_id = #{campaign_id}
     </select>
     <select id="getBaseInfo93005" resultType="map">
-        select a.*,b.flow
+        select a.*,b.flow,d.*
         from activity_base_info a
                  inner join activity_flow b on a.activity_id = b.activity_id
                  inner join activity_rel_channel c on a.activity_id = c.activity_id and b.channel_id = c.channel_id
+        inner join base_channel_info d on c.channel_id=d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -171,13 +172,6 @@
             (#{map.activity_id}, #{map.interface_id}, #{map.activity_type}, #{map.fail_time}, #{map.fail_desc})
         </foreach>
     </insert>
-    <insert id="insertUploadCount" parameterType="java.util.HashMap">
-        INSERT INTO `ooi_activity_upload_count`(`upload_num`, `interface_id`, `fail_num`, `upload_time`)
-        VALUES
-            (#{upload_num}, #{interface_id}, #{fail_num}, #{upload_time})
-
-    </insert>
-
 
     <select id="getYJCH" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
         select distinct a.iop_activity_id,'1' from ooi_iop_rel_activity_info a left join activity_base_info b on a.iop_activity_id = b.activity_id where is_feedback = 2 and data_state = 'U' and #{month} = date_format(b.end_time,'Y%m%') and b.activity_id is not null

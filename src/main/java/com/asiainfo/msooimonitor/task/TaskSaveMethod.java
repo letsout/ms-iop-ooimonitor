@@ -1,6 +1,7 @@
 package com.asiainfo.msooimonitor.task;
 
-import com.alibaba.fastjson.JSON;
+import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
@@ -22,6 +23,8 @@ public class TaskSaveMethod {
 
     @Autowired
     FileDataService fileDataService;
+    @Autowired
+    InterfaceInfoMpper interfaceInfoMpper;
 
     private final int limitNum = 10000;
 
@@ -40,7 +43,7 @@ public class TaskSaveMethod {
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>();
             //2 统计时间 必填,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3 省份 必填，长度3位
             map.put("A3", "280");
             //4 地市 必填,长度： 3位或4位
@@ -62,7 +65,7 @@ public class TaskSaveMethod {
             map.put("A12", "");
 //            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
 //            map.put("A16", "");
-            int num = fileDataService.getTableRows("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
+            int num = fileDataService.getTableRows("'" + activity.get("activity_id") + "'", activityEndDate);
             if (num == 0) {
                 Map<String, String> failmap = new HashMap<>();
                 failmap.putAll(failmapdemo);
@@ -74,7 +77,7 @@ public class TaskSaveMethod {
             int start = 0;
             int end = num;
             for (int i = 0; i < num / limitNum; i++) {
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", activityEndDate, start, limitNum);
 //                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
@@ -95,7 +98,7 @@ public class TaskSaveMethod {
                 start += limitNum;
                 end -= limitNum;
             }
-            List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'", TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, end);
+            List<Map<String, String>> detaileffect = fileDataService.getDetailEffect("'" + activity.get("activity_id") + "'",activityEndDate, start, end);
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
                 mapresult.put("A5", mapEffect.get("phone_no"));
@@ -113,6 +116,15 @@ public class TaskSaveMethod {
             SqlUtil.getInsert("93006", list);
             list.clear();
         }
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93006")
+                        .tableName("iop_93006")
+                        .fileName("i_13000_time_IOP-93006_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
 
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
@@ -133,12 +145,12 @@ public class TaskSaveMethod {
         failmapdemo.put("activity_type", "marking");
         failmapdemo.put("fail_time", activityEndDate);
         List<Map<String, String>> activitys = fileDataService.getMarkingInfo93006(activityEndDate);
-        //System.out.println("activitys:" + activitys);
+        ////System.out.println("activitys:" + activitys);
         //1 行号
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>();
             //2 统计时间 必填,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3 省份 必填，长度3位
             map.put("A3", "280");
             //4 地市 必填,长度： 3位或4位
@@ -171,7 +183,7 @@ public class TaskSaveMethod {
                 continue;
             }
             // 查询当前表中数据量
-            int num = fileDataService.getTableRows(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)));
+            int num = fileDataService.getTableRows(activityIds, activityEndDate);
             if (num == 0) {
                 Map<String, String> failmap = new HashMap<>();
                 failmap.putAll(failmapdemo);
@@ -184,7 +196,7 @@ public class TaskSaveMethod {
             int start = 0;
             int end = num;
             for (int i = 0; i < num / limitNum; i++) {
-                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, limitNum);
+                List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, activityEndDate, start, limitNum);
 //                    log.debug("detaileffect:" + JSON.toJSONString(detaileffect.get(0)));
                 for (Map<String, String> mapEffect : detaileffect) {
                     mapresult = new HashMap<>(map);
@@ -205,7 +217,7 @@ public class TaskSaveMethod {
                 start += limitNum;
                 end -= limitNum;
             }
-            List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)), start, end);
+            List<Map<String, String>> detaileffect = fileDataService.getDetailEffect(activityIds, activityEndDate, start, end);
             for (Map<String, String> mapEffect : detaileffect) {
                 mapresult = new HashMap<>(map);
                 //5 用户号码 必填,运营对象手机号码
@@ -223,6 +235,15 @@ public class TaskSaveMethod {
             SqlUtil.getInsert("93006", list);
             list.clear();
         }
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93006")
+                        .tableName("iop_93006")
+                        .fileName("i_13000_time_IOP-93006_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
@@ -232,7 +253,7 @@ public class TaskSaveMethod {
         fileDataService.insertUploadCount(uploadCountInfo);
     }
 
-    public void saveMarking93001(String date) throws Exception {
+    public void saveMarking93001(String activityEndDate) throws Exception {
         List<Map<String, Object>> list = new LinkedList<>();
         Map<String, String> map = null;
         Map<String, Object> resultmap = null;
@@ -240,14 +261,14 @@ public class TaskSaveMethod {
         Map<String, String> failmapdemo = new HashMap<>();
         failmapdemo.put("interface_id", "93001");
         failmapdemo.put("activity_type", "marking");
-        failmapdemo.put("fail_time", date);
-        List<Map<String, String>> activitys = fileDataService.getMarkingInfo93001(date);
+        failmapdemo.put("fail_time", activityEndDate);
+        List<Map<String, String>> activitys = fileDataService.getMarkingInfo93001(activityEndDate);
         int failcount = 0;
         //属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-50子活动效果评估指标
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>();
             //2	统计时间	必填,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3	省份	必填(长度3位),省份与互联网编码参考9.1省公司编码
             map.put("A3", "280");
             //4	地市	必填,长度： 每个地市长度3位或4位（未知地市为00000除外）
@@ -290,7 +311,7 @@ public class TaskSaveMethod {
 */
 
             //子活动相关信息
-            List<Map<String, Object>> campaignedList = fileDataService.getCampaignedEndInfo(activity_id, date);
+            List<Map<String, Object>> campaignedList = fileDataService.getCampaignedEndInfo(activity_id, activityEndDate);
             for (Map<String, Object> campaignedmap : campaignedList) {
                 resultmap = new HashMap<>();
                 //14	子活动编号	必填,参考附录1统一编码规则中的营销子活动编号编码规则,所属流程为2、8、9、10时，前3位编号为省份编码
@@ -345,8 +366,8 @@ public class TaskSaveMethod {
                 //36	资源使用情况	描述性信息,可为空
                 resultmap.put("A36", "");
                 //子活动效果评估指标
-                Map<String, String> mapEffect = fileDataService.getSummaryEffect(iop_activity_id, date);
-                String beforeDate = TimeUtil.getLastDaySql(TimeUtil.strToDate(date));
+                Map<String, String> mapEffect = fileDataService.getSummaryEffect(iop_activity_id, activityEndDate);
+                String beforeDate = TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate));
                 Map<String, String> mapEffect1 = fileDataService.getSummaryEffect(iop_activity_id, beforeDate);
                 if (mapEffect == null) {
                     Map<String, String> failmap = new HashMap<>();
@@ -360,7 +381,7 @@ public class TaskSaveMethod {
                 if (mapEffect1 == null) {
                     String maxDate = fileDataService.getSummaryEffectMaxDate(iop_activity_id, beforeDate);
                     if (maxDate == null || maxDate.equals("")) {
-                        System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
+                        //System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
                         //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
 
                         resultmap.put("A42", mapEffect.get("touch_num"));
@@ -374,11 +395,11 @@ public class TaskSaveMethod {
                         resultmap.put("A46", mapEffect.get("vic_rate"));
                         //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                         resultmap.put("A47", mapEffect.get("terminal_flow_rate"));
-                    } else {
+                    } else if (beforeDate.equals(maxDate)) {
 
                         mapEffect1 = fileDataService.getSummaryEffect(iop_activity_id, maxDate);
-                        System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
-                        System.out.println("mapEffect1:" + JSON.toJSONString(mapEffect1));
+                        //System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
+                        //System.out.println("mapEffect1:" + JSON.toJSONString(mapEffect1));
                         //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                         resultmap.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
                         //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
@@ -391,6 +412,9 @@ public class TaskSaveMethod {
                         resultmap.put("A46", String.valueOf(Float.valueOf(mapEffect.get("vic_rate")) - Float.valueOf(mapEffect1.get("vic_rate"))));
                         //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                         resultmap.put("A47", String.valueOf(Float.valueOf(mapEffect.get("terminal_flow_rate")) - Float.valueOf(mapEffect1.get("terminal_flow_rate"))));
+                    }
+                    else{
+                        throw new Exception(iop_activity_id+"数据效果数据断层,缺少日期为："+beforeDate);
                     }
                 }
 
@@ -411,6 +435,15 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93001", list);
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93001")
+                        .tableName("iop_93001")
+                        .fileName("i_13000_time_IOP-93001_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93001");
@@ -434,7 +467,7 @@ public class TaskSaveMethod {
             map = new HashMap<>();
             //1 行号
             //2 统计时间 必填,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3 省份 必填(长度3位),省份与互联网编码参考9.1省公司编码
             map.put("A3", "280");
             //4 地市 必填 ,长度： 每个地市长度3位或4位（未知地市为00000除外）
@@ -681,6 +714,15 @@ public class TaskSaveMethod {
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93005")
+                        .tableName("iop_93005")
+                        .fileName("i_13000_time_IOP-93005_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93005");
@@ -704,7 +746,7 @@ public class TaskSaveMethod {
             map = new HashMap<>();
             //1 行号
             //2 统计时间 必填,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3 省份 必填(长度3位),省份与互联网编码参考9.1省公司编码
             map.put("A3", "280");
             //4 地市 必填 ,长度： 每个地市长度3位或4位（未知地市为00000除外）
@@ -719,8 +761,8 @@ public class TaskSaveMethod {
             map.put("A7", TimeUtil.getOoiDate(start_time));
             //8 活动结束时间 必填，长度14位，活动结束时间不早于活动开始时间
             String end_time = activity.get("end_time").toString();
-            //System.out.println("start_time:" + start_time);
-            //System.out.println("end_time:" + end_time);
+            ////System.out.println("start_time:" + start_time);
+            ////System.out.println("end_time:" + end_time);
             map.put("A8", TimeUtil.getOoiDate(end_time));
             //9 营销活动类型 必填，填写枚举值ID
             map.put("A9", activity.getOrDefault("activity_type", "9").toString());
@@ -782,11 +824,11 @@ public class TaskSaveMethod {
             //Xxxx：自定义渠道编码
             //编码规则参考8.2渠道和运营位编码规则
             //当营销活动涉及多子活动时，以逗号分隔
-            map.put("A26", "");
+            map.put("A26", activity.get("channel_code").toString()+activity.get("channel_id"));
             //27 渠道名称 可为空，当营销活动涉及多子活动时，以逗号分隔
-            map.put("A27", "");
+            map.put("A27", activity.get("channel_name").toString());
             //28 渠道类型 可为空，当营销活动涉及多子活动时，以逗号分隔
-            map.put("A28", "");
+            map.put("A28",activity.get("channel_type").toString());
             //渠道类型为偶数位
             //29 渠道接触规则 可为空
             map.put("A29", "");
@@ -953,6 +995,15 @@ public class TaskSaveMethod {
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93005")
+                        .tableName("iop_93005")
+                        .fileName("i_13000_time_IOP-93005_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93005");
@@ -978,7 +1029,7 @@ public class TaskSaveMethod {
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>();
             //2,统计时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
-            map.put("A2", TimeUtil.getLongSeconds(new Date()));
+            map.put("A2",TimeUtil.getOoiDate(activityEndDate));
             //3,省份,参考9.1省公司编码,必填(长度3位),省份与互联网编码参考9.1省公司编码
             map.put("A3", "280");
             //4,地市,参考9.2市公司编码,必填,当营销活动涉及多个地市时，以逗号分隔,长度： 每个地市长度3位或4位（未知地市为00000除外）
@@ -1205,7 +1256,15 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93002", list);
-
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93002")
+                        .tableName("iop_93002")
+                        .fileName("i_13000_time_IOP-93002_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
@@ -1227,10 +1286,9 @@ public class TaskSaveMethod {
         List<Map<String, Object>> activitys = fileDataService.getBaseInfo93002(activityEndDate);
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，43-90子活动效果评估指标
         for (Map<String, Object> activity : activitys) {
-            try {
                 map = new HashMap<>();
                 //2,统计时间,格式：YYYYMMDDHH24MISS,必填,示例：20170213161140,长度14位,为数据生成时间
-                map.put("A2", TimeUtil.getLongSeconds(new Date()));
+                map.put("A2",TimeUtil.getOoiDate(activityEndDate));
                 //3,省份,参考9.1省公司编码,必填(长度3位),省份与互联网编码参考9.1省公司编码
                 map.put("A3", "280");
                 //4,地市,参考9.2市公司编码,必填,当营销活动涉及多个地市时，以逗号分隔,长度： 每个地市长度3位或4位（未知地市为00000除外）
@@ -1433,18 +1491,17 @@ public class TaskSaveMethod {
                 //36,资源使用情况,描述性信息,可为空
                 map.put("A36", "");
                 list.add(map);
-            } catch (Exception e1) {
-                Map<String, String> failMap = new HashMap();
-                failMap.put("activity_id", activity.get("activity_id").toString());
-                failMap.put("interface_id", "93002");
-                failMap.put("syn_time", TimeUtil.getDateTimeFormat(new Date()));
-                failMap.put("error_desc", e1.getMessage());
-                e1.printStackTrace();
-                fileDataService.insertFailInterface(failMap);
-                throw new Exception("93002接口异常");
-            }
         }
         SqlUtil.getInsert("93002", list);
+        interfaceInfoMpper.insertInterfaceRelTable(
+                CretaeFileInfo.builder()
+                        .interfaceId("93002")
+                        .tableName("iop_93002")
+                        .fileName("i_13000_time_IOP-93002_00_fileNum.dat")
+                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                        .step("1")
+                        .build()
+        );
         fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo=new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93002");
