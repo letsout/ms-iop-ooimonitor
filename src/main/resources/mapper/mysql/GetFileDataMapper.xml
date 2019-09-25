@@ -202,7 +202,7 @@
         order by c.offer_code limit 1
     </select>
     
-    <insert id="insertUploadCount">
+   <!-- <insert id="insertUploadCount">
         insert into ooi_activity_upload_count (
         interface_id,
         upload_num,
@@ -215,7 +215,7 @@
         now()
         )
     </insert>
-
+-->
     <insert id="insertFailDetails">
         insert into ooi_activity_upload_detail (
         interface_id,

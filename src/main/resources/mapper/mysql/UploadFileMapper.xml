@@ -3,22 +3,6 @@
 <mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.UploadFileMapper" >
 
     <select id="getCanCreateFileInterface" resultType="map">
-        select a.interface_id,a.table_name,a.data_time,b.interface_cycle  from ooi_interface_rel_table a  left join ooi_interface_info b on a.interface_id = b.interface_id where  a.data_state = 'U' and a.step = '1' and b.interface_deal_type = '1' and b.interface_id is not null
+        select a.interface_id,a.table_name,a.data_time,a.file_name,b.interface_cycle  from ooi_interface_rel_table a  left join ooi_interface_info b on a.interface_id = b.interface_id where  a.data_state = 'U' and a.step = '1' and b.interface_deal_type = '1' and b.interface_id is not null
     </select>
-
-    <insert id="insertSql" parameterType="string">
-        ${sql}
-    </insert>
-
-    <insert id="markYjProcess" parameterType="string">
-    insert into  ooi_93002_processid (activity_id,process_id) values (select a.iop_activity_id,'1' from ooi_iop_rel_activity_info a left join ooi_marking_campaign_info b on a.iop_activity_id = b.campaign_id where date_format(b.campaign_endtime,'yyyyMMdd') = #{date}  and b.campaign_id is not null)
-    </insert>
-
-    <insert id="marksjhlwProcess" parameterType="string">
-    insert into  ooi_93002_processid (activity_id,process_id) values (  select a.activity_id,'2' form activity_base_info a left join activity_rel_channel b on a.activity_id = b.activity_id where b.activity_id is not null and b.channel_id in ('q07','q23') and a.is_deleted = 0 and a.is_paused = 0 and a.is_send_approval =1 and a.activity_state = 9 and data_format(a.end_time,'yyyyMMdd') = #{date})
-    </insert>
-
-    <insert id="marksjsjProcess" parameterType="string">
-     insert into  ooi_93002_processid (activity_id,process_id) values ( select activity_id,'2' form activity_base_info  where is_deleted = 0 and is_paused = 0 and is_send_approval =1 and activity_state = 9 and data_format(end_time,'yyyyMMdd') = #{date})
-    </insert>
 </mapper>

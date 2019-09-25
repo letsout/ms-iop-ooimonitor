@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.File;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
  * @Desc 根据接口汇总表生成文件
  **/
 @Slf4j
+@RequestMapping("/createFile")
 @Component
 public class UploadFileTask {
 
@@ -28,47 +30,52 @@ public class UploadFileTask {
     @Autowired
     UploadService uploadService;
 
+    @RequestMapping("/createFile")
     public void uploadFile() {
 
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
-        canCreateFileInterface.stream()
-                .forEach(info -> {
-                    info.forEach((k, v) -> {
-                        // 设置基本属性
-                        String interfaceId = "";
-                        String tableName = "";
-                        String date = "";
-                        String fileName = "";
-                        // TODO 后面修改表模型然后优化
-                        String localPath = "";
-                        switch (k) {
-                            case "interface_id":
-                                interfaceId = v;
-                                break;
-                            case "table_name":
-                                tableName = v;
-                                break;
-                            case "data_time":
-                                date = v;
-                                break;
-                            case "file_name":
-                                fileName = v;
-                                break;
-                            case "interface_cycle":
-                                if(("1").equals(v) || "2".equals(v)){
-                                    localPath = path17 + File.separator + "upload" + File.separator +"time/day";
-                                }else if("3".equals(v)){
-                                    localPath = path17 + File.separator + "upload" + File.separator +"time/month";
-                                }
-                                break;
-                            default:
-                                break;
+
+        for (Map<String, String> map :
+                canCreateFileInterface) {
+            String interfaceId = "";
+            String tableName = "";
+            String date = "";
+            String fileName = "";
+            String localPath = "";
+            // 设置基本属性
+            // TODO 后面修改表模型然后优化
+            for (Map.Entry enty :
+                    map.entrySet()) {
+                String k = (String) enty.getKey();
+                String v = (String) enty.getValue();
+                switch (k) {
+                    case "interface_id":
+                        interfaceId = v;
+                        break;
+                    case "table_name":
+                        tableName = v;
+                        break;
+                    case "data_time":
+                        date = v;
+                        break;
+                    case "file_name":
+                        fileName = v;
+                        break;
+                    case "interface_cycle":
+                        if (("1").equals(v) || "2".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/day";
+                        } else if ("3".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/month";
                         }
-                        localPath =  localPath.replaceAll("time",date);
-                        writeFileThread.write(interfaceId, fileName, tableName, localPath, date);
-                    });
-                });
+                        break;
+                    default:
+                        break;
+                }
+            }
+            localPath = localPath.replaceAll("time", date);
+            writeFileThread.write(interfaceId, fileName, tableName, localPath, date);
+        }
     }
 }
