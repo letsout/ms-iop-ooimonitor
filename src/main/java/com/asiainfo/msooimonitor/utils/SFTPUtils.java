@@ -141,7 +141,6 @@ public class SFTPUtils {
             mkDir(directory);
 
             Vector<ChannelSftp.LsEntry> files = sftp.ls(remotePath);
-
             if (files.size() <= 2) {
                 System.out.println("该目录下没有文件");
                 return flag;

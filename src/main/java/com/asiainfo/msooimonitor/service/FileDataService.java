@@ -74,4 +74,14 @@ public interface FileDataService {
     void insertFailDetail(List<Map<String, String>> list);
 
     void insertUploadCount(Map<String, Object> map);
+
+    /**
+     * 省级IOP同步子活动结束次月效果评估数据给一级IOP
+     */
+    void create93055(String month);
+
+    /**
+     * 累计效果评估接口：省级IOP上报营销活动结束次月效果数据
+     */
+    void create93056(String month);
 }

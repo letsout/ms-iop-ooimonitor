@@ -219,4 +219,27 @@
     <delete id="truncateTable">
         TRUNCATE TABLE iop_${tableName}
     </delete>
+
+    <insert id="insert93055" >
+        insert insert into iop_93055 (
+        a2,a3,a4,a5,a6,a7,a8,a9,a10
+        ) values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.A2},#{item.A3},#{item.A4},#{item.A5},#{item.A6},#{item.A7},#{item.A8},#{item.A9},#{item,A10}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertInterfaceRelTable" >
+        insert into ooi_interface_rel_table (
+        interface_id,table_name,file_name,data_time,step
+        )values (
+        #{interfaceId},
+        #{tableName},
+        #{fileName},
+        #{dataTime},
+        #{step}
+        )
+    </insert>
 </mapper>

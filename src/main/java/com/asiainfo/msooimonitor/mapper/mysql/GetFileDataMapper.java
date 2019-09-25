@@ -1,8 +1,13 @@
 package com.asiainfo.msooimonitor.mapper.mysql;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
+import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
+import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +18,6 @@ import java.util.Map;
  */
 @Repository
 public interface GetFileDataMapper {
-
-
 
     List<Map<String, String>> getCustGroupInfo(String activityId);
 
@@ -56,6 +59,24 @@ public interface GetFileDataMapper {
     List<String> getIOPActivityIds(String activityId);
 
     List<String> getZHDIOPActivityIds(String activityId);
+
     void insertFailDetail(List<Map<String, String>> list);
-    void insertUploadCount(Map<String, Object> map);
+
+    void insertUploadCount(UploadCountInfo uploadCountInfo);
+
+    List<ActivityProcessInfo> getYJCH(String month);
+
+    List<ActivityProcessInfo> getSJCHSJ(String month);
+
+    List<ActivityProcessInfo> getSJCHHLW(String month);
+
+    Map<String,String> getActivityInfoById(String activityId);
+
+    Map<String,String> getActivityProductByActId(String activityId);
+
+    Map<String,String> getJTActivityInfoById(String activityId);
+
+    void insertFailDetails(List<UploadDetailInfo> list);
+
+    List<ActivityProcessInfo> getYJCHBIG(String month);
 }

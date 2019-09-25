@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.mapper.dbt.ooi;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import org.apache.ibatis.annotations.Param;
@@ -57,4 +58,8 @@ public interface InterfaceInfoMpper {
     List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds, @Param("date") String date);
 
     void truncateTable(@Param("tableName") String tableName);
+
+    void insert93055(List<Map<String, String>> paramList);
+
+    void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 }
