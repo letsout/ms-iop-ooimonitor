@@ -1,7 +1,9 @@
 package com.asiainfo.msooimonitor.model.datahandlemodel;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author H
@@ -10,6 +12,8 @@ import lombok.Data;
  **/
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UploadCountInfo {
 
     private String interfaceId;

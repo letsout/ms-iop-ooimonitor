@@ -1,6 +1,7 @@
 package com.asiainfo.msooimonitor.task;
 
 import com.alibaba.fastjson.JSON;
+import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
@@ -114,12 +115,12 @@ public class TaskSaveMethod {
         }
 
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93006");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", activitys.size() - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93006");
+       
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void saveMarking93006(String activityEndDate) throws Exception {
@@ -223,12 +224,12 @@ public class TaskSaveMethod {
             list.clear();
         }
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93006");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", activitys.size() - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93006");
+       
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void saveMarking93001(String date) throws Exception {
@@ -411,12 +412,12 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93001", list);
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93001");
-        mapcount.put("upload_time", date);
-        mapcount.put("upload_num", failcount - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93001");
+        
+        uploadCountInfo.setUploadNum(failcount - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void saveMarking93005(String activityEndDate) throws Exception {
@@ -681,12 +682,12 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93005", list);
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93005");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", activitys.size() - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93005");
+       
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void saveBase93005(String activityEndDate) throws Exception {
@@ -953,12 +954,12 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93005", list);
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93005");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", activitys.size() - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93005");
+       
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void saveMarking93002(String activityEndDate) throws Exception {
@@ -1206,12 +1207,12 @@ public class TaskSaveMethod {
         SqlUtil.getInsert("93002", list);
 
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93006");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", failcount - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93006");
+       
+        uploadCountInfo.setUploadNum(failcount - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 
     public void savebase93002(String activityEndDate) throws Exception {
@@ -1445,11 +1446,11 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93002", list);
         fileDataService.insertFailDetail(maps);
-        Map<String, Object> mapcount = new HashMap<>();
-        mapcount.put("interface_id", "93002");
-        mapcount.put("upload_time", TimeUtil.getNowTime());
-        mapcount.put("upload_num", failcount - maps.size());
-        mapcount.put("fail_num", maps.size());
-        fileDataService.insertUploadCount(mapcount);
+        UploadCountInfo uploadCountInfo=new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93002");
+       
+        uploadCountInfo.setUploadNum(failcount - maps.size());
+        uploadCountInfo.setFailNum(maps.size());
+        fileDataService.insertUploadCount(uploadCountInfo);
     }
 }

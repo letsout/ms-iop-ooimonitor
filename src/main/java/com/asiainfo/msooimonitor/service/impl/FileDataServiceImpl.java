@@ -4,7 +4,6 @@ import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
 import com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper;
-import com.asiainfo.msooimonitor.mapper.mysql.UploadFileMapper;
 import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
@@ -365,8 +364,8 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public void insertUploadCount(Map<String, Object> map) {
-        getFileDataMapper.insertUploadCount(map);
+    public void insertUploadCount(UploadCountInfo uploadCountInfo) {
+        getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
     @Override

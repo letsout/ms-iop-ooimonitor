@@ -1,5 +1,7 @@
 package com.asiainfo.msooimonitor.service;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +83,7 @@ public interface FileDataService {
 
     void insertFailDetail(List<Map<String, String>> list);
 
-    void insertUploadCount(Map<String, Object> map);
+    void insertUploadCount(UploadCountInfo uploadCountInfo);
 
     String getSummaryEffectMaxDate(String activityId, String beforeDate);
 

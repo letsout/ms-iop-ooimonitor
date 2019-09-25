@@ -82,8 +82,6 @@ public interface GetFileDataMapper {
 
     List<ActivityProcessInfo> getYJCHBIG(String month);
 
-    void insertUploadCount(Map<String, Object> map);
-
     Map<String, String> getAllOfferBo(String activityId);
     Map<String, String> getBaseOfferBo(String activityId);
 }
