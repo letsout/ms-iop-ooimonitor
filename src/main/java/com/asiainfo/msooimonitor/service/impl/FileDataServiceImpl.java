@@ -80,7 +80,6 @@ public class FileDataServiceImpl implements FileDataService {
             campaignedMap.put("channel_type", channel_type.substring(1));
             campaignedMap.put("channel_rule", channel_rule.substring(1));
             campaignedMap.put("time_distindes", time_distindes.substring(1));
-
             map.putAll(campaignedMap);
 
         }
@@ -130,11 +129,6 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
 
-    @Override
-    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
-        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
-        return campaignedInfo93001;
-    }
 
     @Override
     public List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
@@ -291,7 +285,7 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
-            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedEndInfo(activity_id,activityEndDate);
             String campaignId = "";
             String campaignName = "";
             for (Map<String, Object> map : campaignedInfo) {
@@ -451,9 +445,9 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
-
+        
         // 插入状态表代表可以生成文件
-        interfaceInfoMpper.insertInterfaceRelTable(
+        getFileDataMapper.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                 .interfaceId("93005")
                 .tableName("iop_93055")
@@ -570,7 +564,7 @@ public class FileDataServiceImpl implements FileDataService {
         interfaceInfoMpper.insert93056(paramList);
 
         // 插入状态表代表可以生成文件
-        interfaceInfoMpper.insertInterfaceRelTable(
+        getFileDataMapper.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("91056")
                         .tableName("iop_93056")

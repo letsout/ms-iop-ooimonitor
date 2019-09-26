@@ -191,7 +191,7 @@
     </select>
     <select id="getDetailEffect" resultType="map">
         select *
-        from ooi_activity_detail_effect_${date}
+        from iop_public.ooi_activity_detail_effect_${date}
         where activity_id in (${activityIds})
             limit #{start}
             ,#{limit}
@@ -199,21 +199,21 @@
 
     <select id="getSummaryEffects" parameterType="string" resultType="map">
         select *
-        from ooi_activity_summary_effect
+        from iop_public.ooi_activity_summary_effect
         where activity_id in (${activityIds})
           and DATE_FORMAT(data_time, '%Y%m%d') = #{date}
     </select>
 
     <select id="getSummaryEffect" resultType="map">
         select *
-        from ooi_activity_summary_effect
+        from iop_public.ooi_activity_summary_effect
         where activity_id = #{activityIds}
           and DATE_FORMAT(data_time, '%Y%m%d') = #{date}
     </select>
 
     <select id="getTableRows" parameterType="string" resultType="int">
         select count(*)
-        from ooi_activity_detail_effect_${dateTimeFormat}
+        from iop_public.ooi_activity_detail_effect_${dateTimeFormat}
         where activity_id in (${activityIds})
     </select>
     <delete id="truncateTable">
@@ -230,6 +230,7 @@
             )
         </foreach>
     </insert>
+
 
     <insert id="insert93056">
         insert insert into iop_93056 (
@@ -256,7 +257,7 @@
     <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">
 
         select max(data_time)
-        from ooi_activity_summary_effect
+        from iop_public.ooi_activity_summary_effect
         where activity_id = #{activityId}
           and data_time
             &lt;

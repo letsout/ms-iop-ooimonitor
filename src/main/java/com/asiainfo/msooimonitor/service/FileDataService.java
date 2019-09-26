@@ -23,7 +23,7 @@ public interface FileDataService {
 
     List<Map<String, String>> getBaseInfo93006(String activityEndDate);
 
-    List<Map<String, Object>> getCampaignedInfo(String activityId);
+//    List<Map<String, Object>> getCampaignedInfo(String activityId);
 
     List<Map<String, String>> getDetailEffect(String activityIds, String nowDatem, int start, int limit);
 

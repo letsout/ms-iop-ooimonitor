@@ -95,11 +95,11 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93002");
                 try {
                     if (type.equals("1")) {
-                        taskSaveMethod.savebase93002(activityEndDate);
+                        taskSaveMethod.saveBase93002(activityEndDate);
                     } else if (type.equals("2")) {
                         taskSaveMethod.saveMarking93002(activityEndDate);
                     } else {
-                        taskSaveMethod.savebase93002(activityEndDate);
+                        taskSaveMethod.saveBase93002(activityEndDate);
                         taskSaveMethod.saveMarking93002(activityEndDate);
                     }
                 } catch (Exception e) {

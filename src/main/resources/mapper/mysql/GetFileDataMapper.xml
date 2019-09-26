@@ -9,11 +9,10 @@
         where ACTIVITY_ID = #{activityId }
     </select>
     <select id="getBaseInfo93006" resultType="map">
-        select a.*,city_code
+        select a.*
         from activity_base_info a
                  inner join activity_rel_channel c on a.activity_id = c.activity_id
                  inner join activity_flow b on c.activity_id = b.activity_id and c.channel_id = b.channel_id
-                 inner join base_city_code e on e.city_id = a.city_id
         where a.activity_state = '9'
           and a.is_deleted = 0
           and a.is_send_approval = 1
@@ -33,7 +32,7 @@
     <select id="getMarkingInfo93002" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
-        where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
+        where DATE_FORMAT(activity_endtime, '%Y%m%d') >= #{activityEndDate}
     </select>
     <select id="getBaseInfo93002" resultType="map">
         select a.*,c.flow,d.*
@@ -66,7 +65,7 @@
         where b.data_state = 'U'
           and b.is_feedback = '2'
           and a.activity_id = #{activity_id}
-          and DATE_FORMAT(campaign_endtime, '%Y%m%d') = #{campaignedEndTime}
+          and DATE_FORMAT(c.end_time, '%Y%m%d') = #{campaignedEndTime}
     </select>
 
     <select id="getOfferBo" resultType="map">
@@ -75,10 +74,11 @@
         where campaign_id = #{campaign_id}
     </select>
     <select id="getBaseInfo93005" resultType="map">
-        select a.*,b.flow
+        select a.*,b.flow,d.*
         from activity_base_info a
                  inner join activity_flow b on a.activity_id = b.activity_id
                  inner join activity_rel_channel c on a.activity_id = c.activity_id and b.channel_id = c.channel_id
+        inner join base_channel_info d on c.channel_id=d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -171,13 +171,6 @@
             (#{map.activity_id}, #{map.interface_id}, #{map.activity_type}, #{map.fail_time}, #{map.fail_desc})
         </foreach>
     </insert>
-    <insert id="insertUploadCount" parameterType="java.util.HashMap">
-        INSERT INTO `ooi_activity_upload_count`(`upload_num`, `interface_id`, `fail_num`, `upload_time`)
-        VALUES
-            (#{upload_num}, #{interface_id}, #{fail_num}, #{upload_time})
-
-    </insert>
-
 
     <select id="getYJCH" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
         select distinct a.iop_activity_id,'1' from ooi_iop_rel_activity_info a left join activity_base_info b on a.iop_activity_id = b.activity_id where is_feedback = 2 and data_state = 'U' and #{month} = date_format(b.end_time,'Y%m%') and b.activity_id is not null
@@ -208,7 +201,7 @@
         order by c.offer_code limit 1
     </select>
     
-   <!-- <insert id="insertUploadCount">
+ <insert id="insertUploadCount" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo">
         insert into ooi_activity_upload_count (
         interface_id,
         upload_num,
@@ -221,7 +214,7 @@
         now()
         )
     </insert>
--->
+
     <insert id="insertFailDetails">
         insert into ooi_activity_upload_detail (
         interface_id,
@@ -244,4 +237,17 @@
     <select id="getYJCHBIG" resultType="string" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
           select distinct a.ooi_activity_id,'1' from ooi_iop_rel_activity_info a left join ooi_marking_activity_info b on a.ooi_activity_id = b.activity_id where #{month}=date_format(b.activity_endtime,'%Y%m') and b.activity_id is not null
     </select>
+
+
+    <insert id="insertInterfaceRelTable" >
+        insert into ooi_interface_rel_table (
+            interface_id,table_name,file_name,data_time,step
+        )values (
+                    #{interfaceId},
+                    #{tableName},
+                    #{fileName},
+                    #{dataTime},
+                    #{step}
+                )
+    </insert>
 </mapper>

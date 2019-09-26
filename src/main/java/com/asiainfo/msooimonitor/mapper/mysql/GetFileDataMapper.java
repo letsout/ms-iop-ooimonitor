@@ -1,6 +1,7 @@
 package com.asiainfo.msooimonitor.mapper.mysql;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import org.apache.ibatis.annotations.Param;
@@ -72,16 +73,19 @@ public interface GetFileDataMapper {
 
     List<ActivityProcessInfo> getSJCHHLW(String month);
 
-    Map<String,String> getActivityInfoById(String activityId);
+    Map<String, String> getActivityInfoById(String activityId);
 
-    Map<String,String> getActivityProductByActId(String activityId);
+    Map<String, String> getActivityProductByActId(String activityId);
 
-    Map<String,String> getJTActivityInfoById(String activityId);
+    Map<String, String> getJTActivityInfoById(String activityId);
 
     void insertFailDetails(List<UploadDetailInfo> list);
 
     List<ActivityProcessInfo> getYJCHBIG(String month);
 
+    void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
+
     Map<String, String> getAllOfferBo(String activityId);
+
     Map<String, String> getBaseOfferBo(String activityId);
 }
