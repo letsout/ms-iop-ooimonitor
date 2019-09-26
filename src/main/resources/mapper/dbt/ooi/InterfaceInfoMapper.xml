@@ -231,7 +231,6 @@
         </foreach>
     </insert>
 
-
     <insert id="insert93056">
         insert insert into iop_93056 (
         a2,a3,a4,a5,a6,a7,a8,a9,a10
@@ -243,17 +242,6 @@
         </foreach>
     </insert>
 
-    <insert id="insertInterfaceRelTable" >
-        insert into ooi_interface_rel_table (
-        interface_id,table_name,file_name,data_time,step
-        )values (
-        #{interfaceId},
-        #{tableName},
-        #{fileName},
-        #{dataTime},
-        #{step}
-        )
-    </insert>
     <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">
 
         select max(data_time)
