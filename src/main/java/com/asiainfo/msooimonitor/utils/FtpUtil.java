@@ -357,7 +357,7 @@ public class FtpUtil {
                 interfaceRecord.setFileName("");
                 interfaceRecord.setFileNum("");
                 interfaceRecord.setFileSuccessNum("");
-                interfaceRecord.setFileTime("");
+                interfaceRecord.setFileTime(date);
                 loadService.insertRecord(interfaceRecord);
                 loadService.updateRelTable(interfaceId,date);
             }
@@ -370,7 +370,7 @@ public class FtpUtil {
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName("");
             interfaceRecord.setFileNum("");
-            interfaceRecord.setFileTime("");
+            interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             interfaceRecord.setErrorDesc("文件上传出现异常:" + e.getMessage().substring(0, 470));
             loadService.insertRecord(interfaceRecord);

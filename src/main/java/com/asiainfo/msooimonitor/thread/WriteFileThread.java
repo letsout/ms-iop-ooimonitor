@@ -67,6 +67,7 @@ public class WriteFileThread {
 
             for (String sql :
                     sqlList) {
+                log.info("开始执行sql查询结果数据：{}",sql);
                 List<Map<String, String>> interfaceInfoLists = uploadService.getInterfaceInfo(sql);
                 for (Map<String, String> map :
                         interfaceInfoLists) {
@@ -132,7 +133,11 @@ public class WriteFileThread {
             interfaceRecord.setFileNum(FileUtil.getFileRows( localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
-            interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage().substring(0, 470));
+            if(e.getMessage().length() > 480 ){
+                interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage().substring(0, 470));
+            }else {
+                interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage());
+            }
             loadService.insertRecord(interfaceRecord);
 
             log.error("接口[{}]文件[{}]生成出现异常{}", interfaceId, fileNameTmp, e);
