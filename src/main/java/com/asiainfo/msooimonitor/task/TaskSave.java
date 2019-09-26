@@ -22,61 +22,61 @@ public class TaskSave {
     TaskSaveMethod taskSaveMethod;
     @Autowired
     FileDataService fileDataService;
-
-    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void save93006() {
-        fileDataService.truncateTable("93006");
-        try {
-            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskSaveMethod.savebase93006(activityEndDate);
-            taskSaveMethod.saveMarking93006(activityEndDate);
-        } catch (Exception e) {
-            fileDataService.truncateTable("93006");
-        }
-    }
-
-    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void testsave93001() {
-        fileDataService.truncateTable("93006");
-        try {
-            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskSaveMethod.saveMarking93001(activityEndDate);
-        } catch (Exception e) {
-            fileDataService.truncateTable("93006");
-        }
-    }
-
-
-    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void save93005() {
-        fileDataService.truncateTable("93006");
-        try {
-
-            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskSaveMethod.saveBase93005(activityEndDate);
-            taskSaveMethod.saveMarking93005(activityEndDate);
-        } catch (
-                Exception e) {
-            fileDataService.truncateTable("93006");
-        }
-    }
-
-    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void savemarking93002() {
-        fileDataService.truncateTable("93006");
-        try {
-            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskSaveMethod.saveMarking93002(activityEndDate);
-            taskSaveMethod.savebase93002(activityEndDate);
-        } catch (Exception e) {
-            fileDataService.truncateTable("93006");
-        }
-    }
-
-    @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发
-    public void insertFlow() {
-        fileDataService.insertFlow();
-    }
+//
+//    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
+//    public void save93006() {
+//        fileDataService.truncateTable("93006");
+//        try {
+//            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
+//            taskSaveMethod.savebase93006(activityEndDate);
+//            taskSaveMethod.saveMarking93006(activityEndDate);
+//        } catch (Exception e) {
+//            fileDataService.truncateTable("93006");
+//        }
+//    }
+//
+//    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
+//    public void testsave93001() {
+//        fileDataService.truncateTable("93006");
+//        try {
+//            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
+//            taskSaveMethod.saveMarking93001(activityEndDate);
+//        } catch (Exception e) {
+//            fileDataService.truncateTable("93006");
+//        }
+//    }
+//
+//
+//    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
+//    public void save93005() {
+//        fileDataService.truncateTable("93006");
+//        try {
+//
+//            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
+//            taskSaveMethod.saveBase93005(activityEndDate);
+//            taskSaveMethod.saveMarking93005(activityEndDate);
+//        } catch (
+//                Exception e) {
+//            fileDataService.truncateTable("93006");
+//        }
+//    }
+//
+//    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
+//    public void savemarking93002() {
+//        fileDataService.truncateTable("93006");
+//        try {
+//            final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
+//            taskSaveMethod.saveMarking93002(activityEndDate);
+//            taskSaveMethod.savebase93002(activityEndDate);
+//        } catch (Exception e) {
+//            fileDataService.truncateTable("93006");
+//        }
+//    }
+//
+//    @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发
+//    public void insertFlow() {
+//        fileDataService.insertFlow();
+//    }
 
 }
 
