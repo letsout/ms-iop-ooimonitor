@@ -41,7 +41,7 @@ public class WriteFileThread {
     LoadService loadService;
 
 
-    public void write(String interfaceId, String fileName, String tableName, String localPath, String date) {
+    public void write(String interfaceId, String fileName, String tableName, String localPath,String remotePath, String date) {
         fileName = fileName.replaceAll("time", date);
         // 校验文件名称
         String verifyFileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".verf";
@@ -116,7 +116,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            FtpUtil.uploadFileFTP(localPath, interfaceId, loadService);
+            FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService);
 
         } catch (Exception e) {
             log.error("message：{}", e);

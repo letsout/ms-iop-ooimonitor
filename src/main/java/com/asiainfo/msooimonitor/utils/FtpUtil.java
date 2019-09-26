@@ -283,12 +283,13 @@ public class FtpUtil {
     /**
      * ftp上传文件
      *
-     * @param remptePath    远程文件路径
+     * @param localPath  本地文件路径
+     * @param remotePath 远程文件路劲
      * @param interfaceId 接口id
      * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String remptePath,String localPath, String interfaceId, LoadService loadService) {
+    public static boolean uploadFileFTP(String localPath,String remotePath, String interfaceId, LoadService loadService) {
 
         FTPClient ftpClient = new FTPClient();
         FileInputStream inputStream = null;
@@ -313,9 +314,9 @@ public class FtpUtil {
             logger.info("登陆成功！！！");
 
             // 切换到上传目录
-            if (!ftpClient.changeWorkingDirectory(remptePath)) {
+            if (!ftpClient.changeWorkingDirectory(remotePath)) {
                 // 如果目录不存在创建目录
-                String[] dirs = remptePath.split("/");
+                String[] dirs = remotePath.split("/");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {

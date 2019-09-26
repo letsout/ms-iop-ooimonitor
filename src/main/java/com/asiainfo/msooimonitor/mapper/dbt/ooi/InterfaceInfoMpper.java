@@ -61,7 +61,6 @@ public interface InterfaceInfoMpper {
 
     void insert93055(List<Map<String, String>> paramList);
 
-
     String getSummaryEffectMaxDate(@Param("activityId")String activityId,@Param("beforeDate")String beforeDate);
 
     void insert93056(List<Map<String, String>> paramList);

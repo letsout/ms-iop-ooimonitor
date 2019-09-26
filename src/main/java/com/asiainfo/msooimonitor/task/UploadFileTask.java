@@ -25,6 +25,9 @@ public class UploadFileTask {
     @Value("${file.path17}")
     private String path17;
 
+    @Value("${ftp.path}")
+    private String path228;
+
     @Autowired
     WriteFileThread writeFileThread;
     @Autowired
@@ -44,6 +47,7 @@ public class UploadFileTask {
             String date = "";
             String fileName = "";
             String localPath = "";
+            String remotePath= "";
             // 设置基本属性
             // TODO 后面修改表模型然后优化
             for (Map.Entry enty :
@@ -66,8 +70,10 @@ public class UploadFileTask {
                     case "interface_cycle":
                         if (("1").equals(v) || "2".equals(v)) {
                             localPath = path17 + File.separator + "upload" + File.separator + "time/day";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
                         } else if ("3".equals(v)) {
                             localPath = path17 + File.separator + "upload" + File.separator + "time/month";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
                         }
                         break;
                     default:
@@ -75,7 +81,7 @@ public class UploadFileTask {
                 }
             }
             localPath = localPath.replaceAll("time", date);
-            writeFileThread.write(interfaceId, fileName, tableName, localPath, date);
+            writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
         }
     }
 }
