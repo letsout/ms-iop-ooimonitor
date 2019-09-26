@@ -357,8 +357,6 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void insertFailDetail(List<Map<String, String>> list) {
-        if (list == null || list.size() == 0)
-            return;
         getFileDataMapper.insertFailDetail(list);
     }
 
