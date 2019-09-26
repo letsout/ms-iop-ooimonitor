@@ -69,6 +69,7 @@ public class WriteFileThread {
                     sqlList) {
                 log.info("开始执行sql查询结果数据：{}",sql);
                 List<Map<String, String>> interfaceInfoLists = uploadService.getInterfaceInfo(sql);
+
                 for (Map<String, String> map :
                         interfaceInfoLists) {
                     records++;
@@ -106,6 +107,12 @@ public class WriteFileThread {
                     }
                 }
                 dataFileWriter.flush();
+
+                if(interfaceInfoLists.size() == 0){
+                    String[] verifyLine = createverifyInfo(fileNameTmp, localPath, date);
+                    dataWrite(verifyFileWriter, verifyLine, "U");
+                }
+
                 verifyFileWriter.flush();
             }
             // 记录日志
