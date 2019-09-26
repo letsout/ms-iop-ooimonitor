@@ -567,7 +567,7 @@ public class FileDataServiceImpl implements FileDataService {
         getFileDataMapper.insertFailDetails(uploadDetailList);
 
         // 插入数据表待上传
-        interfaceInfoMpper.insert93055(paramList);
+        interfaceInfoMpper.insert93056(paramList);
 
         // 插入状态表代表可以生成文件
         interfaceInfoMpper.insertInterfaceRelTable(

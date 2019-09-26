@@ -283,12 +283,12 @@ public class FtpUtil {
     /**
      * ftp上传文件
      *
-     * @param pathName    远程文件路径
+     * @param remptePath    远程文件路径
      * @param interfaceId 接口id
      * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String pathName, String interfaceId, LoadService loadService) {
+    public static boolean uploadFileFTP(String remptePath,String localPath, String interfaceId, LoadService loadService) {
 
         FTPClient ftpClient = new FTPClient();
         FileInputStream inputStream = null;
@@ -313,9 +313,9 @@ public class FtpUtil {
             logger.info("登陆成功！！！");
 
             // 切换到上传目录
-            if (!ftpClient.changeWorkingDirectory(pathName)) {
+            if (!ftpClient.changeWorkingDirectory(remptePath)) {
                 // 如果目录不存在创建目录
-                String[] dirs = pathName.split("/");
+                String[] dirs = remptePath.split("/");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {
@@ -340,13 +340,13 @@ public class FtpUtil {
             //设置上传文件的类型为二进制类型
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-            String[] fileNames = FileUtil.listUploadFile(pathName);
+            String[] fileNames = FileUtil.listUploadFile(localPath);
             boolean flag = true;
             for (String fileName :
                     fileNames) {
                 if (fileName.contains(interfaceId)) {
                     logger.info("开始上传文件：{}", fileName);
-                    inputStream = new FileInputStream(new File(pathName + File.separator + fileName));
+                    inputStream = new FileInputStream(new File(localPath + File.separator + fileName));
                     if (ftpClient.storeFile(fileName, inputStream)) {
                         logger.info("文件[{}]上传成功！！！", fileName);
                     } else {
