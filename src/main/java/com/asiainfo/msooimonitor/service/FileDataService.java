@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.service;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 
 import java.util.List;
@@ -99,4 +100,5 @@ public interface FileDataService {
      * 累计效果评估接口：省级IOP上报营销活动结束次月效果数据
      */
     void create93056(String month);
+    void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 }

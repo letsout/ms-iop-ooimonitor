@@ -85,6 +85,8 @@ public interface GetFileDataMapper {
 
     void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 
+    void updateStateInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
+
     Map<String, String> getAllOfferBo(String activityId);
 
     Map<String, String> getBaseOfferBo(String activityId);

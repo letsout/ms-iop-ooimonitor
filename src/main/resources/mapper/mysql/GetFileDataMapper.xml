@@ -39,18 +39,19 @@
         from activity_base_info a
                  inner join activity_rel_channel b on a.activity_id = b.activity_id
                  inner join activity_flow c on b.channel_id = c.channel_id and b.activity_id = c.activity_id
-                 inner join base_channel_info d on b.channel_id=d.channel_id
+                 inner join base_channel_info d on b.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
     </select>
 
     <select id="getCampaignedInfo" resultType="map">
-        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
+        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*,e.channel_id as channelId
         from ooi_MARKING_CAMPAIGN_INFO a
                  inner join ooi_iop_rel_activity_info b
                             on a.campaign_id = b.ooi_campaign_id and a.activity_id = b.ooi_activity_id
                  inner join activity_base_info c on b.iop_activity_id = c.activity_id
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
+        inner join activity_rel_channel e on c.activity_id=e.activity_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
           and a.activity_id = #{activity_id}
@@ -78,7 +79,7 @@
         from activity_base_info a
                  inner join activity_flow b on a.activity_id = b.activity_id
                  inner join activity_rel_channel c on a.activity_id = c.activity_id and b.channel_id = c.channel_id
-        inner join base_channel_info d on c.channel_id=d.channel_id
+                 inner join base_channel_info d on c.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -159,7 +160,8 @@
 
     </select>
     <select id="getBaseOfferBo" parameterType="string" resultType="map">
-        select * from activity_rel_product
+        select *
+        from activity_rel_product
         where activity_id = #{activityId} limit 1
     </select>
 
@@ -172,47 +174,73 @@
         </foreach>
     </insert>
 
-    <select id="getYJCH" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
-        select distinct a.iop_activity_id,'1' from ooi_iop_rel_activity_info a left join activity_base_info b on a.iop_activity_id = b.activity_id where is_feedback = 2 and data_state = 'U' and #{month} = date_format(b.end_time,'Y%m%') and b.activity_id is not null
+    <select id="getYJCH" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
+        select distinct a.iop_activity_id,'1'
+        from ooi_iop_rel_activity_info a
+                 left join activity_base_info b on a.iop_activity_id = b.activity_id
+        where is_feedback = 2
+          and data_state = 'U'
+          and #{month} = date_format(b.end_time, 'Y%m%')
+          and b.activity_id is not null
     </select>
 
-    <select id="getSJCHSJ" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
-        select distinct a.activity_id,'3' from activity_base_info a left join activity_rel_channel b on a.activity_id = b.activity_id where date_format(a.end_time,'%Y%m')=#{month} and b.channel_id not in ('q07','q23') and b.activity_id is not null
+    <select id="getSJCHSJ" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
+        select distinct a.activity_id,'3'
+        from activity_base_info a
+                 left join activity_rel_channel b on a.activity_id = b.activity_id
+        where date_format(a.end_time, '%Y%m') = #{month}
+          and b.channel_id not in ('q07', 'q23')
+          and b.activity_id is not null
     </select>
 
-    <select id="getSJCHHLW" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
-        select distinct a.activity_id,'2' from activity_base_info a left join activity_rel_channel b on a.activity_id = b.activity_id where date_format(a.end_time,'%Y%m')=#{month} and b.channel_id in ('q07','q23') and b.activity_id is not null
+    <select id="getSJCHHLW" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
+        select distinct a.activity_id,'2'
+        from activity_base_info a
+                 left join activity_rel_channel b on a.activity_id = b.activity_id
+        where date_format(a.end_time, '%Y%m') = #{month}
+          and b.channel_id in ('q07', 'q23')
+          and b.activity_id is not null
     </select>
 
     <select id="getActivityInfoById" parameterType="string" resultType="map">
-        select distinct a.activity_name,a.city_id, from activity_base_info where activity_id = #{activityId}
+        select distinct a.activity_name,a.city_id,
+        from activity_base_info
+        where activity_id = #{activityId}
     </select>
 
     <select id="getActivityProductByActId" parameterType="string" resultType="map">
-        select distinct prc_id,prc_name from activity_rel_product  where activity_id = #{activityId} order by prc_id  limit 1;
+        select distinct prc_id,prc_name
+        from activity_rel_product
+        where activity_id = #{activityId}
+        order by prc_id limit 1;
     </select>
 
     <select id="getJTActivityInfoById" parameterType="string" resultType="map">
-        select distinct  a.ooi_campaign_id,b.activity_id,b.activity_name,c.offer_code,c.offer_name,d.activity_name  from ooi_iop_rel_activity_info a
-        left join ooi_marking_campaign_info b on a.ooi_activity_id = b.activity_id
-        left join ooi_marking_campaign_offerbo_info c on c.campaign_id = a.ooi_campaign_id
-        left join activity_base_info d on a.iop_activity_id on a.activity_id
+        select distinct a.ooi_campaign_id,b.activity_id,b.activity_name,c.offer_code,c.offer_name,d.activity_name
+        from ooi_iop_rel_activity_info a
+                 left join ooi_marking_campaign_info b on a.ooi_activity_id = b.activity_id
+                 left join ooi_marking_campaign_offerbo_info c on c.campaign_id = a.ooi_campaign_id
+                 left join activity_base_info d on a.iop_activity_id
+             on
+             a
+             .
+             activity_id
         where a.iop_activity_id = #{activityId} and b.activity_id is not null and c.offer_code is not null and d.activity_id is not null
         order by c.offer_code limit 1
     </select>
-    
- <insert id="insertUploadCount" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo">
-        insert into ooi_activity_upload_count (
-        interface_id,
-        upload_num,
-        fail_num,
-        upload_time
-        ) values (
-        #{interfaceId},
-        #{uploadNum},
-        #{failNum},
-        now()
-        )
+
+    <insert id="insertUploadCount" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo">
+        insert into ooi_activity_upload_count (interface_id,
+                                               upload_num,
+                                               fail_num,
+                                               upload_time)
+        values (#{interfaceId},
+                #{uploadNum},
+                #{failNum},
+                now())
     </insert>
 
     <insert id="insertFailDetails">
@@ -222,7 +250,7 @@
         activity_type,
         fail_desc,
         fail_time
-        ) value 
+        ) value
         <foreach collection="list" item="item" separator="," index="index">
             (
             #{interfaceId},
@@ -234,20 +262,29 @@
         </foreach>
     </insert>
 
-    <select id="getYJCHBIG" resultType="string" parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
-          select distinct a.ooi_activity_id,'1' from ooi_iop_rel_activity_info a left join ooi_marking_activity_info b on a.ooi_activity_id = b.activity_id where #{month}=date_format(b.activity_endtime,'%Y%m') and b.activity_id is not null
+    <select id="getYJCHBIG" resultType="string"
+            parameterType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
+        select distinct a.ooi_activity_id,'1'
+        from ooi_iop_rel_activity_info a
+                 left join ooi_marking_activity_info b on a.ooi_activity_id = b.activity_id
+        where #{month} = date_format(b.activity_endtime, '%Y%m')
+          and b.activity_id is not null
     </select>
 
 
-    <insert id="insertInterfaceRelTable" >
-        insert into ooi_interface_rel_table (
-            interface_id,table_name,file_name,data_time,step
-        )values (
-                    #{interfaceId},
-                    #{tableName},
-                    #{fileName},
-                    #{dataTime},
-                    #{step}
-                )
+    <insert id="insertInterfaceRelTable">
+        insert into ooi_interface_rel_table (interface_id, table_name, file_name, data_time, step, data_state)
+        values (#{interfaceId},
+                #{tableName},
+                #{fileName},
+                #{dataTime},
+                #{step},
+                #{dataState})
     </insert>
+    <update id="updateStateInterfaceRelTable">
+        update ooi_interface_rel_table
+        set data_state='E'
+        where interface_id = #{interfaceId}
+          and data_time = #{dataTime}
+    </update>
 </mapper>

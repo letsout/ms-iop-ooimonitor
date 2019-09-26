@@ -30,7 +30,12 @@ public class FileDataServiceImpl implements FileDataService {
     @Autowired
     InterfaceInfoMpper interfaceInfoMpper;
 
+    @Override
+    public void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo){
+        getFileDataMapper.updateStateInterfaceRelTable(cretaeFileInfo);
+        getFileDataMapper.insertInterfaceRelTable(cretaeFileInfo);
 
+    }
     @Override
     public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) throws Exception {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);

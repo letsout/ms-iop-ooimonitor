@@ -21,4 +21,5 @@ public class CretaeFileInfo {
     private String dataTime;
 
     private String step;
+    private String dataState="U";
 }

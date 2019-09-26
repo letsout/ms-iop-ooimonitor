@@ -122,7 +122,7 @@ public class TaskSaveMethod {
             SqlUtil.getInsert("93006", list);
             list.clear();
         }
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93006")
                         .tableName("iop_93006")
@@ -136,7 +136,7 @@ public class TaskSaveMethod {
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
 
-        uploadCountInfo.setUploadNum(activitys.size()-maps.size());
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
         uploadCountInfo.setFailNum(maps.size());
         fileDataService.insertUploadCount(uploadCountInfo);
     }
@@ -241,7 +241,7 @@ public class TaskSaveMethod {
             SqlUtil.getInsert("93006", list);
             list.clear();
         }
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93006")
                         .tableName("iop_93006")
@@ -254,7 +254,7 @@ public class TaskSaveMethod {
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
 
-        uploadCountInfo.setUploadNum(activitys.size()-maps.size());
+        uploadCountInfo.setUploadNum(activitys.size() - maps.size());
         uploadCountInfo.setFailNum(maps.size());
         fileDataService.insertUploadCount(uploadCountInfo);
     }
@@ -361,7 +361,11 @@ public class TaskSaveMethod {
                 //31	渠道类型	必填,参考10附录3渠道类型编码,位数为偶数位
                 resultmap.put("A31", campaignedmap.get("channe_type"));
                 //32	渠道接触规则	必填
-                resultmap.put("A32", campaignedmap.get("channel_rule"));
+                String channel_rule = campaignedmap.get("channel_rule").toString();
+                if (channel_rule.equals("null")) {
+                    channel_rule = campaignedmap.get("channelId").toString();
+                }
+                resultmap.put("A32", channel_rule);
                 //33	时机识别	必填，填写枚举值ID
                 resultmap.put("A33", campaignedmap.get("time_id"));
                 //34	时机识别描述	可为空
@@ -417,9 +421,9 @@ public class TaskSaveMethod {
                         //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                         resultmap.put("A47", String.valueOf(Float.valueOf(mapEffect.get("terminal_flow_rate")) - Float.valueOf(mapEffect1.get("terminal_flow_rate"))));
                     } else {
-                        String message="93001接口的活动："+iop_activity_id+"在"+beforeDate+"出现效果数据断层情况，请核查";
-                        String phone="13018298903,13281027538";
-                        sendMessage.sendSms(phone,message);
+                        String message = "93001接口的活动：" + iop_activity_id + "在" + beforeDate + "出现效果数据断层情况，请核查";
+                        String phone = "13018298903,13281027538";
+                        sendMessage.sendSms(phone, message);
 //                        throw new Exception(iop_activity_id + "数据效果数据断层,缺少日期为：" + beforeDate);
                     }
                 }
@@ -441,7 +445,7 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93001", list);
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93001")
                         .tableName("iop_93001")
@@ -720,7 +724,7 @@ public class TaskSaveMethod {
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93005")
                         .tableName("iop_93005")
@@ -733,7 +737,7 @@ public class TaskSaveMethod {
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93005");
 
-        uploadCountInfo.setUploadNum(list.size() );
+        uploadCountInfo.setUploadNum(list.size());
         uploadCountInfo.setFailNum(maps.size());
         fileDataService.insertUploadCount(uploadCountInfo);
     }
@@ -1001,7 +1005,7 @@ public class TaskSaveMethod {
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93005")
                         .tableName("iop_93005")
@@ -1258,7 +1262,7 @@ public class TaskSaveMethod {
             }
         }
         SqlUtil.getInsert("93002", list);
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93002")
                         .tableName("iop_93002")
@@ -1493,7 +1497,7 @@ public class TaskSaveMethod {
             list.add(map);
         }
         SqlUtil.getInsert("93002", list);
-        getFileDataMapper.insertInterfaceRelTable(
+        fileDataService.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
                         .interfaceId("93002")
                         .tableName("iop_93002")

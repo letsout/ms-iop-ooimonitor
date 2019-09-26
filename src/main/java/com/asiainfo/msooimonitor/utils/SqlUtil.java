@@ -70,6 +70,7 @@ public class SqlUtil {
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
                 String value = (String) mapinsert.getOrDefault(key, "");
+                value = value.replaceAll("\n", "");
                 if (value == null || value.equals("null") || value.replaceAll("null", "").replaceAll(",", "").equals("")) {
                     value = null;
                 }
@@ -92,7 +93,7 @@ public class SqlUtil {
         System.out.println(sql);
         System.out.println();
         fileDataService.saveresultList(sql);
-        log.info("{}接口成功插入数据：{}条",interfaceName, list.size());
+        log.info("{}接口成功插入数据：{}条", interfaceName, list.size());
     }
 
 
