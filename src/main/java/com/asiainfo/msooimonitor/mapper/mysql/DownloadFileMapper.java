@@ -2,6 +2,7 @@ package com.asiainfo.msooimonitor.mapper.mysql;
 
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +29,5 @@ public interface DownloadFileMapper {
      */
     String getMaxSuccessTime(String interfaceId);
 
+    void updateRelTable(@Param("interfaceId") String interfaceId,@Param("date") String date);
 }

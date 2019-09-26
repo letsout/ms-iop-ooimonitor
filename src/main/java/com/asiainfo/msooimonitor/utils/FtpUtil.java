@@ -289,30 +289,21 @@ public class FtpUtil {
      * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String localPath,String remotePath, String interfaceId, LoadService loadService) {
+    public static boolean uploadFileFTP(String localPath,String remotePath, String interfaceId, LoadService loadService,String date) {
 
         FTPClient ftpClient = new FTPClient();
         FileInputStream inputStream = null;
         try {
             int reply;
 
-            // 连接FTP服务器
-            logger.info("连接FTP服务器:{}：{}", USER, FTP_PORT);
             ftpClient.connect(HOST, FTP_PORT);
-
-            // 登录
-            logger.info("登录:{},{}", USER, PASS);
             ftpClient.login(USER, PASS);
 
             reply = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
-                logger.info("ftp connect error");
                 ftpClient.disconnect();
                 return false;
             }
-
-            logger.info("登陆成功！！！");
-
             // 切换到上传目录
             if (!ftpClient.changeWorkingDirectory(remotePath)) {
                 // 如果目录不存在创建目录
@@ -346,7 +337,7 @@ public class FtpUtil {
             for (String fileName :
                     fileNames) {
                 if (fileName.contains(interfaceId)) {
-                    logger.info("开始上传文件：{}", fileName);
+                    logger.info("开始上传文件{}从{}到{}", fileName,localPath,remotePath);
                     inputStream = new FileInputStream(new File(localPath + File.separator + fileName));
                     if (ftpClient.storeFile(fileName, inputStream)) {
                         logger.info("文件[{}]上传成功！！！", fileName);
@@ -358,23 +349,24 @@ public class FtpUtil {
             ftpClient.logout();
 
             if (flag) {
-                logger.info("文件[]接口成功！！！", interfaceId);
+                logger.info("文件[]接口上传成功！！！", interfaceId);
                 InterfaceRecord interfaceRecord = new InterfaceRecord();
                 interfaceRecord.setInterfaceId(interfaceId);
-                interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+                interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
                 interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
                 interfaceRecord.setFileName("");
                 interfaceRecord.setFileNum("");
                 interfaceRecord.setFileSuccessNum("");
                 interfaceRecord.setFileTime("");
                 loadService.insertRecord(interfaceRecord);
+                loadService.updateRelTable(interfaceId,date);
             }
 
         } catch (IOException e) {
             logger.error("文件上传出现异常{}", e);
             InterfaceRecord interfaceRecord = new InterfaceRecord();
             interfaceRecord.setInterfaceId(interfaceId);
-            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName("");
             interfaceRecord.setFileNum("");

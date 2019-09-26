@@ -39,7 +39,6 @@ public class UploadFileTask {
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
-
         for (Map<String, String> map :
                 canCreateFileInterface) {
             String interfaceId = "";
@@ -81,6 +80,7 @@ public class UploadFileTask {
                 }
             }
             localPath = localPath.replaceAll("time", date);
+            remotePath = remotePath.replaceAll("time", date);
             writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
         }
     }
