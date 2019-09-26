@@ -20,4 +20,6 @@ public interface LoadService {
     int getrows(String tableName);
 
     void insertRecord(InterfaceRecord interfaceRecord);
+
+    void updateRelTable(String interfaceId, String date);
 }

@@ -42,6 +42,10 @@ public class WriteFileThread {
 
 
     public void write(String interfaceId, String fileName, String tableName, String localPath,String remotePath, String date) {
+
+        File file = new File(localPath);
+        file.mkdirs();
+
         fileName = fileName.replaceAll("time", date);
         // 校验文件名称
         String verifyFileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".verf";
@@ -104,7 +108,7 @@ public class WriteFileThread {
                 verifyFileWriter.flush();
             }
             // 记录日志
-            log.info("文件[{}]生成成功！！！", fileName);
+            log.info("文件[{}]生成成功！！！", fileNameTmp);
             InterfaceRecord interfaceRecord = new InterfaceRecord();
             interfaceRecord.setInterfaceId(interfaceId);
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
@@ -116,7 +120,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService);
+            FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService,date);
 
         } catch (Exception e) {
             log.error("message：{}", e);
