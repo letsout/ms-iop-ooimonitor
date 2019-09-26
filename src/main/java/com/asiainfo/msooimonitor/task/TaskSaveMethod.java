@@ -122,7 +122,7 @@ public class TaskSaveMethod {
             SqlUtil.getInsert("93006", list);
             list.clear();
         }
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
 
@@ -232,7 +232,7 @@ public class TaskSaveMethod {
             list.clear();
         }
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
 
@@ -428,7 +428,7 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93001", list);
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93001");
 
@@ -699,7 +699,7 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93005", list);
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93005");
 
@@ -972,7 +972,7 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93005", list);
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93005");
 
@@ -1221,7 +1221,7 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93002", list);
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93006");
 
@@ -1448,7 +1448,7 @@ public class TaskSaveMethod {
         }
         SqlUtil.getInsert("93002", list);
 
-        getFileDataMapper.insertFailDetail(maps);
+        fileDataService.insertFailDetail(maps);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93002");
 

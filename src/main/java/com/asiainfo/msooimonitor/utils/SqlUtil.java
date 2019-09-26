@@ -30,7 +30,7 @@ public class SqlUtil {
 
     static {
         tableMap.put("93001", 48);
-        tableMap.put("93002", 90);
+        tableMap.put("93002", 83);
         tableMap.put("93005", 80);
         tableMap.put("93006", 15);
     }
@@ -96,5 +96,11 @@ public class SqlUtil {
         log.info("{}接口成功插入数据：{}条", interfaceName, list.size());
     }
 
-
+    public static void main(String[] args) {
+        String str="str\nstr1";
+        System.out.println(str);
+        str=str.replaceAll("\n","");
+        System.out.println(str
+        );
+    }
 }

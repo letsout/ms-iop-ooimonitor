@@ -31,11 +31,12 @@ public class FileDataServiceImpl implements FileDataService {
     InterfaceInfoMpper interfaceInfoMpper;
 
     @Override
-    public void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo){
+    public void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo) {
         getFileDataMapper.updateStateInterfaceRelTable(cretaeFileInfo);
         getFileDataMapper.insertInterfaceRelTable(cretaeFileInfo);
 
     }
+
     @Override
     public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) throws Exception {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);
@@ -357,11 +358,14 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void insertFailDetail(List<Map<String, String>> list) {
+        if (list == null || list.size() == 0)
+            return;
         getFileDataMapper.insertFailDetail(list);
     }
 
     @Override
     public void insertUploadCount(UploadCountInfo uploadCountInfo) {
+
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
