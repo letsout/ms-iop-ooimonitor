@@ -129,7 +129,6 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
 
-
     @Override
     public List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
         final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId, campaignedEndTime);
@@ -172,8 +171,8 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public String getSummaryEffectMaxDate(String activityId,String beforeDate) {
-        String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(activityId,beforeDate);
+    public String getSummaryEffectMaxDate(String activityId, String beforeDate) {
+        String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(activityId, beforeDate);
         return maxDate;
     }
 
@@ -272,6 +271,7 @@ public class FileDataServiceImpl implements FileDataService {
         return null;
 
     }
+
     @Override
     public Map<String, String> getBaseOfferBo(String activityId) {
         final Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
@@ -285,7 +285,7 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
-            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedEndInfo(activity_id,activityEndDate);
+            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedEndInfo(activity_id, activityEndDate);
             String campaignId = "";
             String campaignName = "";
             for (Map<String, Object> map : campaignedInfo) {
@@ -347,7 +347,7 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void truncateTable(String tableName) {
-//        interfaceInfoMpper.truncateTable(tableName);
+        interfaceInfoMpper.truncateTable(tableName);
     }
 
     @Override
@@ -363,7 +363,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    @Transactional(transactionManager="DBTTransactionManager",rollbackFor = Exception.class)
+    @Transactional(transactionManager = "DBTTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
 
         ArrayList<ActivityProcessInfo> allActivitys = new ArrayList<>();
@@ -409,20 +409,20 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A10", jtActivityInfo.get("offer_name"));
             }
             // 不记录最终插入语句
-            paramMap.put("processId",processId);
-            paramMap.put("activityId",activityId);
+            paramMap.put("processId", processId);
+            paramMap.put("activityId", activityId);
 
             // 校验必填参数不能为空
             boolean isNotNull = filterParamer(paramMap);
 
             if (!isNotNull) {
-                errorNum ++;
-                paramMap.put("error","改行数据存在空字段");
+                errorNum++;
+                paramMap.put("error", "改行数据存在空字段");
                 errorParamList.add(paramMap);
                 continue;
             }
 
-            paramMap.put("error","");
+            paramMap.put("error", "");
             paramList.add(paramMap);
         }
 
@@ -433,7 +433,7 @@ public class FileDataServiceImpl implements FileDataService {
         errorParamList.addAll(paramList);
 
         // 记录明细
-        errorParamList.stream().forEach(info->{
+        errorParamList.stream().forEach(info -> {
             UploadDetailInfo build = UploadDetailInfo.builder().interfaceId("91055")
                     .activityId(info.get("activityId"))
                     .activitytype(info.get("processId"))
@@ -445,16 +445,16 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
-        
+
         // 插入状态表代表可以生成文件
         getFileDataMapper.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
-                .interfaceId("93005")
-                .tableName("iop_93055")
-                .fileName("i_13000_time_IOP-93055_00_fileNum.dat")
-                .dataTime(month)
-                .step("1")
-                .build()
+                        .interfaceId("93005")
+                        .tableName("iop_93055")
+                        .fileName("i_13000_time_IOP-93055_00_fileNum.dat")
+                        .dataTime(month)
+                        .step("1")
+                        .build()
         );
 
     }
@@ -471,7 +471,7 @@ public class FileDataServiceImpl implements FileDataService {
 
         paramMap.forEach((k, v) -> {
             if (StringUtils.isBlank(v)) {
-                log.error("参数[{}]为空",k);
+                log.error("参数[{}]为空", k);
                 flag.set(false);
             }
         });
@@ -480,7 +480,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    @Transactional(transactionManager="DBTTransactionManager",rollbackFor = Exception.class)
+    @Transactional(transactionManager = "DBTTransactionManager", rollbackFor = Exception.class)
     public void create93056(String month) {
         ArrayList<ActivityProcessInfo> allActivitys = new ArrayList<>();
         allActivitys.addAll(getFileDataMapper.getYJCHBIG(month));
@@ -526,20 +526,20 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A10", jtActivityInfo.get("offer_name"));
             }
             // 不记录最终插入语句
-            paramMap.put("processId",processId);
-            paramMap.put("activityId",activityId);
+            paramMap.put("processId", processId);
+            paramMap.put("activityId", activityId);
 
             // 校验必填参数不能为空
             boolean isNotNull = filterParamer(paramMap);
 
             if (!isNotNull) {
-                errorNum ++;
-                paramMap.put("error","改行数据存在空字段");
+                errorNum++;
+                paramMap.put("error", "改行数据存在空字段");
                 errorParamList.add(paramMap);
                 continue;
             }
 
-            paramMap.put("error","");
+            paramMap.put("error", "");
             paramList.add(paramMap);
         }
 
@@ -550,7 +550,7 @@ public class FileDataServiceImpl implements FileDataService {
         errorParamList.addAll(paramList);
 
         // 记录明细
-        errorParamList.stream().forEach(info->{
+        errorParamList.stream().forEach(info -> {
             UploadDetailInfo build = UploadDetailInfo.builder().interfaceId("91056")
                     .activityId(info.get("activityId"))
                     .activitytype(info.get("processId"))
@@ -575,4 +575,11 @@ public class FileDataServiceImpl implements FileDataService {
         );
 
     }
+
+    @Override
+    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
+        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
+        return campaignedInfo93001;
+    }
+
 }

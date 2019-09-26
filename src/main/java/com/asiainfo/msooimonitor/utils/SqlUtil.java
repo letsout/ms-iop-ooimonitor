@@ -2,6 +2,7 @@ package com.asiainfo.msooimonitor.utils;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * Description
  */
 @Component
+@Slf4j
 public class SqlUtil {
     public static Map<String, Integer> tableMap = new HashMap<>();
 
@@ -37,11 +39,11 @@ public class SqlUtil {
         // 每5000条插入一次
         int start = 0;
         int splitNum = 1500;
-        for (int i = 0; i <list.size()/splitNum ; i++) {
-            getInsertsql(interfaceName,list.subList(start,splitNum+start));
-            start +=splitNum;
+        for (int i = 0; i < list.size() / splitNum; i++) {
+            getInsertsql(interfaceName, list.subList(start, splitNum + start));
+            start += splitNum;
         }
-        getInsertsql(interfaceName,list.subList(start,list.size()));
+        getInsertsql(interfaceName, list.subList(start, list.size()));
 
     }
 
@@ -80,7 +82,7 @@ public class SqlUtil {
             }
             sb.append(sbvalue);
             if (i != (list.size() - 1)) {
-                System.out.println("不是最后一行");
+//                System.out.println("不是最后一行");
                 sb.append(",");
             }
         }
@@ -90,8 +92,8 @@ public class SqlUtil {
         System.out.println(sql);
         System.out.println();
         fileDataService.saveresultList(sql);
+        log.info("{}接口成功插入数据：{}条",interfaceName, list.size());
     }
-
 
 
 }
