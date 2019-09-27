@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.service.impl;
 
+import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
@@ -29,6 +30,74 @@ public class FileDataServiceImpl implements FileDataService {
     CommonMapper commonMapper;
     @Autowired
     InterfaceInfoMpper interfaceInfoMpper;
+    @Autowired
+    SendMessage sendMessage;
+
+    @Override
+    public void insertFailDetails(List<UploadDetailInfo> list) {
+        if (list == null || list.size() == 0)
+            return;
+        getFileDataMapper.insertFailDetails(list);
+
+    }
+
+    @Override
+    public Map<String, String> getSummaryEffectAll(String activityId) {
+        List<Map<String, Object>> maps = getFileDataMapper.getactivityEndtime(activityId);
+        if (maps == null || maps.size() == 0)
+            return null;
+        int customerNum = 0;
+        int touchNum = 0;
+        int vicNum = 0;
+        float inOutRate = 0;
+        float terminalFlowRate = 0;
+        int i = 0;
+        String customer_group_id = "";
+        String customer_group_name = "";
+        String customer_num = "";
+        String customer_filter_rule = "";
+        for (Map<String, Object> map : maps) {
+            Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), map.get("end_time").toString().replace("-", ""));
+            if (summaryEffect == null) {
+                String message =map.get("activity_id").toString() + "在" + map.get("end_time").toString().replace("-", "") + "当天缺少效果数据，请核查";
+                String phone = "13018298903,13281027538";
+                sendMessage.sendSms(phone, message);
+                continue;
+            }
+            customer_group_id += "," + summaryEffect.get("customer_group_id");
+            customer_group_name += "," + summaryEffect.get("customer_group_name");
+            customer_num += "," + summaryEffect.get("customer_num");
+            customer_filter_rule = summaryEffect.get("customer_filter_rule").toString();
+            customerNum += Integer.valueOf(summaryEffect.get("customer_num").toString());
+            touchNum += Integer.valueOf(summaryEffect.get("touch_num").toString());
+            vicNum += Integer.valueOf(summaryEffect.get("vic_num").toString());
+            inOutRate += Float.valueOf(summaryEffect.get("in_out_rate").toString());
+            terminalFlowRate += Float.valueOf(summaryEffect.get("terminal_flow_rate").toString());
+            i++;
+        }
+
+
+        Map<String, String> map = new HashMap<>();
+        if (i > 0) {
+            map.put("customer_filter_rule", customer_filter_rule.substring(1));
+            map.put("customer_num", customer_num.substring(1));
+            map.put("customer_group_id", customer_group_id.substring(1));
+            map.put("customer_group_name", customer_group_name.substring(1));
+        }
+        map.put("customer_num", String.valueOf(customerNum));
+        map.put("touch_num", String.valueOf(touchNum));
+        map.put("vic_num", String.valueOf(vicNum));
+
+        DecimalFormat df = new DecimalFormat("0.000000");
+        map.put("touhe_rate", df.format((float) touchNum / customerNum));
+        map.put("response_rate", df.format((float) touchNum / customerNum));
+        map.put("vic_rate", df.format((float) vicNum / touchNum));
+        map.put("in_out_rate", df.format(inOutRate / i));
+        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
+
+        return map;
+    }
+
 
     @Override
     public void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo) {
@@ -92,95 +161,79 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93005;
     }
 
-    @Override
-    public List<Map<String, Object>> getBaseInfo93005(String activityEndDate) {
-        List<Map<String, Object>> baseInfo93005 = getFileDataMapper.getBaseInfo93005(activityEndDate);
-        return baseInfo93005;
-    }
+//    @Override
+//    public List<Map<String, Object>> getBaseInfo93005(String activityEndDate) {
+//        List<Map<String, Object>> baseInfo93005 = getFileDataMapper.getBaseInfo93005(activityEndDate);
+//        return baseInfo93005;
+//    }
 
-    @Override
-    public Map<String, String> getCustGroupInfo(String activityId) {
-        Map<String, String> maps = new HashMap<>();
-        final List<Map<String, String>> custGroupInfo = getFileDataMapper.getCustGroupInfo(activityId);
-        for (Map<String, String> map : custGroupInfo) {
-            final Iterator<String> iterator = map.keySet().iterator();
-            while (iterator.hasNext()) {
-                String value = "";
-                if (StringUtils.isBlank(maps.get(iterator))) {
-                    value = map.get(iterator.next());
-                } else {
-                    value = maps.get(iterator) + "," + map.get(iterator.next());
-                }
-                maps.put(iterator.next(), value);
-            }
-        }
-        return maps;
-    }
+//    @Override
+//    public Map<String, String> getCustGroupInfo(String activityId) {
+//        Map<String, String> maps = new HashMap<>();
+//        final List<Map<String, String>> custGroupInfo = getFileDataMapper.getCustGroupInfo(activityId);
+//        for (Map<String, String> map : custGroupInfo) {
+//            final Iterator<String> iterator = map.keySet().iterator();
+//            while (iterator.hasNext()) {
+//                String value = "";
+//                if (StringUtils.isBlank(maps.get(iterator))) {
+//                    value = map.get(iterator.next());
+//                } else {
+//                    value = maps.get(iterator) + "," + map.get(iterator.next());
+//                }
+//                maps.put(iterator.next(), value);
+//            }
+//        }
+//        return maps;
+//    }
 
-    @Override
-    public List<Map<String, String>> getMarkingInfo93001(String activityEndDate) {
-        final List<Map<String, String>> markingInfo93001 = getFileDataMapper.getMarkingInfo93001(activityEndDate);
-        return markingInfo93001;
-    }
-
-    public List<Map<String, String>> getMarkingInfo93002(String activityEndDate) {
-        final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002(activityEndDate);
-        return markingInfo93002;
-    }
-
-    @Override
-    public List<Map<String, Object>> getBaseInfo93002(String activityEndDate) {
-        final List<Map<String, Object>> baseInfo93002 = getFileDataMapper.getBaseInfo93002(activityEndDate);
-        return baseInfo93002;
-    }
-
-
-    @Override
-    public List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
-        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId, campaignedEndTime);
-        return campaignedInfo93001;
-    }
-
-    @Override
-    public List<Map<String, String>> getBaseInfo93006(String activityEndDate) {
-        List<Map<String, String>> baseInfo93006 = getFileDataMapper.getBaseInfo93006(activityEndDate);
-        return baseInfo93006;
-    }
-
-    @Override
-    public List<Map<String, String>> getDetailEffect(String activityIds, String activityEndDate, int start, int limit) {
-
-        return interfaceInfoMpper.getDetailEffect(activityIds, activityEndDate, start, limit);
-    }
-
-    @Override
-    public Map<String, String> getSummaryEffect(String activityId, String activityEndDate) {
-        // 根据自互动取
-        Map<String, String> map = interfaceInfoMpper.getSummaryEffect(activityId, activityEndDate);
-//        int i = 1;
-//        customerNum += Integer.valueOf(map.get("customer_num"));
-//        touchNum += Integer.valueOf(map.get("touch_num"));
-//        vicNum += Integer.valueOf(map.get("vic_num"));
-//        inOutRate += Float.valueOf(map.get("in_out_rate"));
-//        terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
-//        map.put("customer_num", String.valueOf(customerNum));
-//        map.put("touch_num", String.valueOf(touchNum));
-//        map.put("vic_num", String.valueOf(vicNum));
+//    @Override
+//    public List<Map<String, String>> getMarkingInfo93001(String activityEndDate) {
+//        final List<Map<String, String>> markingInfo93001 = getFileDataMapper.getMarkingInfo93001(activityEndDate);
+//        return markingInfo93001;
+//    }
 //
-//        DecimalFormat df = new DecimalFormat("0.000000");
-//        map.put("touhe_rate", df.format((float) touchNum / customerNum));
-//        map.put("response_rate", df.format((float) touchNum / customerNum));
-//        map.put("vic_rate", df.format((float) vicNum / touchNum));
-//        map.put("in_out_rate", df.format(inOutRate / i));
-//        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
-        return map;
-    }
-
-    @Override
-    public String getSummaryEffectMaxDate(String activityId, String beforeDate) {
-        String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(activityId, beforeDate);
-        return maxDate;
-    }
+//    public List<Map<String, String>> getMarkingInfo93002(String activityEndDate) {
+//        final List<Map<String, String>> markingInfo93002 = getFileDataMapper.getMarkingInfo93002(activityEndDate);
+//        return markingInfo93002;
+//    }
+//
+//    @Override
+//    public List<Map<String, Object>> getBaseInfo93002(String activityEndDate) {
+//        final List<Map<String, Object>> baseInfo93002 = getFileDataMapper.getBaseInfo93002(activityEndDate);
+//        return baseInfo93002;
+//    }
+//
+//
+//    @Override
+//    public List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime) {
+//        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedEndInfo(activityId, campaignedEndTime);
+//        return campaignedInfo93001;
+//    }
+//
+//    @Override
+//    public List<Map<String, String>> getBaseInfo93006(String activityEndDate) {
+//        List<Map<String, String>> baseInfo93006 = getFileDataMapper.getBaseInfo93006(activityEndDate);
+//        return baseInfo93006;
+//    }
+//
+//    @Override
+//    public List<Map<String, String>> getDetailEffect(String activityIds, String activityEndDate, int start, int limit) {
+//
+//        return interfaceInfoMpper.getDetailEffect(activityIds, activityEndDate, start, limit);
+//    }
+//
+//    @Override
+//    public Map<String, String> getSummaryEffect(String activityId, String activityEndDate) {
+//        // 根据自互动取
+//        Map<String, String> map = interfaceInfoMpper.getSummaryEffect(activityId, activityEndDate);
+//        return map;
+//    }
+//
+//    @Override
+//    public String getSummaryEffectMaxDate(String activityId, String beforeDate) {
+//        String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(activityId, beforeDate);
+//        return maxDate;
+//    }
 
 //    public static void main(String[] args) {
 //        List arrayList;
@@ -191,99 +244,99 @@ public class FileDataServiceImpl implements FileDataService {
 //        System.out.println("'" + StringUtils.join(arrayList, "','") + "'");
 //    }
 
-    @Override
-    public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
-        List<String> iopActivityIds;
-        // 根据集团下发活动查询iop关联活动
-        String activityIds = "";
-        if ("ZHD".equals(type)) {//根据主活动查找关联的子活动
-            iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
-            activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
-        } else {//上传的本来就是iop活动id
-            activityIds = "'" + activityId + "'";
-        }
-        if (activityIds.equals("''") || activityIds.equals("'null'")) {
-            return null;
-        }
-        List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
-        if (summaryEffect == null || summaryEffect.size() == 0)
-            return null;
-        int customerNum = 0;
-        int touchNum = 0;
-        int vicNum = 0;
-        float inOutRate = 0;
-        float terminalFlowRate = 0;
-        int i = 0;
-        String customer_group_id = "";
-        String customer_group_name = "";
-        String customer_num = "";
-        String customer_filter_rule = "";
-        for (Map<String, String> map : summaryEffect) {
-            customer_group_id += "," + map.get("customer_group_id");
-            customer_group_name += "," + map.get("customer_group_name");
-            customer_num += "," + map.get("customer_num");
-            customer_filter_rule = map.get("customer_filter_rule");
-            customerNum += Integer.valueOf(map.get("customer_num"));
-            touchNum += Integer.valueOf(map.get("touch_num"));
-            vicNum += Integer.valueOf(map.get("vic_num"));
-            inOutRate += Float.valueOf(map.get("in_out_rate"));
-            terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
-            i++;
-        }
+//    @Override
+//    public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
+//        List<String> iopActivityIds;
+//        // 根据集团下发活动查询iop关联活动
+//        String activityIds = "";
+//        if ("ZHD".equals(type)) {//根据主活动查找关联的子活动
+//            iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
+//            activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
+//        } else {//上传的本来就是iop活动id
+//            activityIds = "'" + activityId + "'";
+//        }
+//        if (activityIds.equals("''") || activityIds.equals("'null'")) {
+//            return null;
+//        }
+//        List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
+//        if (summaryEffect == null || summaryEffect.size() == 0)
+//            return null;
+//        int customerNum = 0;
+//        int touchNum = 0;
+//        int vicNum = 0;
+//        float inOutRate = 0;
+//        float terminalFlowRate = 0;
+//        int i = 0;
+//        String customer_group_id = "";
+//        String customer_group_name = "";
+//        String customer_num = "";
+//        String customer_filter_rule = "";
+//        for (Map<String, String> map : summaryEffect) {
+//            customer_group_id += "," + map.get("customer_group_id");
+//            customer_group_name += "," + map.get("customer_group_name");
+//            customer_num += "," + map.get("customer_num");
+//            customer_filter_rule = map.get("customer_filter_rule");
+//            customerNum += Integer.valueOf(map.get("customer_num"));
+//            touchNum += Integer.valueOf(map.get("touch_num"));
+//            vicNum += Integer.valueOf(map.get("vic_num"));
+//            inOutRate += Float.valueOf(map.get("in_out_rate"));
+//            terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
+//            i++;
+//        }
+//
+//
+//        Map<String, String> map = new HashMap<>();
+//        if (i > 0) {
+//            map.put("customer_filter_rule", customer_filter_rule.substring(1));
+//            map.put("customer_num", customer_num.substring(1));
+//            map.put("customer_group_id", customer_group_id.substring(1));
+//            map.put("customer_group_name", customer_group_name.substring(1));
+//        }
+//        map.put("customer_num", String.valueOf(customerNum));
+//        map.put("touch_num", String.valueOf(touchNum));
+//        map.put("vic_num", String.valueOf(vicNum));
+//
+//        DecimalFormat df = new DecimalFormat("0.000000");
+//        map.put("touhe_rate", df.format((float) touchNum / customerNum));
+//        map.put("response_rate", df.format((float) touchNum / customerNum));
+//        map.put("vic_rate", df.format((float) vicNum / touchNum));
+//        map.put("in_out_rate", df.format(inOutRate / i));
+//        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
+//
+//        return map;
+//    }
 
 
-        Map<String, String> map = new HashMap<>();
-        if (i > 0) {
-            map.put("customer_filter_rule", customer_filter_rule.substring(1));
-            map.put("customer_num", customer_num.substring(1));
-            map.put("customer_group_id", customer_group_id.substring(1));
-            map.put("customer_group_name", customer_group_name.substring(1));
-        }
-        map.put("customer_num", String.valueOf(customerNum));
-        map.put("touch_num", String.valueOf(touchNum));
-        map.put("vic_num", String.valueOf(vicNum));
-
-        DecimalFormat df = new DecimalFormat("0.000000");
-        map.put("touhe_rate", df.format((float) touchNum / customerNum));
-        map.put("response_rate", df.format((float) touchNum / customerNum));
-        map.put("vic_rate", df.format((float) vicNum / touchNum));
-        map.put("in_out_rate", df.format(inOutRate / i));
-        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
-
-        return map;
-    }
-
-
-    @Override
-    public void saveresultList(String sql) {
-
-        commonMapper.insertSql(sql);
-    }
-
-    @Override
-    public List<Map<String, String>> getResult(String sql) {
-
-        return commonMapper.getMap(sql);
-    }
-
-    @Override
-    public List<Map<String, String>> getOfferBo(String campaign_id) {
-        return getFileDataMapper.getOfferBo(campaign_id);
-
-    }
-
-    public Map<String, String> getAllOfferBo(String activityId) {
-        getFileDataMapper.getAllOfferBo(activityId);
-        return null;
-
-    }
-
-    @Override
-    public Map<String, String> getBaseOfferBo(String activityId) {
-        final Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
-        return baseOfferBo;
-
-    }
+//    @Override
+//    public void saveresultList(String sql) {
+//
+//        commonMapper.insertSql(sql);
+//    }
+//
+//    @Override
+//    public List<Map<String, String>> getResult(String sql) {
+//
+//        return commonMapper.getMap(sql);
+//    }
+//
+//    @Override
+//    public List<Map<String, String>> getOfferBo(String campaign_id) {
+//        return getFileDataMapper.getOfferBo(campaign_id);
+//
+//    }
+//
+//    public Map<String, String> getAllOfferBo(String activityId) {
+//        final Map<String, String> allOfferBo = getFileDataMapper.getAllOfferBo(activityId);
+//        return allOfferBo;
+//
+//    }
+//
+//    @Override
+//    public Map<String, String> getBaseOfferBo(String activityId) {
+//        final Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
+//        return baseOfferBo;
+//
+//    }
 
     @Override
     public List<Map<String, String>> getMarkingInfo93006(String activityEndDate) {
@@ -291,7 +344,7 @@ public class FileDataServiceImpl implements FileDataService {
         List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
         markingInfo93006.forEach(markingmap -> {
             final String activity_id = markingmap.get("activity_id");
-            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedEndInfo(activity_id, activityEndDate);
+            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
             String campaignId = "";
             String campaignName = "";
             for (Map<String, Object> map : campaignedInfo) {
@@ -310,19 +363,19 @@ public class FileDataServiceImpl implements FileDataService {
         return markingInfo93006;
     }
 
-    @Override
-    public Map<String, String> getChannelInfo(String activity_id) {
-        Map<String, String> channelInfo = getFileDataMapper.getChannelInfo(activity_id);
-        return channelInfo;
-    }
-
-    @Override
-    public Map<String, String> getPositionInfo(String activity_id) {
-        Map<String, String> positionInfo = getFileDataMapper.getPositionInfo(activity_id);
-        if (positionInfo == null)
-            positionInfo = new HashMap<>();
-        return positionInfo;
-    }
+//    @Override
+//    public Map<String, String> getChannelInfo(String activity_id) {
+//        Map<String, String> channelInfo = getFileDataMapper.getChannelInfo(activity_id);
+//        return channelInfo;
+//    }
+//
+//    @Override
+//    public Map<String, String> getPositionInfo(String activity_id) {
+//        Map<String, String> positionInfo = getFileDataMapper.getPositionInfo(activity_id);
+//        if (positionInfo == null)
+//            positionInfo = new HashMap<>();
+//        return positionInfo;
+//    }
 
     @Override
     public void insertFlow() {
@@ -334,40 +387,34 @@ public class FileDataServiceImpl implements FileDataService {
             getFileDataMapper.insertFlow(flowInfo2);
     }
 
-    @Override
-    public int getTableRows(String activityIds, String dateTimeFormat) {
-        return interfaceInfoMpper.getTableRows(activityIds, dateTimeFormat);
-    }
+//    @Override
+//    public int getTableRows(String activityIds, String dateTimeFormat) {
+//        return interfaceInfoMpper.getTableRows(activityIds, dateTimeFormat);
+//    }
 
     @Override
-    public String getIOPActivityIds(String activityId) {
-        List<String> iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId);
+    public String getIOPActivityIds(String activityId, String date) {
+        List<String> iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId, date);
         String activitys = "'" + StringUtils.join(iopActivityIds, "','") + "'";
         return activitys;
     }
 
-    @Override
-    public void insertFailInterface(Map<String, String> map) {
-        getFileDataMapper.insertFailInterface(map);
-    }
+//    @Override
+//    public void insertFailInterface(Map<String, String> map) {
+//        getFileDataMapper.insertFailInterface(map);
+//    }
 
     @Override
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
 
-    @Override
-    public void insertFailDetail(List<Map<String, String>> list) {
-        if (list == null || list.size() == 0)
-            return;
-        getFileDataMapper.insertFailDetail(list);
-    }
 
-    @Override
-    public void insertUploadCount(UploadCountInfo uploadCountInfo) {
-
-        getFileDataMapper.insertUploadCount(uploadCountInfo);
-    }
+//    @Override
+//    public void insertUploadCount(UploadCountInfo uploadCountInfo) {
+//
+//        getFileDataMapper.insertUploadCount(uploadCountInfo);
+//    }
 
     @Override
     @Transactional(transactionManager = "DBTTransactionManager", rollbackFor = Exception.class)
@@ -448,7 +495,7 @@ public class FileDataServiceImpl implements FileDataService {
                     .build();
             uploadDetailList.add(build);
         });
-        getFileDataMapper.insertFailDetails(uploadDetailList);
+        this.insertFailDetails(uploadDetailList);
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
@@ -565,7 +612,7 @@ public class FileDataServiceImpl implements FileDataService {
                     .build();
             uploadDetailList.add(build);
         });
-        getFileDataMapper.insertFailDetails(uploadDetailList);
+        this.insertFailDetails(uploadDetailList);
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93056(paramList);
@@ -583,10 +630,10 @@ public class FileDataServiceImpl implements FileDataService {
 
     }
 
-    @Override
-    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
-        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
-        return campaignedInfo93001;
-    }
+//    @Override
+//    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
+//        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
+//        return campaignedInfo93001;
+//    }
 
 }

@@ -207,7 +207,7 @@
     <select id="getSummaryEffect" resultType="map">
         select *
         from iop_public.ooi_activity_summary_effect
-        where activity_id = #{activityIds}
+        where activity_id = #{activityId}
           and DATE_FORMAT(data_time, '%Y%m%d') = #{date}
     </select>
 

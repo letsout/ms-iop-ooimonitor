@@ -41,6 +41,7 @@ public interface GetFileDataMapper {
 
 
     List<Map<String, Object>> getCampaignedInfo(String activity_id);
+    List<Map<String, Object>> getBeforeCampaignedInfo(String activity_id,String activityEndDate);
 
     List<Map<String, Object>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
 
@@ -59,11 +60,12 @@ public interface GetFileDataMapper {
 
     void insertFailInterface(Map<String, String> map);
 
-    List<String> getIOPActivityIds(String activityId);
+    List<String> getIOPActivityIds(String activityId,String date);
+    List<String> getIOPActivityDates(String ooiActivityId);
 
     List<String> getZHDIOPActivityIds(String activityId);
 
-    void insertFailDetail(List<Map<String, String>> list);
+//    void insertFailDetail(List<Map<String, String>> list);
 
     void insertUploadCount(UploadCountInfo uploadCountInfo);
 
@@ -90,4 +92,6 @@ public interface GetFileDataMapper {
     Map<String, String> getAllOfferBo(String activityId);
 
     Map<String, String> getBaseOfferBo(String activityId);
+
+    List<Map<String, Object>> getactivityEndtime(String activityId);
 }

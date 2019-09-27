@@ -33,11 +33,11 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93006");
                 try {
                     if (type.equals("1")) {
-                        taskSaveMethod.savebase93006(activityEndDate);
+                        taskSaveMethod.saveBase93006(activityEndDate);
                     } else if (type.equals("2")) {
                         taskSaveMethod.saveMarking93006(activityEndDate);
                     } else {
-                        taskSaveMethod.savebase93006(activityEndDate);
+                        taskSaveMethod.saveBase93006(activityEndDate);
                         taskSaveMethod.saveMarking93006(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(

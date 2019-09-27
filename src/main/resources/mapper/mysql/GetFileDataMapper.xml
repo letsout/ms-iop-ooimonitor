@@ -51,10 +51,23 @@
                             on a.campaign_id = b.ooi_campaign_id and a.activity_id = b.ooi_activity_id
                  inner join activity_base_info c on b.iop_activity_id = c.activity_id
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
-        inner join activity_rel_channel e on c.activity_id=e.activity_id
+                 inner join activity_rel_channel e on c.activity_id = e.activity_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
           and a.activity_id = #{activity_id}
+    </select>
+    <select id="getBeforeCampaignedInfo" resultType="map">
+        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*,e.channel_id as channelId
+        from ooi_MARKING_CAMPAIGN_INFO a
+                 inner join ooi_iop_rel_activity_info b
+                            on a.campaign_id = b.ooi_campaign_id and a.activity_id = b.ooi_activity_id
+                 inner join activity_base_info c on b.iop_activity_id = c.activity_id
+                 inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
+                 inner join activity_rel_channel e on c.activity_id = e.activity_id
+        where b.data_state = 'U'
+          and b.is_feedback = '2'
+          and a.activity_id = #{activity_id}
+           and  DATE_FORMAT(c.end_time, '%Y%m%d') >= #{activityEndDate}
     </select>
     <select id="getCampaignedEndInfo" resultType="map">
         select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
@@ -100,10 +113,10 @@
         </foreach>
     </insert>
     <select id="getFlowInfo1" resultType="map">
-        select distinct a.activity_id,'' as channel_id,'1' as flow
-        from activity_base_info a
-                 inner join ooi_iop_rel_activity_info b on a.activity_id = b.iop_activity_id
-        where a.activity_id not in (select activity_id from activity_flow where channel_id = '')
+        select b.activity_id,b.channel_id,'1' as flow
+        from ooi_iop_rel_activity_info a
+                 inner join activity_rel_channel b on a.iop_activity_id = b.activity_id
+        where a.iop_activity_id not in (select activity_id from activity_flow)
     </select>
     <select id="getFlowInfo2" resultType="map">
         select a.activity_id, a.channel_id,CASE b.is_syn WHEN 'U' THEN '2' ELSE '3' END as flow
@@ -128,15 +141,27 @@
     <insert id="insertFailInterface" parameterType="java.util.HashMap">
 
         INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,
-                                                      error_desc)
+                                                      error_desc
+        )
         VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});
 
     </insert>
 
     <select id="getIOPActivityIds" parameterType="string" resultType="string">
         select distinct iop_activity_id
-        from ooi_iop_rel_activity_info
-        where ooi_activity_id = #{activityId}
+        from ooi_iop_rel_activity_info a
+                 inner join activity_base_info b on a.iop_activity_id = b.activity_id
+        where data_state = 'U'
+          and is_feedback = '2'
+          and ooi_activity_id = #{activityId}
+          and DATE_FORMAT(b.end_time, '%Y%m%d') = #{date}
+    </select>
+    <select id="getIOPActivityDates" parameterType="string" resultType="string">
+
+        select distinct b.end_time
+        from ooi_iop_rel_activity_info a
+                 inner join activity_base_info b on a.iop_activity_id=b.activity_id
+        where ooi_activity_id = #{ooiActivityId}
           and data_state = 'U'
           and is_feedback = '2'
     </select>
@@ -164,15 +189,21 @@
         from activity_rel_product
         where activity_id = #{activityId} limit 1
     </select>
+    <select id="getactivityEndtime" parameterType="string" resultType="map">
+        select b.activity_id,b.end_time
+        from ooi_iop_rel_activity_info a
+                 inner join activity_base_info b on a.iop_activity_id = b.activity_id
+        where a.ooi_activity_id = #{activityId}
+    </select>
 
 
-    <insert id="insertFailDetail" parameterType="java.util.HashMap">
-        INSERT INTO `ooi_activity_upload_detail`( `activity_id`, `interface_id`, `activity_type`,
-        `fail_time`, `fail_desc`) VALUES
-        <foreach collection="list" item="map" separator=",">
-            (#{map.activity_id}, #{map.interface_id}, #{map.activity_type}, #{map.fail_time}, #{map.fail_desc})
-        </foreach>
-    </insert>
+    <!--<insert id="insertFailDetail" parameterType="java.util.HashMap">-->
+    <!--INSERT INTO `ooi_activity_upload_detail`( `activity_id`, `interface_id`, `activity_type`,-->
+    <!--`fail_time`, `fail_desc`) VALUES-->
+    <!--<foreach collection="list" item="map" separator=",">-->
+    <!--(#{map.activity_id}, #{map.interface_id}, #{map.activity_type}, #{map.fail_time}, #{map.fail_desc})-->
+    <!--</foreach>-->
+    <!--</insert>-->
 
     <select id="getYJCH" parameterType="string"
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
@@ -236,7 +267,8 @@
         insert into ooi_activity_upload_count (interface_id,
                                                upload_num,
                                                fail_num,
-                                               upload_time)
+                                               upload_time
+        )
         values (#{interfaceId},
                 #{uploadNum},
                 #{failNum},
@@ -253,10 +285,10 @@
         ) value
         <foreach collection="list" item="item" separator="," index="index">
             (
-            #{interfaceId},
-            #{activityId},
-            #{activitytype},
-            #{failDesc},
+            #{item.interfaceId},
+            #{item.activityId},
+            #{item.activitytype},
+            #{item.failDesc},
             now()
             )
         </foreach>
@@ -273,13 +305,13 @@
 
 
     <insert id="insertInterfaceRelTable">
-        insert into ooi_interface_rel_table (interface_id, table_name, file_name, data_time, step, data_state)
+        insert into ooi_interface_rel_table (interface_id, table_name, file_name, data_time, step
+        )
         values (#{interfaceId},
                 #{tableName},
                 #{fileName},
                 #{dataTime},
-                #{step},
-                #{dataState})
+                #{step})
     </insert>
     <update id="updateStateInterfaceRelTable">
         update ooi_interface_rel_table
