@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.task;
 
+import com.alibaba.fastjson.JSON;
 import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -70,7 +72,7 @@ public class TaskSaveMethod {
 //            //16 活动专题ID 当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
 //            map.put("A16", "");
             int num = interfaceInfoMpper.getTableRows("'" + activity.get("activity_id") + "'", activityEndDate);
-            count+=num;
+            count += num;
             if (num == 0) {
                 uploadDetailInfos.add(UploadDetailInfo.builder().interfaceId("93006")
                         .activityId(activity_id)
@@ -187,7 +189,7 @@ public class TaskSaveMethod {
                             .build());
                     continue;
                 }
-                count+=num;
+                count += num;
                 int start = 0;
                 int end = num;
                 for (int i = 0; i < num / limitNum; i++) {
@@ -368,29 +370,37 @@ public class TaskSaveMethod {
                         resultmap.put("A46", mapEffect.get("vic_rate"));
                         //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                         resultmap.put("A47", mapEffect.get("terminal_flow_rate"));
-                    } else if (beforeDate.equals(maxDate)) {
-
-                        mapEffect1 = interfaceInfoMpper.getSummaryEffect(iop_activity_id, maxDate);
-                        //System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
-                        //System.out.println("mapEffect1:" + JSON.toJSONString(mapEffect1));
-                        //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
-                        resultmap.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
-                        //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
-                        resultmap.put("A43", String.valueOf(Float.valueOf(mapEffect.get("touhe_rate")) - Float.valueOf(mapEffect1.get("touhe_rate"))));
-                        //44	响应率	日指标，必填且取值小于1；,口径：运营活动参与用户/成功接触用户,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                        resultmap.put("A44", String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate"))));
-                        //45	营销成功用户数	日指标，必填；,口径：根据运营目的，成功办理或者成功使用的用户数
-                        resultmap.put("A45", String.valueOf(Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"))));
-                        //46	营销成功率	NUMBER (20,6)日指标,必填且取值小于1；,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%
-                        resultmap.put("A46", String.valueOf(Float.valueOf(mapEffect.get("vic_rate")) - Float.valueOf(mapEffect1.get("vic_rate"))));
-                        //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                        resultmap.put("A47", String.valueOf(Float.valueOf(mapEffect.get("terminal_flow_rate")) - Float.valueOf(mapEffect1.get("terminal_flow_rate"))));
                     } else {
                         String message = "93001接口的活动：" + iop_activity_id + "在" + beforeDate + "出现效果数据断层情况，请核查";
-                        String phone = "13018298903,13281027538";
+                        String phone = "13541008413,13281027538";
                         sendMessage.sendSms(phone, message);
                         continue;
                     }
+                } else {
+                    System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
+                    System.out.println("mapEffect1:" + JSON.toJSONString(mapEffect1));
+                    //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
+                    resultmap.put("A42", String.valueOf(Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"))));
+                    //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
+                    resultmap.put("A43", String.valueOf(Float.valueOf(mapEffect.get("touhe_rate")) - Float.valueOf(mapEffect1.get("touhe_rate"))));
+                    //44	响应率	日指标，必填且取值小于1；,口径：运营活动参与用户/成功接触用户,例：填0.1代表10%,		（注意需填小数，而不是百分数）
+
+                    int a = Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"));
+                    int b = Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"));
+                    String c = "0.000000";
+                    DecimalFormat df = new DecimalFormat("0.000000");
+                    if (b != 0) {
+                        c = df.format((double) a / b);
+                    }
+                    resultmap.put("A44", c);
+//                    resultmap.put("A44", String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate"))));
+                    //45	营销成功用户数	日指标，必填；,口径：根据运营目的，成功办理或者成功使用的用户数
+                    resultmap.put("A45", String.valueOf(Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"))));
+                    //46	营销成功率	NUMBER (20,6)日指标,必填且取值小于1；,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%
+                    resultmap.put("A46", c);
+//                    resultmap.put("A46", String.valueOf(Float.valueOf(mapEffect.get("vic_rate")) - Float.valueOf(mapEffect1.get("vic_rate"))));
+                    //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
+                    resultmap.put("A47", mapEffect.get("terminal_flow_rate"));
                 }
 
                 //18	目标客户群编号	必填
@@ -409,6 +419,7 @@ public class TaskSaveMethod {
                 list.add(resultmap);
             }
         }
+        System.out.println("list:" + list);
         SqlUtil.getInsert("93001", list);
 
         fileDataService.insertFailDetails(uploadDetailInfos);

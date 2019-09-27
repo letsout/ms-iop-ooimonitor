@@ -245,66 +245,66 @@ public class FileDataServiceImpl implements FileDataService {
 //    }
 
 //    @Override
-//    public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
-//        List<String> iopActivityIds;
-//        // 根据集团下发活动查询iop关联活动
-//        String activityIds = "";
-//        if ("ZHD".equals(type)) {//根据主活动查找关联的子活动
-//            iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
-//            activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
-//        } else {//上传的本来就是iop活动id
-//            activityIds = "'" + activityId + "'";
-//        }
-//        if (activityIds.equals("''") || activityIds.equals("'null'")) {
-//            return null;
-//        }
-//        List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
-//        if (summaryEffect == null || summaryEffect.size() == 0)
-//            return null;
-//        int customerNum = 0;
-//        int touchNum = 0;
-//        int vicNum = 0;
-//        float inOutRate = 0;
-//        float terminalFlowRate = 0;
-//        int i = 0;
-//        String customer_group_id = "";
-//        String customer_group_name = "";
-//        String customer_num = "";
-//        String customer_filter_rule = "";
-//        for (Map<String, String> map : summaryEffect) {
-//            customer_group_id += "," + map.get("customer_group_id");
-//            customer_group_name += "," + map.get("customer_group_name");
-//            customer_num += "," + map.get("customer_num");
-//            customer_filter_rule = map.get("customer_filter_rule");
-//            customerNum += Integer.valueOf(map.get("customer_num"));
-//            touchNum += Integer.valueOf(map.get("touch_num"));
-//            vicNum += Integer.valueOf(map.get("vic_num"));
-//            inOutRate += Float.valueOf(map.get("in_out_rate"));
-//            terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
-//            i++;
-//        }
-//
-//
-//        Map<String, String> map = new HashMap<>();
-//        if (i > 0) {
-//            map.put("customer_filter_rule", customer_filter_rule.substring(1));
-//            map.put("customer_num", customer_num.substring(1));
-//            map.put("customer_group_id", customer_group_id.substring(1));
-//            map.put("customer_group_name", customer_group_name.substring(1));
-//        }
-//        map.put("customer_num", String.valueOf(customerNum));
-//        map.put("touch_num", String.valueOf(touchNum));
-//        map.put("vic_num", String.valueOf(vicNum));
-//
-//        DecimalFormat df = new DecimalFormat("0.000000");
-//        map.put("touhe_rate", df.format((float) touchNum / customerNum));
-//        map.put("response_rate", df.format((float) touchNum / customerNum));
-//        map.put("vic_rate", df.format((float) vicNum / touchNum));
-//        map.put("in_out_rate", df.format(inOutRate / i));
-//        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
-//
-//        return map;
-//    }
+    public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
+        List<String> iopActivityIds;
+        // 根据集团下发活动查询iop关联活动
+        String activityIds = "";
+        if ("ZHD".equals(type)) {//根据主活动查找关联的子活动
+            iopActivityIds = getFileDataMapper.getZHDIOPActivityIds(activityId);
+            activityIds = "'" + StringUtils.join(iopActivityIds, "','") + "'";
+        } else {//上传的本来就是iop活动id
+            activityIds = "'" + activityId + "'";
+        }
+        if (activityIds.equals("''") || activityIds.equals("'null'")) {
+            return null;
+        }
+        List<Map<String, String>> summaryEffect = interfaceInfoMpper.getSummaryEffects(activityIds, summaryDate);
+        if (summaryEffect == null || summaryEffect.size() == 0)
+            return null;
+        int customerNum = 0;
+        int touchNum = 0;
+        int vicNum = 0;
+        float inOutRate = 0;
+        float terminalFlowRate = 0;
+        int i = 0;
+        String customer_group_id = "";
+        String customer_group_name = "";
+        String customer_num = "";
+        String customer_filter_rule = "";
+        for (Map<String, String> map : summaryEffect) {
+            customer_group_id += "," + map.get("customer_group_id");
+            customer_group_name += "," + map.get("customer_group_name");
+            customer_num += "," + map.get("customer_num");
+            customer_filter_rule = map.get("customer_filter_rule");
+            customerNum += Integer.valueOf(map.get("customer_num"));
+            touchNum += Integer.valueOf(map.get("touch_num"));
+            vicNum += Integer.valueOf(map.get("vic_num"));
+            inOutRate += Float.valueOf(map.get("in_out_rate"));
+            terminalFlowRate += Float.valueOf(map.get("terminal_flow_rate"));
+            i++;
+        }
+
+
+        Map<String, String> map = new HashMap<>();
+        if (i > 0) {
+            map.put("customer_filter_rule", customer_filter_rule.substring(1));
+            map.put("customer_num", customer_num.substring(1));
+            map.put("customer_group_id", customer_group_id.substring(1));
+            map.put("customer_group_name", customer_group_name.substring(1));
+        }
+        map.put("customer_num", String.valueOf(customerNum));
+        map.put("touch_num", String.valueOf(touchNum));
+        map.put("vic_num", String.valueOf(vicNum));
+
+        DecimalFormat df = new DecimalFormat("0.000000");
+        map.put("touhe_rate", df.format((float) touchNum / customerNum));
+        map.put("response_rate", df.format((float) touchNum / customerNum));
+        map.put("vic_rate", df.format((float) vicNum / touchNum));
+        map.put("in_out_rate", df.format(inOutRate / i));
+        map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
+
+        return map;
+    }
 
 
 //    @Override
