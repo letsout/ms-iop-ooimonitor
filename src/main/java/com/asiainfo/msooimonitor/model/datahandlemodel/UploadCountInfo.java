@@ -21,4 +21,5 @@ public class UploadCountInfo {
     private int uploadNum;
 
     private int failNum;
+    private String activityTime;
 }

@@ -90,6 +90,7 @@ public interface GetFileDataMapper {
     void updateStateInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 
     Map<String, String> getAllOfferBo(String activityId);
+    Map<String, String> getBaseChannelInfo(String activityId);
 
     Map<String, String> getBaseOfferBo(String activityId);
 

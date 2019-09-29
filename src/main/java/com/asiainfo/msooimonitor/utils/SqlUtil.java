@@ -70,7 +70,7 @@ public class SqlUtil {
             sbvalue.append("('");
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
-                String value = (String) mapinsert.getOrDefault(key, "");
+                String value =  mapinsert.getOrDefault(key, "")+"";
                 value = value.replaceAll("\n", "");
                 if (value == null || value.equals("null") || value.replaceAll("null", "").replaceAll(",", "").equals("")) {
                     value = null;

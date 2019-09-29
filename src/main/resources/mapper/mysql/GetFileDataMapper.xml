@@ -11,12 +11,10 @@
     <select id="getBaseInfo93006" resultType="map">
         select a.*
         from activity_base_info a
-                 inner join activity_rel_channel c on a.activity_id = c.activity_id
-                 inner join activity_flow b on c.activity_id = b.activity_id and c.channel_id = b.channel_id
         where a.activity_state = '9'
           and a.is_deleted = 0
           and a.is_send_approval = 1
-          and b.flow = '3'
+          and activity_id in (select distinct activity_id from activity_flow where flow = '3')
           and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
     </select>
     <select id="getMarkingInfo93006" resultType="map">
@@ -37,37 +35,34 @@
     <select id="getBaseInfo93002" resultType="map">
         select a.*,c.flow,d.*
         from activity_base_info a
-                 inner join activity_rel_channel b on a.activity_id = b.activity_id
-                 inner join activity_flow c on b.channel_id = c.channel_id and b.activity_id = c.activity_id
-                 inner join base_channel_info d on b.channel_id = d.channel_id
+                 inner join activity_flow c on b.activity_id = c.activity_id
+                 inner join base_channel_info d on c.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
     </select>
 
     <select id="getCampaignedInfo" resultType="map">
-        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*,e.channel_id as channelId
+        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
         from ooi_MARKING_CAMPAIGN_INFO a
                  inner join ooi_iop_rel_activity_info b
                             on a.campaign_id = b.ooi_campaign_id and a.activity_id = b.ooi_activity_id
                  inner join activity_base_info c on b.iop_activity_id = c.activity_id
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
-                 inner join activity_rel_channel e on c.activity_id = e.activity_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
           and a.activity_id = #{activity_id}
     </select>
     <select id="getBeforeCampaignedInfo" resultType="map">
-        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*,e.channel_id as channelId
+        select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
         from ooi_MARKING_CAMPAIGN_INFO a
                  inner join ooi_iop_rel_activity_info b
                             on a.campaign_id = b.ooi_campaign_id and a.activity_id = b.ooi_activity_id
                  inner join activity_base_info c on b.iop_activity_id = c.activity_id
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
-                 inner join activity_rel_channel e on c.activity_id = e.activity_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
           and a.activity_id = #{activity_id}
-           and  DATE_FORMAT(c.end_time, '%Y%m%d') >= #{activityEndDate}
+          and DATE_FORMAT(c.end_time, '%Y%m%d') >= #{activityEndDate}
     </select>
     <select id="getCampaignedEndInfo" resultType="map">
         select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
@@ -91,8 +86,7 @@
         select a.*,b.flow,d.*
         from activity_base_info a
                  inner join activity_flow b on a.activity_id = b.activity_id
-                 inner join activity_rel_channel c on a.activity_id = c.activity_id and b.channel_id = c.channel_id
-                 inner join base_channel_info d on c.channel_id = d.channel_id
+                 inner join base_channel_info d on b.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -115,12 +109,16 @@
     <select id="getFlowInfo1" resultType="map">
         select b.activity_id,b.channel_id,'1' as flow
         from ooi_iop_rel_activity_info a
-                 inner join activity_rel_channel b on a.iop_activity_id = b.activity_id
+                 inner join (select a.*,max(a.channel_id)
+                             from activity_rel_channel a
+                             GROUP BY activity_id
+                             ORDER BY channel_id) b
+                            on a.iop_activity_id = b.activity_id
         where a.iop_activity_id not in (select activity_id from activity_flow)
     </select>
     <select id="getFlowInfo2" resultType="map">
         select a.activity_id, a.channel_id,CASE b.is_syn WHEN 'U' THEN '2' ELSE '3' END as flow
-        from activity_rel_channel a
+        from (select a.*,max(a.channel_id) from activity_rel_channel a GROUP BY activity_id ORDER BY channel_id) a
                  inner join base_channel b on a.channel_id = b.channel_id
         where a.activity_id not in (select activity_id from activity_flow)
     </select>
@@ -160,7 +158,7 @@
 
         select distinct b.end_time
         from ooi_iop_rel_activity_info a
-                 inner join activity_base_info b on a.iop_activity_id=b.activity_id
+                 inner join activity_base_info b on a.iop_activity_id = b.activity_id
         where ooi_activity_id = #{ooiActivityId}
           and data_state = 'U'
           and is_feedback = '2'
@@ -267,12 +265,12 @@
         insert into ooi_activity_upload_count (interface_id,
                                                upload_num,
                                                fail_num,
-                                               upload_time
+                                               upload_time, activity_time
         )
         values (#{interfaceId},
                 #{uploadNum},
                 #{failNum},
-                now())
+                now(), #{activityTime})
     </insert>
 
     <insert id="insertFailDetails">
@@ -281,7 +279,8 @@
         activity_id,
         activity_type,
         fail_desc,
-        fail_time
+        fail_time,
+        activity_time
         ) value
         <foreach collection="list" item="item" separator="," index="index">
             (
@@ -289,8 +288,8 @@
             #{item.activityId},
             #{item.activitytype},
             #{item.failDesc},
-            now()
-            )
+            now(),
+            #{item.activityTime})
         </foreach>
     </insert>
 
@@ -319,4 +318,10 @@
         where interface_id = #{interfaceId}
           and data_time = #{dataTime}
     </update>
+    <select id="getBaseChannelInfo" resultType="map">
+        select *
+        from activity_rel_channel
+        where activity_Id = #{activityId}
+        ORDER BY channel_id limit 1
+    </select>
 </mapper>
