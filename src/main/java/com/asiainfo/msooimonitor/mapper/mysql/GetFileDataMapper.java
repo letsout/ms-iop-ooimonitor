@@ -90,4 +90,6 @@ public interface GetFileDataMapper {
     Map<String, String> getAllOfferBo(String activityId);
 
     Map<String, String> getBaseOfferBo(String activityId);
+
+    List<Map<String, String>> getJTActivityInfoByOOIId(String activityId);
 }

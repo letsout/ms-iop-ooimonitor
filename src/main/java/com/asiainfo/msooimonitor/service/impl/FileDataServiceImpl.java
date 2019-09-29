@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
@@ -370,7 +371,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    @Transactional(transactionManager = "DBTTransactionManager", rollbackFor = Exception.class)
+    @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
 
         ArrayList<ActivityProcessInfo> allActivitys = new ArrayList<>();
@@ -388,7 +389,7 @@ public class FileDataServiceImpl implements FileDataService {
             String activityId = Info.getActivityId();
             String processId = Info.getProcessId();
             // 记录活动信息
-            if (CommonConstant.SJCHHLW.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
+            if (CommonConstant.SJCHSJ.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
                 // 查询活动详情
                 Map<String, String> activityInfo = getFileDataMapper.getActivityInfoById(activityId);
                 paramMap.put("A2", CommonConstant.SC);
@@ -400,15 +401,15 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A8", activityInfo.get("activity_name"));
                 // 根据活动id获取产品信息
                 Map<String, String> productInfo = getFileDataMapper.getActivityProductByActId(activityId);
-                paramMap.put("A9", "0428000" + productInfo.get("prc_id"));
-                paramMap.put("A10", productInfo.get("prc_name"));
+                paramMap.put("A9", "0428000" + ((productInfo == null)?"00":productInfo.get("prc_id")));
+                paramMap.put("A10", (productInfo == null)?"自定义产品名称":productInfo.get("prc_name"));
             } else if (CommonConstant.YJCH.equals(processId)) {
                 // 查询集团活动详情
                 Map<String, String> jtActivityInfo = getFileDataMapper.getJTActivityInfoById(activityId);
                 paramMap.put("A2", CommonConstant.SC);
                 paramMap.put("A3", CommonConstant.cityMap.get("1"));
-                paramMap.put("A4", "280" + jtActivityInfo.get(jtActivityInfo.get("activity_id")));
-                paramMap.put("A5", jtActivityInfo.get("activity_name"));
+                paramMap.put("A4", "280" + jtActivityInfo.get("jt_activity_id"));
+                paramMap.put("A5", jtActivityInfo.get("jt_activity_name"));
                 paramMap.put("A6", "9");
                 paramMap.put("A7", CommonConstant.SC + "_" + jtActivityInfo.get("ooi_campaign_id") + "_" + activityId.substring(1));
                 paramMap.put("A8", jtActivityInfo.get("activity_name"));
@@ -435,6 +436,7 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入记录表 1.汇总表
         getFileDataMapper.insertUploadCount(UploadCountInfo.builder().interfaceId("93055").uploadNum(paramList.size()).failNum(errorNum).build());
+
         // 2上传明细表
         List<UploadDetailInfo> uploadDetailList = new ArrayList<>();
         errorParamList.addAll(paramList);
@@ -448,7 +450,12 @@ public class FileDataServiceImpl implements FileDataService {
                     .build();
             uploadDetailList.add(build);
         });
+
+
         getFileDataMapper.insertFailDetails(uploadDetailList);
+
+        // 清空当前数据表
+        interfaceInfoMpper.truncateTable("93055");
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
@@ -456,7 +463,7 @@ public class FileDataServiceImpl implements FileDataService {
         // 插入状态表代表可以生成文件
         getFileDataMapper.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
-                        .interfaceId("93005")
+                        .interfaceId("93055")
                         .tableName("iop_93055")
                         .fileName("i_13000_time_IOP-93055_00_fileNum.dat")
                         .dataTime(month)
@@ -487,7 +494,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    @Transactional(transactionManager = "DBTTransactionManager", rollbackFor = Exception.class)
+    @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93056(String month) {
         ArrayList<ActivityProcessInfo> allActivitys = new ArrayList<>();
         allActivitys.addAll(getFileDataMapper.getYJCHBIG(month));
@@ -504,7 +511,7 @@ public class FileDataServiceImpl implements FileDataService {
             String activityId = Info.getActivityId();
             String processId = Info.getProcessId();
             // 记录活动信息
-            if (CommonConstant.SJCHHLW.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
+            if (CommonConstant.SJCHSJ.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
                 // 查询活动详情
                 Map<String, String> activityInfo = getFileDataMapper.getActivityInfoById(activityId);
                 paramMap.put("A2", CommonConstant.SC);
@@ -516,21 +523,60 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A8", activityInfo.get("activity_name"));
                 // 根据活动id获取产品信息
                 Map<String, String> productInfo = getFileDataMapper.getActivityProductByActId(activityId);
-                paramMap.put("A9", "0428000" + productInfo.get("prc_id"));
-                paramMap.put("A10", productInfo.get("prc_name"));
+                paramMap.put("A9", "0428000" + ((productInfo == null)?"00":productInfo.get("prc_id")));
+                paramMap.put("A10", (productInfo == null)?"自定义产品名称":productInfo.get("prc_name"));
             } else if (CommonConstant.YJCH.equals(processId)) {
                 // 查询集团活动详情
-                Map<String, String> jtActivityInfo = getFileDataMapper.getJTActivityInfoById(activityId);
+                List<Map<String, String>> jtActivityInfo = getFileDataMapper.getJTActivityInfoByOOIId(activityId);
+                AtomicReference<String> ooiActivityId = new AtomicReference<>(new String());
+                AtomicReference<String> ooiActivityName = new AtomicReference<>(new String());
+                ArrayList<String> campaignIdList = new ArrayList<>();
+                ArrayList<String> campaigNameList = new ArrayList<>();
+                ArrayList<String> offerCodeList = new ArrayList<>();
+                ArrayList<String> offerNameList = new ArrayList<>();
+                for (Map<String,String> map:
+                jtActivityInfo) {
+                    AtomicReference<String> campaignId = new AtomicReference<>(new String());
+                    AtomicReference<String> iopActivityId = new AtomicReference<>(new String());
+                    map.forEach((k,v)->{
+                        switch (k){
+                            case "ooi_campaign_id" :
+                                campaignId.set(v);
+                                break;
+                            case "activity_name":
+                                campaigNameList.add(v);
+                                break;
+                            case "offer_code":
+                                offerCodeList.add(v);
+                                break;
+                            case "offer_name":
+                                offerNameList.add(v);
+                                break;
+                            case "jt_activity_id":
+                                ooiActivityId.set(v);
+                                break;
+                            case "jt_activity_name":
+                                ooiActivityName.set(v);
+                                break;
+                            case "activity_id":
+                                iopActivityId.set(v);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                    campaignIdList.add(CommonConstant.SC + "_" + campaignId.get() + "_" + iopActivityId.get().substring(1));
+                }
                 paramMap.put("A2", CommonConstant.SC);
                 paramMap.put("A3", CommonConstant.cityMap.get("1"));
-                paramMap.put("A4", "280" + jtActivityInfo.get(jtActivityInfo.get("activity_id")));
-                paramMap.put("A5", jtActivityInfo.get("activity_name"));
+                paramMap.put("A4", "280" + ooiActivityId.get());
+                paramMap.put("A5", ooiActivityName.get());
                 paramMap.put("A6", "9");
                 // TODO 具备多个子活动怎么处理 联调时与一级沟通
-                paramMap.put("A7", CommonConstant.SC + "_" + jtActivityInfo.get("ooi_campaign_id") + "_" + activityId.substring(1));
-                paramMap.put("A8", jtActivityInfo.get("activity_name"));
-                paramMap.put("A9", jtActivityInfo.get("offer_code"));
-                paramMap.put("A10", jtActivityInfo.get("offer_name"));
+                paramMap.put("A7", StringUtils.join(campaignIdList,","));
+                paramMap.put("A8",StringUtils.join(campaigNameList,","));
+                paramMap.put("A9", StringUtils.join(offerCodeList,","));
+                paramMap.put("A10", StringUtils.join(offerNameList,","));
             }
             // 不记录最终插入语句
             paramMap.put("processId", processId);
@@ -541,7 +587,7 @@ public class FileDataServiceImpl implements FileDataService {
 
             if (!isNotNull) {
                 errorNum++;
-                paramMap.put("error", "改行数据存在空字段");
+                paramMap.put("error", "该行数据存在空字段");
                 errorParamList.add(paramMap);
                 continue;
             }
@@ -567,13 +613,16 @@ public class FileDataServiceImpl implements FileDataService {
         });
         getFileDataMapper.insertFailDetails(uploadDetailList);
 
+        // 清空当前数据表
+        interfaceInfoMpper.truncateTable("93056");
+
         // 插入数据表待上传
         interfaceInfoMpper.insert93056(paramList);
 
         // 插入状态表代表可以生成文件
         getFileDataMapper.insertInterfaceRelTable(
                 CretaeFileInfo.builder()
-                        .interfaceId("91056")
+                        .interfaceId("93056")
                         .tableName("iop_93056")
                         .fileName("i_13000_time_IOP-93056_00_fileNum.dat")
                         .dataTime(month)

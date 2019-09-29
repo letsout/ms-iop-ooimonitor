@@ -59,9 +59,9 @@ public interface InterfaceInfoMpper {
 
     void truncateTable(@Param("tableName") String tableName);
 
-    void insert93055(List<Map<String, String>> paramList);
+    void insert93055(List<Map<String, String>> list);
 
     String getSummaryEffectMaxDate(@Param("activityId")String activityId,@Param("beforeDate")String beforeDate);
 
-    void insert93056(List<Map<String, String>> paramList);
+    void insert93056(List<Map<String, String>> list);
 }
