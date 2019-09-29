@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.utils;
 
+import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +22,11 @@ import java.util.Map;
 public class SqlUtil {
     public static Map<String, Integer> tableMap = new HashMap<>();
 
-    static FileDataService fileDataService;
+    static CommonMapper commonMapper;
 
     @Autowired
-    public SqlUtil(FileDataService fileDataService) {
-        SqlUtil.fileDataService = fileDataService;
+    public SqlUtil(CommonMapper commonMapper) {
+        SqlUtil.commonMapper = commonMapper;
     }
 
     static {
@@ -69,7 +70,7 @@ public class SqlUtil {
             sbvalue.append("('");
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
-                String value = (String) mapinsert.getOrDefault(key, "");
+                String value =  mapinsert.getOrDefault(key, "")+"";
                 value = value.replaceAll("\n", "");
                 if (value == null || value.equals("null") || value.replaceAll("null", "").replaceAll(",", "").equals("")) {
                     value = null;
@@ -89,10 +90,7 @@ public class SqlUtil {
         }
 
         String sql = sb.toString();
-        System.out.println("sql:");
-        System.out.println(sql);
-        System.out.println();
-        fileDataService.saveresultList(sql);
+        commonMapper.insertSql(sql);
         log.info("{}接口成功插入数据：{}条", interfaceName, list.size());
     }
 

@@ -21,4 +21,6 @@ public class UploadDetailInfo {
     private String failDesc;
 
     private String uploadTime;
+
+    private String activityTime;
 }

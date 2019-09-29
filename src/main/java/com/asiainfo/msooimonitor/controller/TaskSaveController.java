@@ -33,11 +33,11 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93006");
                 try {
                     if (type.equals("1")) {
-                        taskSaveMethod.savebase93006(activityEndDate);
+                        taskSaveMethod.saveBase93006(activityEndDate);
                     } else if (type.equals("2")) {
                         taskSaveMethod.saveMarking93006(activityEndDate);
                     } else {
-                        taskSaveMethod.savebase93006(activityEndDate);
+                        taskSaveMethod.saveBase93006(activityEndDate);
                         taskSaveMethod.saveMarking93006(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(
@@ -66,23 +66,20 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93001");
                 try {
                     taskSaveMethod.saveMarking93001(activityEndDate);
+                        fileDataService.insertInterfaceRelTable(
+                                CretaeFileInfo.builder()
+                                        .interfaceId("93001")
+                                        .tableName("iop_93001")
+                                        .fileName("i_13000_time_IOP-93001_00_fileNum.dat")
+                                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                                        .step("1")
+                                        .build()
+                        );
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
                     fileDataService.truncateTable("93001");
                 }
-                try {
-                    fileDataService.insertInterfaceRelTable(
-                            CretaeFileInfo.builder()
-                                    .interfaceId("93001")
-                                    .tableName("iop_93001")
-                                    .fileName("i_13000_time_IOP-93001_00_fileNum.dat")
-                                    .dataTime(TimeUtil.getAfterDay(activityEndDate))
-                                    .step("1")
-                                    .build()
-                    );
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
             }
         }.run();
         return "success：请查看日志";
