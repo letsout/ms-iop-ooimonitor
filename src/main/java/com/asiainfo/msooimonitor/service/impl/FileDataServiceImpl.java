@@ -56,12 +56,11 @@ public class FileDataServiceImpl implements FileDataService {
         String customer_group_name = "";
         String customer_num = "";
         String customer_filter_rule = "";
+        String activityIds = "";
         for (Map<String, Object> map : maps) {
             Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), map.get("end_time").toString().replace("-", ""));
             if (summaryEffect == null) {
-                String message =map.get("activity_id").toString() + "在" + map.get("end_time").toString().replace("-", "") + "当天缺少效果数据，请核查";
-                String phone = "13018298903,13281027538";
-                sendMessage.sendSms(phone, message);
+                activityIds = activityIds + "," + map.get("activity_id");
                 continue;
             }
             customer_group_id += "," + summaryEffect.get("customer_group_id");
@@ -94,7 +93,12 @@ public class FileDataServiceImpl implements FileDataService {
         map.put("vic_rate", df.format((float) vicNum / touchNum));
         map.put("in_out_rate", df.format(inOutRate / i));
         map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
-
+        if (StringUtils.isNotEmpty(activityIds)) {
+            activityIds = activityIds.substring(1);
+            String message = activityIds + "在" + map.get("end_time").toString().replace("-", "") + "当天缺少效果数据，请核查";
+            String phone = "13018298903,13281027538";
+            sendMessage.sendSms(phone, message);
+        }
         return map;
     }
 
@@ -244,7 +248,7 @@ public class FileDataServiceImpl implements FileDataService {
 //        System.out.println("'" + StringUtils.join(arrayList, "','") + "'");
 //    }
 
-//    @Override
+    //    @Override
     public Map<String, String> getSummaryEffectJT(String activityId, String summaryDate, String type) {
         List<String> iopActivityIds;
         // 根据集团下发活动查询iop关联活动

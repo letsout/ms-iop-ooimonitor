@@ -208,7 +208,7 @@ public class WriteFileThread {
 
         }
         if ("U".equals(flag)) {
-            writer.write(System.getProperty("line.separator").getBytes("gbk"));
+            writer.write("\r\n".getBytes("gbk"));
         }
 
     }
