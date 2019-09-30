@@ -81,6 +81,7 @@ public class UploadFileTask {
             }
             localPath = localPath.replaceAll("time", date);
             remotePath = remotePath.replaceAll("time", date);
+            log.info("interfaceId:{},fileName：{}",interfaceId,fileName);
             writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
         }
     }

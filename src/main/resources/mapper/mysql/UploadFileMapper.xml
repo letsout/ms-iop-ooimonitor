@@ -3,6 +3,6 @@
 <mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.UploadFileMapper" >
 
     <select id="getCanCreateFileInterface" resultType="map">
-        select a.interface_id,a.table_name,a.data_time,a.file_name,b.interface_cycle  from ooi_interface_rel_table a  left join ooi_interface_info b on a.interface_id = b.interface_id where  a.data_state = 'U' and a.step = '1' and b.interface_deal_type = '1' and b.interface_id is not null
+        select distinct a.interface_id,a.table_name,a.data_time,a.file_name,b.interface_cycle  from ooi_interface_rel_table a  left join ooi_interface_info b on a.interface_id = b.interface_id where  a.data_state = 'U' and a.step = '1' and b.interface_deal_type = '1' and b.interface_id is not null
     </select>
 </mapper>
