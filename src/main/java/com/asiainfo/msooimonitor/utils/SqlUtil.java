@@ -37,9 +37,9 @@ public class SqlUtil {
     }
 
     public static void getInsert(String interfaceName, List<Map<String, Object>> list) {
-        // 每5000条插入一次
+        // 每10000条插入一次
         int start = 0;
-        int splitNum = 1500;
+        int splitNum = 10000;
         for (int i = 0; i < list.size() / splitNum; i++) {
             getInsertsql(interfaceName, list.subList(start, splitNum + start));
             start += splitNum;

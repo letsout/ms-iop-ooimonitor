@@ -305,7 +305,7 @@
             #{item.activitytype},
             #{item.failDesc},
             now(),
-            #{item.activityTime})
+            #{item.activityTime}
             )
         </foreach>
     </insert>
