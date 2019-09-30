@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.service.impl;
 
+import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
@@ -42,7 +43,7 @@ public class FileDataServiceImpl implements FileDataService {
     }
 
     @Override
-    public Map<String, String> getSummaryEffectAll(String activityId) {
+    public Map<String, String> getSummaryEffectAll(String activityId,String activityEndDate) {
         List<Map<String, Object>> maps = getFileDataMapper.getactivityEndtime(activityId);
         if (maps == null || maps.size() == 0)
             return null;
@@ -58,9 +59,12 @@ public class FileDataServiceImpl implements FileDataService {
         String customer_filter_rule = "";
         String activityIds = "";
         for (Map<String, Object> map : maps) {
-            Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), map.get("end_time").toString().replace("-", ""));
+            // 获取最大时间
+            String time = interfaceInfoMpper.getMaxTime(map.get("activity_id").toString());
+            Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(),time);
             if (summaryEffect == null) {
                 activityIds = activityIds + "," + map.get("activity_id");
+                log.info("activityIds:{}",activityIds);
                 continue;
             }
             customer_group_id += "," + summaryEffect.get("customer_group_id");
@@ -95,13 +99,12 @@ public class FileDataServiceImpl implements FileDataService {
         map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
         if (StringUtils.isNotEmpty(activityIds)) {
             activityIds = activityIds.substring(1);
-            String message = activityIds + "在" + map.get("end_time").toString().replace("-", "") + "当天缺少效果数据，请核查";
+            String message = activityIds + "在" + activityEndDate + "当天缺少效果数据，请核查";
             String phone = "13018298903,13281027538";
             sendMessage.sendSms(phone, message);
         }
         return map;
     }
-
 
     @Override
     public void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo) {
@@ -683,10 +686,10 @@ public class FileDataServiceImpl implements FileDataService {
 
     }
 
-    @Override
-    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
-        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
-        return campaignedInfo93001;
-    }
+//    @Override
+//    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
+//        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
+//        return campaignedInfo93001;
+//    }
 
 }

@@ -53,6 +53,7 @@ public interface InterfaceInfoMpper {
 
     Map<String, String> getSummaryEffect(@Param("activityId") String activityId, @Param("date") String date);
 
+
     int getTableRows(@Param("activityIds") String activityIds, @Param("dateTimeFormat") String dateTimeFormat);
 
     List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds, @Param("date") String date);
@@ -64,4 +65,6 @@ public interface InterfaceInfoMpper {
     String getSummaryEffectMaxDate(@Param("activityId")String activityId,@Param("beforeDate")String beforeDate);
 
     void insert93056(List<Map<String, String>> list);
+
+    String getMaxTime(String activityId);
 }

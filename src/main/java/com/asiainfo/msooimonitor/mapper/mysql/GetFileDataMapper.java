@@ -41,6 +41,7 @@ public interface GetFileDataMapper {
 
 
     List<Map<String, Object>> getCampaignedInfo(String activity_id);
+    List<Map<String, Object>> getBeforeCampaignedInfo(String activity_id,String activityEndDate);
 
     List<Map<String, Object>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
 

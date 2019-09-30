@@ -493,7 +493,7 @@ public class TaskSaveMethod {
             //13 所属流程 必填，填写枚举值ID
             map.put("A13", "1");     //待定
             // 根据集团下发活动获取效果信息
-            final Map<String, String> mapEffect = fileDataService.getSummaryEffectAll(activityId);
+            final Map<String, String> mapEffect = fileDataService.getSummaryEffectAll(activityId,activityEndDate);
             if (mapEffect == null) {
                 uploadDetailInfos.add(UploadDetailInfo.builder().interfaceId("93005")
                         .activityId(activityId)
@@ -998,6 +998,7 @@ public class TaskSaveMethod {
         Map<String, String> map = null;
         Map<String, Object> resultmap = null;
         List<UploadDetailInfo> uploadDetailInfos = new LinkedList<>();
+        // 根据子活动来
         List<Map<String, String>> activitys = getFileDataMapper.getMarkingInfo93002(activityEndDate);
 //        属性编码 5-13为营销活动相关信息，14-36子活动相关信息，42-83子活动效果评估指标
         for (Map<String, String> activity : activitys) {

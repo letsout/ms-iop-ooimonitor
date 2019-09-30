@@ -242,6 +242,11 @@
         </foreach>
     </insert>
 
+
+    <select id="getMaxTime" parameterType="string" resultType="string">
+        select max(data_time) from iop_public.ooi_activity_summary_effect where activity_id = #{activityId}
+    </select>
+
     <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">
 
         select max(data_time)

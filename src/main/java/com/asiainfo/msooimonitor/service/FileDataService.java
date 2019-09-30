@@ -103,5 +103,5 @@ public interface FileDataService {
     void create93056(String month);
     void insertInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 //
-    Map<String, String> getSummaryEffectAll(String activityId);
+    Map<String, String> getSummaryEffectAll(String activityId,String activityEndDate);
 }
