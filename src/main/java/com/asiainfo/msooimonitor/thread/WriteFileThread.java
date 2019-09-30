@@ -60,8 +60,8 @@ public class WriteFileThread {
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
         int sum = loadMapper.getrows(tableName);
         try {
-            dataFileWriter = new FileOutputStream("H:\\data1\\" + fileNameTmp);
-            verifyFileWriter = new FileOutputStream("H:\\data1\\"+ verifyFileName);
+            dataFileWriter = new FileOutputStream(localPath + File.separator  + fileNameTmp);
+            verifyFileWriter = new FileOutputStream(localPath + File.separator + verifyFileName);
             // 分页读取文件
             List<String> sqlList = createsql(tableName);
 
@@ -76,7 +76,7 @@ public class WriteFileThread {
                     Object[] line = map.values().toArray();
                     if (records % filterRecords == 0 && records > 0) {
                         dataFileWriter.flush();
-                        boolean okSize = isOKSize("H:\\data1\\"+ fileNameTmp);
+                        boolean okSize = isOKSize(localPath + File.separator + fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
                             dataWrite(dataFileWriter, line, "E");
@@ -88,10 +88,10 @@ public class WriteFileThread {
 
                             if (fileNum >= 10) {
                                 fileNameTmp = fileName.replaceAll("fileNum", "0" + fileNum);
-                                dataFileWriter = new FileOutputStream("H:\\data1\\"+ fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
                             } else {
                                 fileNameTmp = fileName.replaceAll("fileNum", "00" + fileNum);
-                                dataFileWriter = new FileOutputStream("H:\\data1\\"+ fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
                             }
                         } else {
                             dataWrite(dataFileWriter, line, "U");
@@ -128,7 +128,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            //FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService,date);
+            FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService,date);
 
         } catch (Exception e) {
             log.error("message：{}", e);
@@ -137,7 +137,7 @@ public class WriteFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);//localPath + File.separator
-            interfaceRecord.setFileNum(FileUtil.getFileRows( "H:\\data1\\"+ fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows( localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             if(e.getMessage().length() > 480 ){
@@ -172,8 +172,8 @@ public class WriteFileThread {
      * @return
      */
     private String[] createverifyInfo(String fileName, String localPath, String date) {
-        String fileSize = FileUtil.getFileSize("H:\\data1\\"+ fileName);
-        String filerows = FileUtil.getFileRows("H:\\data1\\"+ fileName);
+        String fileSize = FileUtil.getFileSize(localPath + File.separator + fileName);
+        String filerows = FileUtil.getFileRows(localPath + File.separator + fileName);
         String longSeconds = TimeUtil.getLongSeconds(new Date());
 
         String[] verifyinfo = {fileName, fileSize, filerows, date, longSeconds};
