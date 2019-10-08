@@ -80,7 +80,7 @@ public class WriteFileThread {
                         boolean okSize = isOKSize(localPath + File.separator + fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
-                            dataWrite(dataFileWriter, line, "E");
+                            dataWrite(dataFileWriter, line, "U");
                             dataFileWriter.flush();
                             fileNum++;
                             // 生成校验文件信息

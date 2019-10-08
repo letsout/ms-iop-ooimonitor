@@ -90,9 +90,9 @@ public class FileUtil {
             LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
             lineNumberReader.skip(Long.MAX_VALUE);
             rows = lineNumberReader.getLineNumber();
-            if(rows != 0){
+            /*if(rows != 0){
                 rows +=1;
-            }
+            }*/
             fileReader.close();
             lineNumberReader.close();
         } catch (Exception e) {
