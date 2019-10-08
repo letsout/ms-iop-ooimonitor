@@ -98,7 +98,7 @@ public class WriteFileThread {
                         }
                     } else {
                         if (sum == records) {
-                            dataWrite(dataFileWriter, line, "E");
+                            dataWrite(dataFileWriter, line, "U");
                             dataFileWriter.flush();
                             String[] verifyLine = createverifyInfo(fileNameTmp, localPath, date);
                             dataWrite(verifyFileWriter, verifyLine, "U");

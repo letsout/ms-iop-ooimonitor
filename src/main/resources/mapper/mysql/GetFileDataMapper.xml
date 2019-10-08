@@ -35,7 +35,7 @@
     <select id="getBaseInfo93002" resultType="map">
         select a.*,c.flow,d.*
         from activity_base_info a
-                 inner join activity_flow c on b.activity_id = c.activity_id
+                 inner join activity_flow c on a.activity_id = c.activity_id
                  inner join base_channel_info d on c.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
@@ -152,8 +152,17 @@
         where data_state = 'U'
           and is_feedback = '2'
           and ooi_activity_id = #{activityId}
-          and DATE_FORMAT(b.end_time, '%Y%m%d') = #{date}
     </select>
+
+
+    <select id="getIOPActivityByOoiId" parameterType="string" resultType="string">
+        select distinct iop_activity_id
+        from ooi_iop_rel_activity_info a
+                 inner join activity_base_info b on a.iop_activity_id = b.activity_id
+        where data_state = 'U'
+          and is_feedback = '2'
+    </select>
+
     <select id="getIOPActivityDates" parameterType="string" resultType="string">
 
         select distinct b.end_time

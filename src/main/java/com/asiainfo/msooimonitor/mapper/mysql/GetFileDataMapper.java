@@ -97,4 +97,6 @@ public interface GetFileDataMapper {
     List<Map<String, Object>> getactivityEndtime(String activityId);
 
     List<Map<String, String>> getJTActivityInfoByOOIId(String activityId);
+
+    List<String> getIOPActivityByOoiId(String activity_id);
 }

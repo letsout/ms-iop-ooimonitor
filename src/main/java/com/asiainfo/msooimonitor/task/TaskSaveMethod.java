@@ -1,6 +1,5 @@
 package com.asiainfo.msooimonitor.task;
 
-import com.alibaba.fastjson.JSON;
 import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
@@ -16,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yx
@@ -336,7 +338,7 @@ public class TaskSaveMethod {
                 resultmap.put("A31", campaignedmap.get("channe_type"));
                 //32	渠道接触规则	必填
                 String channel_rule = campaignedmap.get("channel_rule").toString();
-                if (channel_rule.equals("null")||channel_rule.equals("")) {
+                if (channel_rule.equals("null") || channel_rule.equals("")) {
                     channel_rule = getFileDataMapper.getBaseChannelInfo(iop_activity_id).get("channel_id");
                 }
                 resultmap.put("A32", channel_rule);
@@ -365,7 +367,7 @@ public class TaskSaveMethod {
                     String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(iop_activity_id, beforeDate);
                     if (maxDate == null || maxDate.equals("")) {
                         //System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
-                        //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
+                        //42	成功接触客户数	日指标，必填,口径：inser运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
                         resultmap.put("A42", mapEffect.get("touch_num"));
                         //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
                         resultmap.put("A43", df.format(Float.parseFloat(mapEffect.get("touhe_rate"))));
@@ -405,7 +407,7 @@ public class TaskSaveMethod {
 //                        response_rate = mapEffect.get("response_rate");
 //                    }
                     //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
-                    resultmap.put("A42",touch_num);
+                    resultmap.put("A42", touch_num);
                     //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
                     resultmap.put("A43", df.format(Float.valueOf(mapEffect.get("touhe_rate")) - Float.valueOf(mapEffect1.get("touhe_rate"))));
                     //44	响应率	日指标，必填且取值小于1；,口径：运营活动参与用户/成功接触用户,例：填0.1代表10%,		（注意需填小数，而不是百分数）
@@ -414,10 +416,10 @@ public class TaskSaveMethod {
                     //45	营销成功用户数	日指标，必填；,口径：根据运营目的，成功办理或者成功使用的用户数
                     resultmap.put("A45", vic_num);
                     //46	营销成功率	NUMBER (20,6)日指标,必填且取值小于1；,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%
-                    resultmap.put("A46",   df.format(Float.parseFloat(response_rate)));
+                    resultmap.put("A46", df.format(Float.parseFloat(response_rate)));
 //                    resultmap.put("A46", String.valueOf(Float.valueOf(mapEffect.get("vic_rate")) - Float.valueOf(mapEffect1.get("vic_rate"))));
                     //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                    resultmap.put("A47",  df.format(Float.parseFloat(mapEffect.get("terminal_flow_rate"))));
+                    resultmap.put("A47", df.format(Float.parseFloat(mapEffect.get("terminal_flow_rate"))));
                 }
 
                 //18	目标客户群编号	必填
@@ -437,7 +439,7 @@ public class TaskSaveMethod {
             }
         }
         if (StringUtils.isNotEmpty(iopActivityIds)) {
-            iopActivityIds=iopActivityIds.substring(1);
+            iopActivityIds = iopActivityIds.substring(1);
             String message = "93001接口的活动：" + iopActivityIds + "在" + TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate)) + "出现效果数据断层情况，请核查";
             String phone = "13541008413,13438061830";
             sendMessage.sendSms(phone, message);
@@ -493,7 +495,7 @@ public class TaskSaveMethod {
             //13 所属流程 必填，填写枚举值ID
             map.put("A13", "1");     //待定
             // 根据集团下发活动获取效果信息
-            final Map<String, String> mapEffect = fileDataService.getSummaryEffectAll(activityId,activityEndDate);
+            final Map<String, String> mapEffect = fileDataService.getSummaryEffectAll(activityId, activityEndDate);
             if (mapEffect == null) {
                 uploadDetailInfos.add(UploadDetailInfo.builder().interfaceId("93005")
                         .activityId(activityId)

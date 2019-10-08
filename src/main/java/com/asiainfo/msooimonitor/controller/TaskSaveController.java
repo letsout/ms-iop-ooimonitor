@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
@@ -26,7 +27,7 @@ public class TaskSaveController {
     FileDataService fileDataService;
 
     @RequestMapping("/93006/{activityEndDate}/{type}")
-    public String testsav93006(@PathVariable String activityEndDate, @PathVariable String type) {
+    public String testsav93006(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
@@ -44,7 +45,7 @@ public class TaskSaveController {
                             CretaeFileInfo.builder()
                                     .interfaceId("93006")
                                     .tableName("iop_93006")
-                                    .fileName("i_13000_time_IOP-93006_00_fileNum.dat")
+                                    .fileName("a_13000_time_IOP-93006_"+num+"_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
@@ -59,7 +60,7 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/93001/{activityEndDate}")
-    public String testsaveMarking93001(@PathVariable String activityEndDate) {
+    public String testsaveMarking93001(@PathVariable String activityEndDate,@RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
@@ -70,7 +71,7 @@ public class TaskSaveController {
                                 CretaeFileInfo.builder()
                                         .interfaceId("93001")
                                         .tableName("iop_93001")
-                                        .fileName("i_13000_time_IOP-93001_00_fileNum.dat")
+                                        .fileName("a_13000_time_IOP-93001_"+num+"_fileNum.dat")
                                         .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                         .step("1")
                                         .build()
@@ -86,7 +87,7 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/93005/{activityEndDate}/{type}")
-    public String save93005(@PathVariable String activityEndDate, @PathVariable String type) {
+    public String save93005(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
@@ -104,7 +105,7 @@ public class TaskSaveController {
                             CretaeFileInfo.builder()
                                     .interfaceId("93005")
                                     .tableName("iop_93005")
-                                    .fileName("i_13000_time_IOP-93005_00_fileNum.dat")
+                                    .fileName("i_13000_time_IOP-93005_"+num+"_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
@@ -121,7 +122,7 @@ public class TaskSaveController {
 
 
     @RequestMapping("/93002/{activityEndDate}/{type}")
-    public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type) {
+    public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
@@ -139,7 +140,7 @@ public class TaskSaveController {
                             CretaeFileInfo.builder()
                                     .interfaceId("93002")
                                     .tableName("iop_93002")
-                                    .fileName("i_13000_time_IOP-93002_00_fileNum.dat")
+                                    .fileName("i_13000_time_IOP-93002_"+num+"_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
