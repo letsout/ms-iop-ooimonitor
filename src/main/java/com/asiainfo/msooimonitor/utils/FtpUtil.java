@@ -329,8 +329,24 @@ public class FtpUtil {
                     }
                 }
             }
+
             //设置上传文件的类型为二进制类型
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            // 删除与此接口相关的文件
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            Arrays.stream(ftpFiles)
+                    .filter(Objects::nonNull)
+                    .forEach(file ->{
+                        if(file.getName().contains(interfaceId)){
+                            try {
+                                ftpClient.deleteFile(file.getName());
+                            } catch (IOException e) {
+                               logger.error("228  接口[{}]文件删除失败",file.getName());
+                               logger.error("{}",e);
+                            }
+                        }
+                    });
+
 
             String[] fileNames = FileUtil.listUploadFile(localPath);
             boolean flag = true;

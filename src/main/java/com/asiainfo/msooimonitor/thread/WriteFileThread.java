@@ -17,10 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author H
@@ -41,10 +38,12 @@ public class WriteFileThread {
     LoadService loadService;
 
 
-    public void write(String interfaceId, String fileName, String tableName, String localPath,String remotePath, String date) {
+    public void write(String interfaceId, String fileName, String tableName, String localPath, String remotePath, String date) {
 
         File file = new File(localPath);
         file.mkdirs();
+        // 删除与此接口相关文件
+        deleteFile(localPath, interfaceId);
 
         fileName = fileName.replaceAll("time", date);
         // 校验文件名称
@@ -60,14 +59,14 @@ public class WriteFileThread {
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
         int sum = loadMapper.getrows(tableName);
         try {
-            dataFileWriter = new FileOutputStream(localPath + File.separator  + fileNameTmp);
+            dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
             verifyFileWriter = new FileOutputStream(localPath + File.separator + verifyFileName);
             // 分页读取文件
             List<String> sqlList = createsql(tableName);
 
             for (String sql :
                     sqlList) {
-                log.info("开始执行sql查询结果数据：{}",sql);
+                log.info("开始执行sql查询结果数据：{}", sql);
                 List<Map<String, String>> interfaceInfoLists = uploadService.getInterfaceInfo(sql);
 
                 for (Map<String, String> map :
@@ -110,7 +109,7 @@ public class WriteFileThread {
                 }
                 dataFileWriter.flush();
 
-                if(interfaceInfoLists.size() == 0){
+                if (interfaceInfoLists.size() == 0) {
                     String[] verifyLine = createverifyInfo(fileNameTmp, localPath, date);
                     dataWrite(verifyFileWriter, verifyLine, "U");
                 }
@@ -130,7 +129,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            FtpUtil.uploadFileFTP(localPath,remotePath, interfaceId, loadService,date);
+            FtpUtil.uploadFileFTP(localPath, remotePath, interfaceId, loadService, date);
 
         } catch (Exception e) {
             log.error("message：{}", e);
@@ -139,12 +138,12 @@ public class WriteFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);//localPath + File.separator
-            interfaceRecord.setFileNum(FileUtil.getFileRows( localPath + File.separator + fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
-            if(e.getMessage().length() > 480 ){
+            if (e.getMessage().length() > 480) {
                 interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage().substring(0, 470));
-            }else {
+            } else {
                 interfaceRecord.setErrorDesc("文件生成出错:" + e.getMessage());
             }
             loadService.insertRecord(interfaceRecord);
@@ -162,6 +161,24 @@ public class WriteFileThread {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 删除与此接口相关的文件
+     *
+     * @param localPath   文件存放路径
+     * @param interfaceId 接口号
+     * @return flag
+     */
+    private void deleteFile(String localPath, String interfaceId) {
+        File interfaceFile = new File(localPath);
+        File[] files = interfaceFile.listFiles();
+        Arrays.stream(files).filter(Objects::nonNull)
+                .forEach(file -> {
+                    if (file.getName().contains(interfaceId)) {
+                        file.delete();
+                    }
+                });
     }
 
     /**
@@ -259,11 +276,11 @@ public class WriteFileThread {
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {
-            sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName  +" a " + " limit " + start + "," + limitNum);
+            sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + limitNum);
             start += limitNum;
             end -= limitNum;
         }
-        sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName  +" a " + " limit " + start + "," + end);
+        sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + end);
 
         return sqlList;
     }
