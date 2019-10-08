@@ -102,7 +102,10 @@
     </appender>
 
     <logger name="io.lettuce.core.protocol" level="ERROR"/>
-    <logger name="com.asiainfo.msooimonitor.mapper.*.*" level="DEBUG"/>
+    <logger name="com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper" level="DEBUG"/>
+    <logger name="com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper" level="DEBUG"/>
+    <logger name="com.asiainfo.msooimonitor.mapper.dbt.ooi.*" level="DEBUG"/>
+    <logger name="com.asiainfo.msooimonitor.mapper.mysql.UploadFileMapper" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="console"/>
