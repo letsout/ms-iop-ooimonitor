@@ -74,6 +74,7 @@ public class WriteFileThread {
                         interfaceInfoLists) {
                     records++;
                     Object[] line = map.values().toArray();
+                    // 每filterRecords 条就验证文件是否超出大小
                     if (records % filterRecords == 0 && records > 0) {
                         dataFileWriter.flush();
                         boolean okSize = isOKSize(localPath + File.separator + fileNameTmp);
@@ -226,7 +227,7 @@ public class WriteFileThread {
         String fileSize = FileUtil.getFileSize(path);
         BigDecimal bigDecimal = new BigDecimal(fileSize);
         BigDecimal bigDecimal1 = new BigDecimal("1048576");
-        BigDecimal BigDecimal2 = new BigDecimal("1");
+        BigDecimal BigDecimal2 = new BigDecimal("500");
         BigDecimal divide = bigDecimal.divide(bigDecimal1);
         int i = divide.compareTo(BigDecimal2);
         if (i > 0) {
