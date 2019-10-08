@@ -259,11 +259,11 @@ public class WriteFileThread {
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {
-            sqlList.add("select row_number() over(order by a.A2) as A1,a.* from " + tableName  +" a " + " limit " + start + "," + limitNum);
+            sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName  +" a " + " limit " + start + "," + limitNum);
             start += limitNum;
             end -= limitNum;
         }
-        sqlList.add("select row_number() over(order by a.A2) as A1,a.* from " + tableName  +" a " + " limit " + start + "," + end);
+        sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName  +" a " + " limit " + start + "," + end);
 
         return sqlList;
     }
