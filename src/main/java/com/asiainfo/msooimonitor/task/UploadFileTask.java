@@ -39,6 +39,11 @@ public class UploadFileTask {
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
+        if(canCreateFileInterface.size() == 0 ){
+            log.info("暂无带生成文件！！！！");
+            return;
+        }
+
         for (Map<String, String> map :
                 canCreateFileInterface) {
             String interfaceId = "";

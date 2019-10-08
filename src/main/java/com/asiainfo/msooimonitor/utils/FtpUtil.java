@@ -319,7 +319,7 @@ public class FtpUtil {
                         // 创建目录
                         if (!ftpClient.makeDirectory(tempPath)) {
                             //如果创建文件目录失败，则返回
-                            System.out.println("创建文件目录" + tempPath + "失败");
+                           logger.error("创建文件目录" + tempPath + "失败");
                             return false;
                         } else {
                             //目录存在，则直接进入该目录
