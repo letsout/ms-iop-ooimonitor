@@ -261,6 +261,9 @@
           and b.channel_id not in ('q07', 'q23')
           and b.activity_id is not null
           and c.iop_activity_id is null
+          and a.is_deleted = 0
+          and a.is_paused = 0
+          and a.activity_state = 9
     </select>
 
     <select id="getSJCHHLW" parameterType="string"
@@ -273,6 +276,9 @@
           and b.channel_id in ('q07', 'q23')
           and b.activity_id is not null
           and c.iop_activity_id is null
+          and a.activity_state = 9
+          and a.is_deleted = 0
+          and a.is_paused = 0
     </select>
 
     <select id="getActivityInfoById" parameterType="string" resultType="map">

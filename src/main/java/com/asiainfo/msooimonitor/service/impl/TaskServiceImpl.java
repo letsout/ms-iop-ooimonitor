@@ -1,4 +1,4 @@
-package com.asiainfo.msooimonitor.service.impl;
+package com.asiainfo.msooimonitor.task;
 
 import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
@@ -8,18 +8,13 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
-import com.asiainfo.msooimonitor.service.TaskService;
-import com.asiainfo.msooimonitor.service.UploadService;
-import com.asiainfo.msooimonitor.thread.WriteFileThread;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -777,6 +772,22 @@ public class TaskServiceImpl implements TaskService {
             map.put("A12", activity.get("pcc_id"));
             //13,所属流程,1：一级策划省级执行,必填，填写枚举值ID,2：省级策划一级执行-互联网,3：省级策划省级执行,4：一级策划一点部署-一级电渠,5：一级策划一点部署-互联网,6：一级策划一点部署-省级播控平台,7：一级策划一点部署-咪咕,8：省级策划一级执行-电渠,9：省级策划一级执行-咪咕,10：省级策划一级执行-爱流量,98：一级策划一点部署,99：其他
             map.put("A13", activity.get("flow"));
+
+
+            //37,PV,可为空，,口径：页面曝光量、接触量、浏览量。,电子渠道效果指标
+            map.put("A37", "");
+            //38,点击量,可为空，,口径：页面内容被点击的次数。,电子渠道效果指标
+            map.put("A38", "");
+            //39,UV(剔重),可为空，,口径：独立用户/独立访客。,电子渠道效果指标
+            map.put("A39", "");
+            //40,办理量,可为空，,口径：业务办理次数。,电子渠道效果指标
+            map.put("A40", "");
+            //41,用户号码明细,互联网特有，可为空
+            map.put("A41", "");
+            //            //42,活动专题ID,当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
+//            map.put("A42", map.get("spetopic_id"));
+
+
             /**
              * 43-90子活动效果评估指标
              */
@@ -805,9 +816,83 @@ public class TaskServiceImpl implements TaskService {
 //            47	投入产出比,NUMBER (20,6)	,必填且取值小于1；,口径：,统计周期（活动开始时间至活动结束时间）,运营活动成功用户产生的收入/运营活动投入的成本,例：填0.1代表10%
             map.put("A47", mapEffect.get("vic_rate"));
 
-            /**
-             * 14-36子活动相关信息
-             */
+//                //48,PCC签约用户数,选填：,该PCC策略活动签约用户的总数（当采用了PCC能力时，相关内容必填）
+//                map.put("A48", "");
+//                //49,PCC策略生效用户数,选填：,该PCC策略在活动期间内生效的签约用户总数（当采用了PCC能力时，相关内容必填）
+//                map.put("A49", "");
+//                //50,PCC策略生效次数,选填：,该PCC策略在活动期间内签约用户一共生效的次数（当采用了PCC能力时，相关内容必填）
+//                map.put("A50", "");
+//                //	51	签约客户转化率	该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
+//                map.put("A51", "");
+//                //	52	套餐流量使用用户数	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐中产生流量的用户数量
+//                map.put("A52", "");
+//                //	53	套餐流量饱和度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐用户产生的套餐内总流量/套餐包含的流量资源总数,例：填0.1代表10%
+//                map.put("A53", "");
+//                //	54	套餐流量活跃度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐流量使用用户数/套餐用户数,例：填0.1代表10%
+//                map.put("A54", "");
+//                //	55	套餐流量低使用天数（5天）占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,使用流量的天数少于5天的用户占比,例：填0.1代表10%
+//                map.put("A55", "");
+//                //	56	4G客户次月留存率	选填；,口径：,次月4G用户/本月的4G用户,例：填0.1代表10%
+//                map.put("A56", "");
+//                //	57	低流量用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,使用流量少于100M的用户占比,例：填0.1代表10%
+//                map.put("A57", "");
+//                //	58	语音使用用户	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐中产生语音的用户占比
+//                map.put("A58", "");
+//                //	59	套餐语音饱和度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐用户产生的套餐内总语音时长/套餐包含的语音资源总数,例：填0.1代表10%
+//                map.put("A59", "");
+//                //	60	套餐语音活跃用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,套餐语音使用用户数/套餐用户数,例：填0.1代表10%
+//                map.put("A60", "");
+//                //	61	套餐语音低使用天数（5天）占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,使用语音的天数少于5天的用户占比,例：填0.1代表10%
+//                map.put("A61", "");
+//                //	62	低通话量用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,使用语音少于10分钟的用户占比,例：填0.1代表10%
+//                map.put("A62", "");
+//                //	63	4G终端4G流量客户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,4G流量客户数/4G终端用户数,例：填0.1代表10%
+//                map.put("A63", "");
+//                //	64	4G流量客户数	选填；,口径：,统计周期（活动开始时间至活动结束时间）,本月使用4G网络产生4G流量的客户数
+//                map.put("A64", "");
+//                //	65	4G客户中4G流量低使用天数（5天）占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,4G客户中，本月产生4G流量天数低于5天的用户占比,例：填0.1代表10%
+//                map.put("A65", "");
+//                //	66	4G客户中4G低流量用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,4G低流量客户占比=本月4G客户中移动数据流量低于100M客户/本月4G客户（4G客户，指使用4G网络客户数）,例：填0.1代表10%
+//                map.put("A66", "");
+//                //	67	月一次使用用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,使用一次的用户/本周期使用用户数,例：填0.1代表10%
+//                map.put("A67", "");
+//                //	68	包月产品活跃度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,包月付费且使用用户数/统计周期包月付费用户,例：填0.1代表10%
+//                map.put("A68", "");
+//                //	69	使用用户次月留存率	选填；,口径：,统计周期，次月持续使用行为的用户数/统计月的使用用户数,例：填0.1代表10%
+//                map.put("A69", "");
+//                //	70	家庭宽带帐户活跃用户数	选填；,口径：,统计周期（活动开始时间至活动结束时间）,流量大于0的用户
+//                map.put("A70", "");
+//                //	71	家庭宽带帐户活跃度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,家庭宽带活跃客户数与家庭宽带出账客户数的比值。家庭宽带活性客户比例=家庭宽带活跃客户数/家庭宽带出账客户数,例：填0.1代表10%
+//                map.put("A71", "");
+//                //	72	魔百和用户活跃度	选填；,口径：,统计周期（活动开始时间至活动结束时间）,魔百和活跃客户数与魔百和客户数的比值,例：填0.1代表10%
+//                map.put("A72", "");
+//                //	73	低使用次数用户占比	选填；,口径：,统计周期（活动开始时间至活动结束时间）,只使用一次\且有流量产生的家庭宽带活跃用户占家庭旷代活跃用户比,例：填0.1代表10%
+//                map.put("A73", "");
+//                //	74	家庭宽带使用用户次月留存率	选填；,口径：,上个月活跃,本月继续活跃的家庭宽带使用用户占上月家庭宽带活跃用户比,例：填0.1代表10%
+//                map.put("A74", "");
+//                //	75	ARPU提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的ARPU/运营活动上月的ARPU-1,例：填0.1代表10%
+//                map.put("A75", "");
+//                //	76	流量提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）运营成功的用户，运营活动次月的流量/运营活动上月的流量-1,例：填0.1代表10%
+//                map.put("A76", "");
+//                //	77	4G流量提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的4G流量/运营活动上月的4G流量-1,例：填0.1代表10%
+//                map.put("A77", "");
+//                //	78	DOU提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的DOU/运营活动上月的DOU-1,例：填0.1代表10%
+//                map.put("A78", "");
+//                //	79	4G DOU提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的4G DOU/运营活动上月的4G DOU-1,例：填0.1代表10%
+//                map.put("A79", "");
+//                //	80	MOU提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的MOU/运营活动上月的MOU-1,例：填0.1代表10%
+//                map.put("A80", "");
+//                //	81	通话时长提升率	选填；,口径：,统计周期（活动开始时间至活动结束时间）,运营成功的用户，运营活动次月的通话时长/运营活动上月的通话时长-1,例：填0.1代表10%
+//                map.put("A81", "");
+//                //	82	使用用户数	选填，口径：运营成功用户产生本业务使用行为的用户
+//                map.put("A82", "");
+//                //	83	家庭宽带出帐用户数	选填，口径：家庭宽带出帐使用用户数
+//                map.put("A83", "");
+
+
+/**
+ * 14-36子活动相关信息
+ */
             //14,子活动编号,必填,参考附录1 统一编码规则中的营销子活动编号编码规则
             map.put("A14", activity.get("activity_id").toString().substring(1));
             //15,子活动名称,必填
@@ -872,63 +957,5 @@ public class TaskServiceImpl implements TaskService {
         uploadCountInfo.setFailNum(uploadDetailInfos.size());
         uploadCountInfo.setActivityTime(activityEndDate);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
-    }
-
-    @Override
-    public void uploadFile() {
-
-        // 查询数据已准备完成的
-        List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
-
-        if(canCreateFileInterface.size() == 0 ){
-            log.info("暂无待生成文件！！！！");
-            return;
-        }
-
-        for (Map<String, String> map :
-                canCreateFileInterface) {
-            String interfaceId = "";
-            String tableName = "";
-            String date = "";
-            String fileName = "";
-            String localPath = "";
-            String remotePath= "";
-            // 设置基本属性
-            // TODO 后面修改表模型然后优化
-            for (Map.Entry enty :
-                    map.entrySet()) {
-                String k = (String) enty.getKey();
-                String v = (String) enty.getValue();
-                switch (k) {
-                    case "interface_id":
-                        interfaceId = v;
-                        break;
-                    case "table_name":
-                        tableName = v;
-                        break;
-                    case "data_time":
-                        date = v;
-                        break;
-                    case "file_name":
-                        fileName = v;
-                        break;
-                    case "interface_cycle":
-                        if (("1").equals(v) || "2".equals(v)) {
-                            localPath = path17 + File.separator + "upload" + File.separator + "time/day";
-                            remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
-                        } else if ("3".equals(v)) {
-                            localPath = path17 + File.separator + "upload" + File.separator + "time/month";
-                            remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            localPath = localPath.replaceAll("time", date);
-            remotePath = remotePath.replaceAll("time", date);
-            log.info("interfaceId:{},fileName：{}",interfaceId,fileName);
-            writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
-        }
     }
 }

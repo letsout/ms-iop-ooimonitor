@@ -10,17 +10,13 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
-import com.asiainfo.msooimonitor.service.UploadService;
-import com.asiainfo.msooimonitor.thread.WriteFileThread;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,7 +33,6 @@ public class FileDataServiceImpl implements FileDataService {
     InterfaceInfoMpper interfaceInfoMpper;
     @Autowired
     SendMessage sendMessage;
-
 
     @Override
     public void insertFailDetails(List<UploadDetailInfo> list) {
@@ -313,18 +308,6 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
-
-        // 插入状态表代表可以生成文件
-        getFileDataMapper.insertInterfaceRelTable(
-                CretaeFileInfo.builder()
-                        .interfaceId("93055")
-                        .tableName("iop_93055")
-                        .fileName("i_13000_time_IOP-93055_00_fileNum.dat")
-                        .dataTime(month)
-                        .step("1")
-                        .build()
-        );
-
     }
 
     /**
@@ -427,10 +410,10 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A5", ooiActivityName.get());
                 paramMap.put("A6", "9");
                 // TODO 具备多个子活动怎么处理 联调时与一级沟通
-                paramMap.put("A7", StringUtils.join(campaignIdList, ","));
-                paramMap.put("A8", StringUtils.join(campaigNameList, ","));
-                paramMap.put("A9", StringUtils.join(offerCodeList, ","));
-                paramMap.put("A10", StringUtils.join(offerNameList, ","));
+                paramMap.put("A7", StringUtils.join(campaignIdList,","));
+                paramMap.put("A8",StringUtils.join(campaigNameList,","));
+                paramMap.put("A9", StringUtils.join(offerCodeList,","));
+                paramMap.put("A10", StringUtils.join(offerNameList,","));
             }
             // 不记录最终插入语句
             paramMap.put("processId", processId);
@@ -472,18 +455,5 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93056(paramList);
-
-        // 插入状态表代表可以生成文件
-        getFileDataMapper.insertInterfaceRelTable(
-                CretaeFileInfo.builder()
-                        .interfaceId("93056")
-                        .tableName("iop_93056")
-                        .fileName("i_13000_time_IOP-93056_00_fileNum.dat")
-                        .dataTime(month)
-                        .step("1")
-                        .build()
-        );
-
     }
-
 }

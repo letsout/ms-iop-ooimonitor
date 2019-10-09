@@ -167,6 +167,24 @@ public class TimeUtil {
         return format.format(time);
     }
 
+    /**
+     * 获取指定日期后一个月
+     *
+     * @param date
+     * @return
+     */
+    public static String getAfterMonthSql(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_MONTH_FORMAT_SQL);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, 1);
+
+        Date time = calendar.getTime();
+
+        return format.format(time);
+    }
+
     public static String getTwoMonthSql(Date date) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_MONTH_FORMAT_SQL);
 
@@ -312,11 +330,6 @@ public class TimeUtil {
             flag = true;
         }
         return flag;
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(JSON.toJSONString(getBetweenMonth("201901", "201902")));
     }
 
 }

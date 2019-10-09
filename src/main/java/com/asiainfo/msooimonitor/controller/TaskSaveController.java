@@ -2,7 +2,7 @@ package com.asiainfo.msooimonitor.controller;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
-import com.asiainfo.msooimonitor.service.TaskService;
+import com.asiainfo.msooimonitor.task.TaskSaveMethod;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 /**
  * @author yx
@@ -169,5 +171,78 @@ public class TaskSaveController {
             }
         }.start();
         return "success";
+    }
+
+    /**
+     *
+     * @param activityEndDate 上传数据活动结束日期
+     * @param num 重传序号 默认00  重传之后依次加1
+     * @return
+     */
+    @RequestMapping("/93056/{activityEndDate}")
+    public String sqve93056(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num){
+        new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
+                fileDataService.truncateTable("93056");
+                try {
+                    Date dataMonth = sdf.parse(activityEndDate);
+
+                    fileDataService.create93056(activityEndDate);
+
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93056")
+                                    .tableName("iop_93056")
+                                    .fileName("i_13000_time_IOP-93056_" + num + "_fileNum.dat")
+                                    .dataTime(TimeUtil.getAfterMonthSql(dataMonth))
+                                    .step("1")
+                                    .build()
+                    );
+                } catch (Exception e) {
+                    log.error("93056 error :{}", e);
+                    fileDataService.truncateTable("93056");
+                }
+            }
+        }.run();
+        return "success：请查看日志";
+    }
+
+
+    /**
+     *
+     * @param activityEndDate 上传数据活动结束日期
+     * @param num 重传序号 默认00  重传之后依次加1
+     * @return
+     */
+    @RequestMapping("/93055/{activityEndDate}")
+    public String sqve93055(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num){
+        new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+                fileDataService.truncateTable("93055");
+                try {
+                    Date dataMonth = sdf.parse(activityEndDate);
+                    fileDataService.create93055(activityEndDate);
+
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93055")
+                                    .tableName("iop_93055")
+                                    .fileName("i_13000_time_IOP-93055_" + num + "_fileNum.dat")
+                                    .dataTime(TimeUtil.getAfterMonthSql(dataMonth))
+                                    .step("1")
+                                    .build()
+                    );
+                } catch (Exception e) {
+                    log.error("93055 error :{}", e);
+                    fileDataService.truncateTable("93055");
+                }
+            }
+        }.run();
+        return "success：请查看日志";
     }
 }
