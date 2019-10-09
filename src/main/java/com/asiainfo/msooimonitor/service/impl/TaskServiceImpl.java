@@ -1,4 +1,4 @@
-package com.asiainfo.msooimonitor.task;
+package com.asiainfo.msooimonitor.service.impl;
 
 import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
@@ -8,13 +8,18 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
+import com.asiainfo.msooimonitor.service.TaskService;
+import com.asiainfo.msooimonitor.service.UploadService;
+import com.asiainfo.msooimonitor.thread.WriteFileThread;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -957,5 +962,63 @@ public class TaskServiceImpl implements TaskService {
         uploadCountInfo.setFailNum(uploadDetailInfos.size());
         uploadCountInfo.setActivityTime(activityEndDate);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
+    }
+
+    @Override
+    public void uploadFile() {
+
+        // 查询数据已准备完成的
+        List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
+
+        if(canCreateFileInterface.size() == 0 ){
+            log.info("暂无待生成文件！！！！");
+            return;
+        }
+
+        for (Map<String, String> map :
+                canCreateFileInterface) {
+            String interfaceId = "";
+            String tableName = "";
+            String date = "";
+            String fileName = "";
+            String localPath = "";
+            String remotePath= "";
+            // 设置基本属性
+            // TODO 后面修改表模型然后优化
+            for (Map.Entry enty :
+                    map.entrySet()) {
+                String k = (String) enty.getKey();
+                String v = (String) enty.getValue();
+                switch (k) {
+                    case "interface_id":
+                        interfaceId = v;
+                        break;
+                    case "table_name":
+                        tableName = v;
+                        break;
+                    case "data_time":
+                        date = v;
+                        break;
+                    case "file_name":
+                        fileName = v;
+                        break;
+                    case "interface_cycle":
+                        if (("1").equals(v) || "2".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/day";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
+                        } else if ("3".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/month";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            localPath = localPath.replaceAll("time", date);
+            remotePath = remotePath.replaceAll("time", date);
+            log.info("interfaceId:{},fileName：{}",interfaceId,fileName);
+            writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
+        }
     }
 }
