@@ -3,19 +3,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper">
     <!--<select id="getCustGroupInfo" resultType="map">-->
-        <!--select b.*-->
-        <!--FROM activity_rel_custgroup a-->
-                 <!--inner JOIN cust_group_info b ON a.cust_group_id = b.cust_group_id-->
-        <!--where ACTIVITY_ID = #{activityId }-->
+    <!--select b.*-->
+    <!--FROM activity_rel_custgroup a-->
+    <!--inner JOIN cust_group_info b ON a.cust_group_id = b.cust_group_id-->
+    <!--where ACTIVITY_ID = #{activityId }-->
     <!--</select>-->
     <!--<select id="getBaseInfo93006" resultType="map">-->
-        <!--select a.*-->
-        <!--from activity_base_info a-->
-        <!--where a.activity_state = '9'-->
-          <!--and a.is_deleted = 0-->
-          <!--and a.is_send_approval = 1-->
-          <!--and activity_id in (select distinct activity_id from activity_flow where flow = '3')-->
-          <!--and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}-->
+    <!--select a.*-->
+    <!--from activity_base_info a-->
+    <!--where a.activity_state = '9'-->
+    <!--and a.is_deleted = 0-->
+    <!--and a.is_send_approval = 1-->
+    <!--and activity_id in (select distinct activity_id from activity_flow where flow = '3')-->
+    <!--and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}-->
     <!--</select>-->
     <select id="getMarkingInfo93006" resultType="map">
         select *
@@ -123,25 +123,25 @@
         where a.activity_id not in (select activity_id from activity_flow)
     </select>
     <!--<select id="getChannelInfo" resultType="map">-->
-        <!--select *-->
-        <!--from activity_rel_channel_parameter a-->
-        <!--where a.activity_id = #{activity_id} limit 1-->
+    <!--select *-->
+    <!--from activity_rel_channel_parameter a-->
+    <!--where a.activity_id = #{activity_id} limit 1-->
     <!--</select>-->
     <!--<select id="getPositionInfo" resultType="map">-->
-        <!--select *-->
-        <!--from activity_rel_channel_parameter a-->
-                 <!--inner join marking_activity_iop_info b on a.`value` = b.POSITIONID-->
-        <!--where a.parameter = 'internet_base_pos_name'-->
-          <!--and a.activity_id = #{activity_id}-->
+    <!--select *-->
+    <!--from activity_rel_channel_parameter a-->
+    <!--inner join marking_activity_iop_info b on a.`value` = b.POSITIONID-->
+    <!--where a.parameter = 'internet_base_pos_name'-->
+    <!--and a.activity_id = #{activity_id}-->
     <!--</select>-->
 
 
     <!--<insert id="insertFailInterface" parameterType="java.util.HashMap">-->
 
-        <!--INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,-->
-                                                      <!--error_desc-->
-        <!--)-->
-        <!--VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});-->
+    <!--INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,-->
+    <!--error_desc-->
+    <!--)-->
+    <!--VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});-->
 
     <!--</insert>-->
 
@@ -156,55 +156,58 @@
 
 
     <!--<select id="getIOPActivityByOoiId" parameterType="string" resultType="string">-->
-        <!--select distinct iop_activity_id-->
-        <!--from ooi_iop_rel_activity_info a-->
-                 <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
-        <!--where data_state = 'U'-->
-          <!--and is_feedback = '2'-->
+    <!--select distinct iop_activity_id-->
+    <!--from ooi_iop_rel_activity_info a-->
+    <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
+    <!--where data_state = 'U'-->
+    <!--and is_feedback = '2'-->
     <!--</select>-->
 
-    <select id="getJTActivityInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
-        select
-            distinct  a.activity_id,a.activity_name,a.spetopic_id,b.iop_activity_id
-            from ooi_marking_activity_info a
-            left join ooi_iop_rel_activity_info b on a.activity_id = b.ooi_activity_id
-            where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
-            and b.ooi_activity_id is not null
+    <select id="getJTActivityInfo" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
+        select distinct a.activity_id,
+                        a.activity_name,
+                        a.spetopic_id,
+                        b.iop_activity_id
+        from ooi_marking_activity_info a
+                 left join ooi_iop_rel_activity_info b on a.activity_id = b.ooi_activity_id
+        where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
+          and b.ooi_activity_id is not null
     </select>
 
     <select id="getIOPActivityInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
         select distinct a.activity_id,a.activity_name,a.city_id as city,a.activity_id as iop_activity_id from activity_base_info a
         inner join activity_flow b on a.activity_id = b.activity_id
-        where b.flow in ('1','2')
+        where b.flow ='3'
         and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
     </select>
 
     <!--<select id="getIOPActivityDates" parameterType="string" resultType="string">-->
 
-        <!--select distinct b.end_time-->
-        <!--from ooi_iop_rel_activity_info a-->
-                 <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
-        <!--where ooi_activity_id = #{ooiActivityId}-->
-          <!--and data_state = 'U'-->
-          <!--and is_feedback = '2'-->
+    <!--select distinct b.end_time-->
+    <!--from ooi_iop_rel_activity_info a-->
+    <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
+    <!--where ooi_activity_id = #{ooiActivityId}-->
+    <!--and data_state = 'U'-->
+    <!--and is_feedback = '2'-->
     <!--</select>-->
 
 
     <!--<select id="getZHDIOPActivityIds" parameterType="string" resultType="string">-->
-        <!--select distinct iop_activity_id-->
-        <!--from ooi_iop_rel_activity_info-->
-        <!--where ooi_activity_id = #{activityId}-->
-          <!--and data_state = 'U'-->
-          <!--and is_feedback = '2'-->
+    <!--select distinct iop_activity_id-->
+    <!--from ooi_iop_rel_activity_info-->
+    <!--where ooi_activity_id = #{activityId}-->
+    <!--and data_state = 'U'-->
+    <!--and is_feedback = '2'-->
     <!--</select>-->
     <!--<select id="getAllOfferBo" parameterType="string" resultType="map">-->
-        <!--select a.activity_id,-->
-               <!--GROUP_CONCAT(offer_code) as offer_code,-->
-               <!--GROUP_CONCAT(offer_name) as offer_name,-->
-               <!--GROUP_CONCAT(offer_type) as offer_type-->
-        <!--from ooi_marking_campaign_info a-->
-                 <!--inner join ooi_marking_campaign_offerbo_info b on a.campaign_id = b.campaign_id-->
-        <!--where a.activity_id = #{activityId}-->
+    <!--select a.activity_id,-->
+    <!--GROUP_CONCAT(offer_code) as offer_code,-->
+    <!--GROUP_CONCAT(offer_name) as offer_name,-->
+    <!--GROUP_CONCAT(offer_type) as offer_type-->
+    <!--from ooi_marking_campaign_info a-->
+    <!--inner join ooi_marking_campaign_offerbo_info b on a.campaign_id = b.campaign_id-->
+    <!--where a.activity_id = #{activityId}-->
 
     <!--</select>-->
     <select id="getBaseOfferBo" parameterType="string" resultType="map">
@@ -220,16 +223,22 @@
     </select>
 
     <select id="getJTActivityInfoByOOIId" parameterType="string" resultType="map">
-         select a.ooi_campaign_id,b.activity_id as jt_activity_id,e.activity_name as jt_activity_name ,c.offer_code,c.offer_name,d.activity_name,d.activity_id
+        select a.ooi_campaign_id,
+               b.activity_id   as jt_activity_id,
+               e.activity_name as jt_activity_name,
+               c.offer_code,
+               c.offer_name,
+               d.activity_name,
+               d.activity_id
         from ooi_iop_rel_activity_info a
                  left join ooi_marking_campaign_info b on a.ooi_activity_id = b.activity_id
                  left join ooi_marking_campaign_offerbo_info c on c.campaign_id = a.ooi_campaign_id
                  left join activity_base_info d on a.iop_activity_id = d.activity_id
                  left join ooi_marking_activity_info e on e.activity_id = a.ooi_activity_id
         where a.ooi_activity_id = #{activityId}
-        and b.activity_id is not null
-        and c.offer_code is not null
-        and d.activity_id is not null
+          and b.activity_id is not null
+          and c.offer_code is not null
+          and d.activity_id is not null
     </select>
 
     <!--<insert id="insertFailDetail" parameterType="java.util.HashMap">-->
@@ -291,20 +300,30 @@
         select distinct prc_id,prc_name
         from activity_rel_product
         where activity_id = #{activityId}
-        order by prc_id limit 1;
+        order by prc_id limit 1
     </select>
 
     <select id="getJTActivityInfoById" parameterType="string" resultType="map">
-        select distinct a.ooi_campaign_id,b.activity_id as jt_activity_id,e.activity_name as jt_activity_name,c.offer_code,c.offer_name,d.activity_name,d.activity_id
+        select distinct a.ooi_campaign_id,
+                        b.activity_id   as jt_activity_id,
+                        e.activity_name as jt_activity_name,
+                        c.offer_code,
+                        c.offer_name,
+                        d.activity_name,
+                        d.activity_id
         from ooi_iop_rel_activity_info a
                  left join ooi_marking_campaign_info b on a.ooi_activity_id = b.activity_id
                  left join ooi_marking_campaign_offerbo_info c on c.campaign_id = a.ooi_campaign_id
-                 left join (select f.* from activity_base_info f  left join activity_rel_channel g on f.activity_id  = g.activity_id where f.activity_id = #{activityId} order by g.channel_id limit 1) d on d.activity_id = a.iop_activity_id
-                 left join ooi_marking_activity_info e  on a.ooi_activity_id = e.activity_id
+                 left join (select f.*
+                            from activity_base_info f
+                                     left join activity_rel_channel g on f.activity_id = g.activity_id
+                            where f.activity_id = #{activityId}
+                            order by g.channel_id limit 1) d on d.activity_id = a.iop_activity_id
+                 left join ooi_marking_activity_info e on a.ooi_activity_id = e.activity_id
         where a.iop_activity_id = #{activityId}
-        and b.activity_id is not null
-        and c.offer_code is not null
-        and d.activity_id is not null
+          and b.activity_id is not null
+          and c.offer_code is not null
+          and d.activity_id is not null
         order by c.offer_code limit 1
     </select>
 
@@ -312,8 +331,7 @@
         insert into ooi_activity_upload_count (interface_id,
                                                upload_num,
                                                fail_num,
-                                               upload_time, activity_time
-        )
+                                               upload_time, activity_time)
         values (#{interfaceId},
                 #{uploadNum},
                 #{failNum},
@@ -341,8 +359,9 @@
         </foreach>
     </insert>
 
-    <select id="getYJCHBIG"   parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
-        select distinct a.ooi_activity_id as activity_id ,'1' as processId
+    <select id="getYJCHBIG" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
+        select distinct a.ooi_activity_id as activity_id,'1' as processId
         from ooi_iop_rel_activity_info a
                  left join ooi_marking_activity_info b on a.ooi_activity_id = b.activity_id
         where #{month} = date_format(b.activity_endtime, '%Y%m')
@@ -356,8 +375,7 @@
                 #{tableName},
                 #{fileName},
                 #{dataTime},
-                #{step}
-                )
+                #{step})
     </insert>
     <update id="updateStateInterfaceRelTable">
         update ooi_interface_rel_table

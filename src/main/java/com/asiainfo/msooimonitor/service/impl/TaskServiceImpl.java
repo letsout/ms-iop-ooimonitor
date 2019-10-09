@@ -84,10 +84,12 @@ public class TaskServiceImpl implements TaskService {
 
                 //省级策划省级执行
                 List<Act93006Info> iopActivityInfo = getFileDataMapper.getIOPActivityInfo(activityEndDate);
+                log.info("省级策划省级执行的活动有{}条", iopActivityInfo.size());
                 for (Act93006Info activityInfo :
                         iopActivityInfo) {
                     activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
                     activityInfo.setProvince("280");
+                    activityInfo.setCity("280" + activityInfo.getActivityId().substring(1));
                     activityInfo.setCity(CommonConstant.cityMap.get(activityInfo.getCity()));
                 }
                 iopActivityInfo.addAll(jtActivityInfos);
@@ -970,7 +972,7 @@ public class TaskServiceImpl implements TaskService {
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
-        if(canCreateFileInterface.size() == 0 ){
+        if (canCreateFileInterface.size() == 0) {
             log.info("暂无待生成文件！！！！");
             return;
         }
@@ -982,7 +984,7 @@ public class TaskServiceImpl implements TaskService {
             String date = "";
             String fileName = "";
             String localPath = "";
-            String remotePath= "";
+            String remotePath = "";
             // 设置基本属性
             // TODO 后面修改表模型然后优化
             for (Map.Entry enty :
@@ -1017,8 +1019,8 @@ public class TaskServiceImpl implements TaskService {
             }
             localPath = localPath.replaceAll("time", date);
             remotePath = remotePath.replaceAll("time", date);
-            log.info("interfaceId:{},fileName：{}",interfaceId,fileName);
-            writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
+            log.info("interfaceId:{},fileName：{}", interfaceId, fileName);
+            writeFileThread.write(interfaceId, fileName, tableName, localPath, remotePath, date);
         }
     }
 }
