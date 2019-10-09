@@ -247,6 +247,35 @@
         select max(data_time) from iop_public.ooi_activity_summary_effect where activity_id = #{activityId}
     </select>
 
+    <insert id="insert93006Info" >
+        insert into iop_93006_info (
+        count_time,
+        province,
+        city,
+        activity_id,
+        activity_name,
+        campaign_id,
+        campaign_name,
+        spetopic_id,
+        iop_activity_id
+        ) values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.countTime},#{item.province},#{item.city},#{item.activityId},#{item.activityName},#{item.campaignId},
+            #{item.campaignName},#{item.spetopicId},#{item.iopActivityId}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertiop93006" >
+        insert into iop_93006
+        select b.count_time,b.province,b.city,a.phone_no,b.activity_id,b.activity_name,'null','null','null','null','null',
+        a.is_touch,a.is_join_activity,a.is_marketed from ooi_activity_detail_effect_info a
+        left join  iop_93006_info b on a.activity_id = b.iop_activity_id
+        where b.iop_activity_id is not null
+    </insert>
+
+
     <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">
 
         select max(data_time)

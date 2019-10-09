@@ -39,7 +39,7 @@ public class SqlUtil {
     public static void getInsert(String interfaceName, List<Map<String, Object>> list) {
         // 每10000条插入一次
         int start = 0;
-        int splitNum = 10000;
+        int splitNum = 20000;
         for (int i = 0; i < list.size() / splitNum; i++) {
             getInsertsql(interfaceName, list.subList(start, splitNum + start));
             start += splitNum;
@@ -94,11 +94,4 @@ public class SqlUtil {
         log.info("{}接口成功插入数据：{}条", interfaceName, list.size());
     }
 
-    public static void main(String[] args) {
-        String str="str\nstr1";
-        System.out.println(str);
-        str=str.replaceAll("\n","");
-        System.out.println(str
-        );
-    }
 }

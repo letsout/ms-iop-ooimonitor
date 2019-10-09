@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.mapper.dbt.ooi;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
@@ -67,4 +68,8 @@ public interface InterfaceInfoMpper {
     void insert93056(List<Map<String, String>> list);
 
     String getMaxTime(String activityId);
+
+    void insert93006Info(List<Act93006Info> list);
+
+    void insertiop93006();
 }

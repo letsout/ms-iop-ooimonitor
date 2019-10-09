@@ -1,9 +1,6 @@
 package com.asiainfo.msooimonitor.mapper.mysql;
 
-import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
-import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
-import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
-import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
+import com.asiainfo.msooimonitor.model.datahandlemodel.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -99,4 +96,6 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getJTActivityInfoByOOIId(String activityId);
 
     List<String> getIOPActivityByOoiId(String activity_id);
+
+    List<Act93006Info> getJTActivityInfo(String activityEndDate);
 }

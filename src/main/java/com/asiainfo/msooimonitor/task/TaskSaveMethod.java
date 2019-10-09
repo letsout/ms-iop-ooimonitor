@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
 import com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper;
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
@@ -15,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author yx
@@ -38,7 +36,7 @@ public class TaskSaveMethod {
     @Autowired
     GetFileDataMapper getFileDataMapper;
 
-    private final int limitNum = 10000;
+    private final int limitNum = 20000;
 
     public void saveBase93006(String activityEndDate) throws Exception {
         log.info("saveBase93006运行传输{}数据", activityEndDate);
@@ -135,7 +133,7 @@ public class TaskSaveMethod {
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
-    public void saveMarking93006(String activityEndDate) throws Exception {
+    /*public void saveMarking93006(String activityEndDate) throws Exception {
         log.info("saveMarking93006运行传输{}数据", activityEndDate);
         List<Map<String, Object>> list = new LinkedList<>();
         List<UploadDetailInfo> uploadDetailInfos = new LinkedList<>();
@@ -247,6 +245,22 @@ public class TaskSaveMethod {
         uploadCountInfo.setFailNum(uploadDetailInfos.size());
         uploadCountInfo.setActivityTime(activityEndDate);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
+    }*/
+
+    public void saveMarking93006(String activityEndDate) throws Exception {
+        //  根据活动id查询集团下发活动id以及iop关联活动
+        List<Act93006Info> jtActivityInfos = getFileDataMapper.getJTActivityInfo(activityEndDate);
+        for (Act93006Info activityInfo:
+        jtActivityInfos) {
+            activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
+            activityInfo.setCity(CommonConstant.cityMap.get("1"));
+            activityInfo.setProvince("280");
+        }
+        // 将数据插入gabse表中
+        interfaceInfoMpper.insert93006Info(jtActivityInfos);
+        // 融合数据
+        interfaceInfoMpper.insertiop93006();
+
     }
 
     public void saveMarking93001(String activityEndDate) throws Exception {

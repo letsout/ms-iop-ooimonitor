@@ -163,6 +163,15 @@
           and is_feedback = '2'
     </select>
 
+    <select id="getJTActivityInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
+        select
+            distinct  a.activity_id,a.activity_name,a.spetopic_id,b.iop_activity_id
+            from ooi_marking_activity_info a
+            left join ooi_iop_rel_activity_info b on a.activity_id = b.ooi_activity_id
+            where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
+            and b.ooi_activity_id is not null
+    </select>
+
     <select id="getIOPActivityDates" parameterType="string" resultType="string">
 
         select distinct b.end_time

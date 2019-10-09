@@ -53,7 +53,7 @@ public class WriteFileThread {
         // 记录写入文件条数
         int records = 0;
         // 每写入5000行验证文件大小
-        int filterRecords = 5000;
+        int filterRecords = 100000;
         // 文件个数
         int fileNum = 1;
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
@@ -267,12 +267,10 @@ public class WriteFileThread {
 
         List<String> structureList = loadMapper.selectTableSutrct(structureSql);
 
-        String columns = StringUtils.join(structureList, ",");
-
-        // 设置分页参数 每次1000条
+        // 设置分页参数 每次50000条
         int sum = loadMapper.getrows(tableName);
         // 分页条数
-        int limitNum = 5000;
+        int limitNum = 20000;
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {

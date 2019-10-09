@@ -40,7 +40,7 @@ public class UploadFileTask {
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
         if(canCreateFileInterface.size() == 0 ){
-            log.info("暂无带生成文件！！！！");
+            log.info("暂无待生成文件！！！！");
             return;
         }
 
