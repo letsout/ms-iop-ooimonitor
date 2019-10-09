@@ -26,7 +26,8 @@ public class TaskSaveController {
 
     @RequestMapping("/93006/{activityEndDate}")
     public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
-        new Runnable() {
+        new Thread() {
+
             @Override
             public void run() {
                 fileDataService.truncateTable("93006");
@@ -47,13 +48,14 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93006");
                 }
             }
-        }.run();
+        }.start();
         return "success：请查看日志";
     }
 
     @RequestMapping("/93001/{activityEndDate}")
     public String testsaveMarking93001(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
-        new Runnable() {
+        new Thread() {
+
             @Override
             public void run() {
                 fileDataService.truncateTable("93001");
@@ -75,13 +77,14 @@ public class TaskSaveController {
                 }
 
             }
-        }.run();
+        }.start();
         return "success：请查看日志";
     }
 
     @RequestMapping("/93005/{activityEndDate}/{type}")
     public String save93005(@PathVariable String activityEndDate, @PathVariable String type, @RequestParam(defaultValue = "00") String num) {
-        new Runnable() {
+        new Thread() {
+
             @Override
             public void run() {
                 fileDataService.truncateTable("93005");
@@ -110,14 +113,15 @@ public class TaskSaveController {
                 }
 
             }
-        }.run();
+        }.start();
         return "success：请查看日志";
     }
 
 
     @RequestMapping("/93002/{activityEndDate}/{type}")
     public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type, @RequestParam(defaultValue = "00") String num) {
-        new Runnable() {
+        new Thread() {
+
             @Override
             public void run() {
                 fileDataService.truncateTable("93002");
@@ -145,7 +149,7 @@ public class TaskSaveController {
                     fileDataService.truncateTable("93002");
                 }
             }
-        }.run();
+        }.start();
         return "success：请查看日志";
     }
 
@@ -154,9 +158,16 @@ public class TaskSaveController {
         fileDataService.insertFlow();
         return "success";
     }
+
     @RequestMapping("/createFile")
     public String createFile() {
-        taskService.uploadFile();
+        new Thread() {
+
+            @Override
+            public void run() {
+                taskService.uploadFile();
+            }
+        }.start();
         return "success";
     }
 }
