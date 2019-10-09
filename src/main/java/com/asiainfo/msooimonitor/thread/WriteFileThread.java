@@ -39,6 +39,7 @@ public class WriteFileThread {
 
 
     public void write(String interfaceId, String fileName, String tableName, String localPath, String remotePath, String date) {
+
         File file = new File(localPath);
         file.mkdirs();
         // 删除与此接口相关文件
@@ -137,7 +138,7 @@ public class WriteFileThread {
             interfaceRecord.setInterfaceId(interfaceId);
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
-            interfaceRecord.setFileName(fileName);//localPath + File.separator
+            interfaceRecord.setFileName(fileName);
             interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
@@ -262,10 +263,6 @@ public class WriteFileThread {
     private List<String> createsql(String tableName) {
 
         ArrayList<String> sqlList = new ArrayList<>();
-
-        String structureSql = "select column_name from information_schema.columns where table_schema = 'iop' and table_name = '" + tableName + "' order by ordinal_position";
-
-        List<String> structureList = loadMapper.selectTableSutrct(structureSql);
 
         // 设置分页参数 每次50000条
         int sum = loadMapper.getrows(tableName);

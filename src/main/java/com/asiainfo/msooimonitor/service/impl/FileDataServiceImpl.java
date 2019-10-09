@@ -100,7 +100,7 @@ public class FileDataServiceImpl implements FileDataService {
         if (StringUtils.isNotEmpty(activityIds)) {
             activityIds = activityIds.substring(1);
             String message = activityIds + "在" + activityEndDate + "当天缺少效果数据，请核查";
-            String phone = "13018298903,13281027538";
+            String phone = "13018298903,";
             sendMessage.sendSms(phone, message);
         }
         return map;
@@ -513,18 +513,6 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93055(paramList);
-
-        // 插入状态表代表可以生成文件
-        getFileDataMapper.insertInterfaceRelTable(
-                CretaeFileInfo.builder()
-                        .interfaceId("93055")
-                        .tableName("iop_93055")
-                        .fileName("i_13000_time_IOP-93055_00_fileNum.dat")
-                        .dataTime(month)
-                        .step("1")
-                        .build()
-        );
-
     }
 
     /**
@@ -672,24 +660,5 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 插入数据表待上传
         interfaceInfoMpper.insert93056(paramList);
-
-        // 插入状态表代表可以生成文件
-        getFileDataMapper.insertInterfaceRelTable(
-                CretaeFileInfo.builder()
-                        .interfaceId("93056")
-                        .tableName("iop_93056")
-                        .fileName("i_13000_time_IOP-93056_00_fileNum.dat")
-                        .dataTime(month)
-                        .step("1")
-                        .build()
-        );
-
     }
-
-//    @Override
-//    public List<Map<String, Object>> getCampaignedInfo(String activityId) {
-//        final List<Map<String, Object>> campaignedInfo93001 = getFileDataMapper.getCampaignedInfo(activityId);
-//        return campaignedInfo93001;
-//    }
-
 }

@@ -29,7 +29,6 @@ public class TaskSave {
         fileDataService.truncateTable("93006");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskSaveMethod.saveBase93006(activityEndDate);
             taskSaveMethod.saveMarking93006(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
