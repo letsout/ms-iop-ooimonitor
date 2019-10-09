@@ -20,11 +20,10 @@ public class SendMessage {
 
     private BASE64Encoder base64Decoder = new BASE64Encoder();
 
-    public void sendSms(String phones, String smsContent) {
-
+    public void sendSms(String smsContent) {
+        String phones = "13541008413,13438061830";
         log.info("开始发送短信：{},号码P:[{}]", smsContent, phones);
         String encode = base64Decoder.encode(base64Decoder.encode(smsContent.getBytes()).getBytes());
-
         String url = "http://10.113.251.152:11105/sendMsg/send/sendMsgInterface";
         RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();

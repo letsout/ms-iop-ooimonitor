@@ -56,7 +56,7 @@ public interface FileDataService {
 //
 //    List<Map<String, Object>> getBaseInfo93002(String activityEndDate);
 //
-    List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
+//    List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 //
 //
 //    Map<String, String> getChannelInfo(String activity_id);
@@ -80,7 +80,7 @@ public interface FileDataService {
 //     * @param activityId
 //     * @return
 //     */
-    String getIOPActivityIds(String activityId,String date);
+//    String getIOPActivityIds(String activityId,String date);
 //
     void truncateTable(String tableName);
 //

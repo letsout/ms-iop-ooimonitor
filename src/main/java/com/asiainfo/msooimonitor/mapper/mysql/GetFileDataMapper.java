@@ -17,15 +17,15 @@ import java.util.Map;
 @Repository
 public interface GetFileDataMapper {
 
-
-    List<Map<String, String>> getCustGroupInfo(String activityId);
-
-    Map<String, String> getChannelInfo(String activity_id);
-
-    Map<String, String> getPositionInfo(String activity_id);
+//
+//    List<Map<String, String>> getCustGroupInfo(String activityId);
+//
+//    Map<String, String> getChannelInfo(String activity_id);
+//
+//    Map<String, String> getPositionInfo(String activity_id);
 
     //93006查询省级策划省级执行的
-    List<Map<String, String>> getBaseInfo93006(String activityEndDate);
+//    List<Map<String, String>> getBaseInfo93006(String activityEndDate);
 
     //93006查询一级策划省级执行的
     List<Map<String, String>> getMarkingInfo93001(String activityEndDate);
@@ -38,7 +38,8 @@ public interface GetFileDataMapper {
 
 
     List<Map<String, Object>> getCampaignedInfo(String activity_id);
-    List<Map<String, Object>> getBeforeCampaignedInfo(String activity_id,String activityEndDate);
+
+    List<Map<String, Object>> getBeforeCampaignedInfo(String activity_id, String activityEndDate);
 
     List<Map<String, Object>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
 
@@ -55,12 +56,12 @@ public interface GetFileDataMapper {
 
     List<Map<String, String>> getFlowInfo2();
 
-    void insertFailInterface(Map<String, String> map);
+//    void insertFailInterface(Map<String, String> map);
 
-    List<String> getIOPActivityIds(String activityId,String date);
-    List<String> getIOPActivityDates(String ooiActivityId);
-
-    List<String> getZHDIOPActivityIds(String activityId);
+    List<String> getIOPActivityIds(String activityId, String date);
+//    List<String> getIOPActivityDates(String ooiActivityId);
+//
+//    List<String> getZHDIOPActivityIds(String activityId);
 
 //    void insertFailDetail(List<Map<String, String>> list);
 
@@ -86,16 +87,16 @@ public interface GetFileDataMapper {
 
     void updateStateInterfaceRelTable(CretaeFileInfo cretaeFileInfo);
 
-    Map<String, String> getAllOfferBo(String activityId);
+    //    Map<String, String> getAllOfferBo(String activityId);
     Map<String, String> getBaseChannelInfo(String activityId);
 
     Map<String, String> getBaseOfferBo(String activityId);
 
-    List<Map<String, Object>> getactivityEndtime(String activityId);
+    List<Map<String, Object>> getActivityEndTime(String activityId);
 
     List<Map<String, String>> getJTActivityInfoByOOIId(String activityId);
 
-    List<String> getIOPActivityByOoiId(String activity_id);
+//    List<String> getIOPActivityByOoiId(String activity_id);
 
     List<Act93006Info> getJTActivityInfo(String activityEndDate);
 

@@ -2,7 +2,7 @@ package com.asiainfo.msooimonitor.controller;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
-import com.asiainfo.msooimonitor.task.TaskSaveMethod;
+import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.text.ParseException;
 
 /**
  * @author yx
@@ -22,34 +20,28 @@ import java.text.ParseException;
 @Slf4j
 public class TaskSaveController {
     @Autowired
-    TaskSaveMethod taskSaveMethod;
+    TaskService taskService;
     @Autowired
     FileDataService fileDataService;
 
-    @RequestMapping("/93006/{activityEndDate}/{type}")
-    public String testsav93006(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
+    @RequestMapping("/93006/{activityEndDate}")
+    public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93006");
                 try {
-                    if (type.equals("1")) {
-                        taskSaveMethod.saveBase93006(activityEndDate);
-                    } else if (type.equals("2")) {
-                        taskSaveMethod.saveMarking93006(activityEndDate);
-                    } else {
-                        taskSaveMethod.saveBase93006(activityEndDate);
-                        taskSaveMethod.saveMarking93006(activityEndDate);
-                    }
+                    taskService.saveAll93006(activityEndDate);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93006")
                                     .tableName("iop_93006")
-                                    .fileName("a_13000_time_IOP-93006_"+num+"_fileNum.dat")
+                                    .fileName("a_13000_time_IOP-93006_" + num + "_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
                     );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
                     fileDataService.truncateTable("93006");
@@ -60,22 +52,23 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/93001/{activityEndDate}")
-    public String testsaveMarking93001(@PathVariable String activityEndDate,@RequestParam(defaultValue = "00") String num) {
+    public String testsaveMarking93001(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93001");
                 try {
-                    taskSaveMethod.saveMarking93001(activityEndDate);
-                        fileDataService.insertInterfaceRelTable(
-                                CretaeFileInfo.builder()
-                                        .interfaceId("93001")
-                                        .tableName("iop_93001")
-                                        .fileName("a_13000_time_IOP-93001_"+num+"_fileNum.dat")
-                                        .dataTime(TimeUtil.getAfterDay(activityEndDate))
-                                        .step("1")
-                                        .build()
-                        );
+                    taskService.saveMarking93001(activityEndDate);
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93001")
+                                    .tableName("iop_93001")
+                                    .fileName("a_13000_time_IOP-93001_" + num + "_fileNum.dat")
+                                    .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                                    .step("1")
+                                    .build()
+                    );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
                     fileDataService.truncateTable("93001");
@@ -87,29 +80,30 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/93005/{activityEndDate}/{type}")
-    public String save93005(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
+    public String save93005(@PathVariable String activityEndDate, @PathVariable String type, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93005");
                 try {
                     if (type.equals("1")) {
-                        taskSaveMethod.saveBase93005(activityEndDate);
+                        taskService.saveBase93005(activityEndDate);
                     } else if (type.equals("2")) {
-                        taskSaveMethod.saveMarking93005(activityEndDate);
+                        taskService.saveMarking93005(activityEndDate);
                     } else {
-                        taskSaveMethod.saveBase93005(activityEndDate);
-                        taskSaveMethod.saveMarking93005(activityEndDate);
+                        taskService.saveBase93005(activityEndDate);
+                        taskService.saveMarking93005(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93005")
                                     .tableName("iop_93005")
-                                    .fileName("i_13000_time_IOP-93005_"+num+"_fileNum.dat")
+                                    .fileName("i_13000_time_IOP-93005_" + num + "_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
                     );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
                     fileDataService.truncateTable("93005");
@@ -122,29 +116,30 @@ public class TaskSaveController {
 
 
     @RequestMapping("/93002/{activityEndDate}/{type}")
-    public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type,@RequestParam(defaultValue = "00") String num) {
+    public String savemarking93002(@PathVariable String activityEndDate, @PathVariable String type, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
                 fileDataService.truncateTable("93002");
                 try {
                     if (type.equals("1")) {
-                        taskSaveMethod.saveBase93002(activityEndDate);
+                        taskService.saveBase93002(activityEndDate);
                     } else if (type.equals("2")) {
-                        taskSaveMethod.saveMarking93002(activityEndDate);
+                        taskService.saveMarking93002(activityEndDate);
                     } else {
-                        taskSaveMethod.saveBase93002(activityEndDate);
-                        taskSaveMethod.saveMarking93002(activityEndDate);
+                        taskService.saveBase93002(activityEndDate);
+                        taskService.saveMarking93002(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93002")
                                     .tableName("iop_93002")
-                                    .fileName("i_13000_time_IOP-93002_"+num+"_fileNum.dat")
+                                    .fileName("i_13000_time_IOP-93002_" + num + "_fileNum.dat")
                                     .dataTime(TimeUtil.getAfterDay(activityEndDate))
                                     .step("1")
                                     .build()
                     );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
                     fileDataService.truncateTable("93002");
@@ -157,6 +152,11 @@ public class TaskSaveController {
     @RequestMapping("/insertFlow")
     public String insertFlow() {
         fileDataService.insertFlow();
+        return "success";
+    }
+    @RequestMapping("/createFile")
+    public String createFile() {
+        taskService.uploadFile();
         return "success";
     }
 }
