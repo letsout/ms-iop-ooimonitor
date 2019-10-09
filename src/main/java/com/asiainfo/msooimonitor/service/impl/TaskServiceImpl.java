@@ -8,12 +8,17 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
+import com.asiainfo.msooimonitor.service.TaskService;
+import com.asiainfo.msooimonitor.service.UploadService;
+import com.asiainfo.msooimonitor.thread.WriteFileThread;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -48,6 +53,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     UploadService uploadService;
 
+    @Override
     public void saveAll93006(String activityEndDate) throws Exception {
         UploadDetailInfo uploadDetailInfo = null;
 
@@ -118,6 +124,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    @Override
     public void saveMarking93001(String activityEndDate) throws Exception {
         log.info("saveMarking93001运行传输{}数据", activityEndDate);
         List<Map<String, Object>> list = new LinkedList<>();
@@ -293,6 +300,7 @@ public class TaskServiceImpl implements TaskService {
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
+    @Override
     public void saveMarking93005(String activityEndDate) throws Exception {
         log.info("saveMarking93005运行传输{}数据", activityEndDate);
         List<Map<String, Object>> list = new LinkedList<>();
@@ -449,6 +457,7 @@ public class TaskServiceImpl implements TaskService {
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
+    @Override
     public void saveBase93005(String activityEndDate) throws Exception {
         log.info("saveBase93005运行传输{}数据", activityEndDate);
 
@@ -578,6 +587,7 @@ public class TaskServiceImpl implements TaskService {
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
+    @Override
     public void saveMarking93002(String activityEndDate) throws Exception {
         log.info("saveMarking93002运行传输{}数据", activityEndDate);
         List<Map<String, Object>> list = new LinkedList<>();
@@ -734,6 +744,7 @@ public class TaskServiceImpl implements TaskService {
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
 
+    @Override
     public void saveBase93002(String activityEndDate) throws Exception {
         log.info("saveBase93002运行传输{}数据", activityEndDate);
         List<Map<String, Object>> list = new LinkedList<>();
