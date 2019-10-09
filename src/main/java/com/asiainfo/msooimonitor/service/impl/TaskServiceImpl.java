@@ -194,7 +194,7 @@ public class TaskServiceImpl implements TaskService {
                 //30	渠道名称	必填
                 resultmap.put("A30", campaignedmap.get("channel_name"));
                 //31	渠道类型	必填,参考10附录3渠道类型编码,位数为偶数位
-                resultmap.put("A31", campaignedmap.get("channe_type"));
+                resultmap.put("A31", campaignedmap.get("channel_type"));
                 //32	渠道接触规则	必填
                 String channel_rule = campaignedmap.get("channel_rule").toString();
                 if (channel_rule.equals("null") || channel_rule.equals("")) {
@@ -688,7 +688,7 @@ public class TaskServiceImpl implements TaskService {
                 //30,渠道名称,必填
                 resultmap.put("A30", campaignedmap.get("channel_name"));
                 //31,渠道类型,参考10附录3渠道类型编码,必填,渠道类型为偶数位
-                resultmap.put("A31", campaignedmap.get("channe_type"));
+                resultmap.put("A31", campaignedmap.get("channel_type"));
                 //32,渠道接触规则,可为空
                 resultmap.put("A32", campaignedmap.get("channel_rule"));
                 //33,时机识别,1：互联网使用事件,必填，填写枚举值ID,2：社会事件,3：位置行踪事件,4：业务办理事件,5：业务使用事件,6：周期业务事件,7：自助系统接触事件,8：PCC事件,9：其它事件,0：无事件
