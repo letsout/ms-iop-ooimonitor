@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -122,5 +123,52 @@ public class TaskMethod {
         fileDataService.insertFlow();
     }
 
+    @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
+    public void save93055(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+        fileDataService.truncateTable("93055");
+        try {
+            String lastMonthSql = TimeUtil.getLastMonthSql(new Date());
+            fileDataService.create93055(lastMonthSql);
+
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93055")
+                            .tableName("iop_93055")
+                            .fileName("i_13000_time_IOP-93055_" + 00 + "_fileNum.dat")
+                            .dataTime(sdf.format(new Date()))
+                            .step("1")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("93055 error :{}", e);
+            fileDataService.truncateTable("93055");
+        }
+    }
+
+    @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
+    public void save93056(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
+        fileDataService.truncateTable("93056");
+        try {
+            String lastMonthSql = TimeUtil.getLastMonthSql(new Date());
+
+            fileDataService.create93056(lastMonthSql);
+
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93056")
+                            .tableName("iop_93056")
+                            .fileName("i_13000_time_IOP-93056_" + 00 + "_fileNum.dat")
+                            .dataTime(sdf.format(new Date()))
+                            .step("1")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("93056 error :{}", e);
+            fileDataService.truncateTable("93056");
+        }
+    }
 }
 
