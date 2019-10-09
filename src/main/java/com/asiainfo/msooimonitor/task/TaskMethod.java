@@ -140,6 +140,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
+            taskService.uploadFile();
         } catch (Exception e) {
             log.error("93055 error :{}", e);
             fileDataService.truncateTable("93055");
@@ -165,6 +166,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
+            taskService.uploadFile();
         } catch (Exception e) {
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93056");
