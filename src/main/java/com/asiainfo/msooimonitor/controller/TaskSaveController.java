@@ -203,6 +203,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
                     fileDataService.truncateTable("93056");
@@ -239,6 +240,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
                     fileDataService.truncateTable("93055");
