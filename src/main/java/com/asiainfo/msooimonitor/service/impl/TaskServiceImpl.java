@@ -969,4 +969,62 @@ public class TaskServiceImpl implements TaskService {
         uploadCountInfo.setActivityTime(activityEndDate);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
     }
+
+    @Override
+    public void uploadFile() {
+
+        // 查询数据已准备完成的
+        List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
+
+        if(canCreateFileInterface.size() == 0 ){
+            log.info("暂无待生成文件！！！！");
+            return;
+        }
+
+        for (Map<String, String> map :
+                canCreateFileInterface) {
+            String interfaceId = "";
+            String tableName = "";
+            String date = "";
+            String fileName = "";
+            String localPath = "";
+            String remotePath= "";
+            // 设置基本属性
+            // TODO 后面修改表模型然后优化
+            for (Map.Entry enty :
+                    map.entrySet()) {
+                String k = (String) enty.getKey();
+                String v = (String) enty.getValue();
+                switch (k) {
+                    case "interface_id":
+                        interfaceId = v;
+                        break;
+                    case "table_name":
+                        tableName = v;
+                        break;
+                    case "data_time":
+                        date = v;
+                        break;
+                    case "file_name":
+                        fileName = v;
+                        break;
+                    case "interface_cycle":
+                        if (("1").equals(v) || "2".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/day";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
+                        } else if ("3".equals(v)) {
+                            localPath = path17 + File.separator + "upload" + File.separator + "time/month";
+                            remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            localPath = localPath.replaceAll("time", date);
+            remotePath = remotePath.replaceAll("time", date);
+            log.info("interfaceId:{},fileName：{}",interfaceId,fileName);
+            writeFileThread.write(interfaceId, fileName, tableName, localPath,remotePath, date);
+        }
+    }
 }
