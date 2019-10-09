@@ -151,7 +151,7 @@ public class FileDataServiceImpl implements FileDataService {
                 offer_type += "," + map1.get("offer_type");
                 channel_name += "," + map1.get("channel_name");
                 channel_id += "," + map1.get("channel_id");
-                channel_type += "," + map1.get("channel_type");
+                channel_type += "," + map1.get("channe_type");
                 channel_rule += "," + map1.get("channel_rule");
                 time_distindes += "," + map1.get("time_distindes");
             }
