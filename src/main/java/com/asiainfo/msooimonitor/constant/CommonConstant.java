@@ -45,4 +45,6 @@ public class CommonConstant {
     public static String YJCH = "1";
     public static String SJCHHLW = "2";
     public static String SJCHSJ = "3";
+
+    public static String EFFECT_DAY_TABLE = "ooi_activity_detail_effect_";
 }

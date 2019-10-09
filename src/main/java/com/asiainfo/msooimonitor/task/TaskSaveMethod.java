@@ -248,18 +248,75 @@ public class TaskSaveMethod {
     }*/
 
     public void saveMarking93006(String activityEndDate) throws Exception {
-        //  根据活动id查询集团下发活动id以及iop关联活动
-        List<Act93006Info> jtActivityInfos = getFileDataMapper.getJTActivityInfo(activityEndDate);
-        for (Act93006Info activityInfo:
-        jtActivityInfos) {
-            activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
-            activityInfo.setCity(CommonConstant.cityMap.get("1"));
-            activityInfo.setProvince("280");
+
+        UploadDetailInfo uploadDetailInfo = null;
+
+        // 清空数据表
+        interfaceInfoMpper.truncateTable("93006_info");
+        interfaceInfoMpper.truncateTable("93006");
+
+        // 查看当日表是否存在
+        int num = interfaceInfoMpper.tableIsExit("iop_public", CommonConstant.EFFECT_DAY_TABLE + activityEndDate);
+        if(num == 0){
+            uploadDetailInfo = UploadDetailInfo.builder()
+                    .activityId("93006")
+                    .activityTime(activityEndDate)
+                    .interfaceId("93006")
+                    .activitytype("base")
+                    .failDesc("明细数据表"+CommonConstant.EFFECT_DAY_TABLE + activityEndDate+"不存在")
+                    .build();
+        }else {
+            try {
+                log.info("效果明细目标表{}存在，开始加载数据",CommonConstant.EFFECT_DAY_TABLE + activityEndDate);
+                //  根据活动id查询集团下发活动id以及iop关联活动
+                List<Act93006Info> jtActivityInfos = getFileDataMapper.getJTActivityInfo(activityEndDate);
+                for (Act93006Info activityInfo :
+                        jtActivityInfos) {
+                    activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
+                    activityInfo.setCity(CommonConstant.cityMap.get("1"));
+                    activityInfo.setProvince("280");
+                }
+
+                //省级策划省级执行
+                List<Act93006Info> iopActivityInfo = getFileDataMapper.getIOPActivityInfo(activityEndDate);
+                for (Act93006Info activityInfo :
+                        iopActivityInfo) {
+                    activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
+                    activityInfo.setProvince("280");
+                    activityInfo.setCity(CommonConstant.cityMap.get(activityInfo.getCity()));
+                }
+                iopActivityInfo.addAll(jtActivityInfos);
+
+                // 将数据插入gabse表中
+                interfaceInfoMpper.insert93006Info(iopActivityInfo);
+
+                // 融合数据
+                interfaceInfoMpper.insertiop93006(activityEndDate);
+            }catch (Exception e){
+                log.error("93006 生成数据出现异常{}",e);
+                uploadDetailInfo = UploadDetailInfo.builder()
+                        .activityId("93006")
+                        .activityTime(activityEndDate)
+                        .interfaceId("93006")
+                        .activitytype("base")
+                        .failDesc("数据融合出现异常")
+                        .build();
+            }
+
         }
-        // 将数据插入gabse表中
-        interfaceInfoMpper.insert93006Info(jtActivityInfos);
-        // 融合数据
-        interfaceInfoMpper.insertiop93006();
+
+        // 获取生成数据量
+        int rows = interfaceInfoMpper.getTableRowsByTableName("iop_93006");
+
+        List<UploadDetailInfo> uploadDetailInfoList = new ArrayList<>();
+        uploadDetailInfoList.add(uploadDetailInfo);
+        fileDataService.insertFailDetails(uploadDetailInfoList);
+        UploadCountInfo uploadCountInfo = new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93006");
+        uploadCountInfo.setUploadNum(rows);
+        uploadCountInfo.setFailNum(0);
+        uploadCountInfo.setActivityTime(activityEndDate);
+        getFileDataMapper.insertUploadCount(uploadCountInfo);
 
     }
 

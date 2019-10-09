@@ -172,6 +172,14 @@
             and b.ooi_activity_id is not null
     </select>
 
+    <select id="getIOPActivityInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
+        select distinct a.activity_id,a.activity_name,a.city_id as city,a.activity_id as iop_activity_id from activity_base_info a
+        left join activity_rel_channel b on a.activity_id = b.activity_id
+        where b.channel_id not in ('q07','q23')
+        and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
+        and b.activity_id is not null
+    </select>
+
     <select id="getIOPActivityDates" parameterType="string" resultType="string">
 
         select distinct b.end_time

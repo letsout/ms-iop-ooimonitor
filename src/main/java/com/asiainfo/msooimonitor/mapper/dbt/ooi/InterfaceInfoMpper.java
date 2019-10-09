@@ -54,7 +54,6 @@ public interface InterfaceInfoMpper {
 
     Map<String, String> getSummaryEffect(@Param("activityId") String activityId, @Param("date") String date);
 
-
     int getTableRows(@Param("activityIds") String activityIds, @Param("dateTimeFormat") String dateTimeFormat);
 
     List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds, @Param("date") String date);
@@ -71,5 +70,9 @@ public interface InterfaceInfoMpper {
 
     void insert93006Info(List<Act93006Info> list);
 
-    void insertiop93006();
+    void insertiop93006(@Param("activityEndDate") String activityEndDate);
+
+    int getTableRowsByTableName(@Param("tableName") String tableName);
+
+    int tableIsExit(@Param("schema") String schema,@Param("tableName") String tableName);
 }

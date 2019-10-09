@@ -39,7 +39,6 @@ public class WriteFileThread {
 
 
     public void write(String interfaceId, String fileName, String tableName, String localPath, String remotePath, String date) {
-
         File file = new File(localPath);
         file.mkdirs();
         // 删除与此接口相关文件
@@ -75,6 +74,7 @@ public class WriteFileThread {
                     Object[] line = map.values().toArray();
                     // 每filterRecords 条就验证文件是否超出大小
                     if (records % filterRecords == 0 && records > 0) {
+                        log.info("开始监测文件{}大小！！！",fileNameTmp);
                         dataFileWriter.flush();
                         boolean okSize = isOKSize(localPath + File.separator + fileNameTmp);
                         if (okSize) {

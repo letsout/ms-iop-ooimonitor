@@ -98,4 +98,6 @@ public interface GetFileDataMapper {
     List<String> getIOPActivityByOoiId(String activity_id);
 
     List<Act93006Info> getJTActivityInfo(String activityEndDate);
+
+    List<Act93006Info> getIOPActivityInfo(String activityEndDate);
 }
