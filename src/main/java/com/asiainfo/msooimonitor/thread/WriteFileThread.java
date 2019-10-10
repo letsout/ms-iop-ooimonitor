@@ -75,9 +75,9 @@ public class WriteFileThread {
                     Object[] line = map.values().toArray();
                     // 每filterRecords 条就验证文件是否超出大小
                     if (records % filterRecords == 0 && records > 0) {
-                        log.info("开始监测文件{}大小！！！",fileNameTmp);
+                        log.info("开始监测文件{}大小！！！", fileNameTmp);
                         dataFileWriter.flush();
-                        boolean okSize = isOKSize(localPath + File.separator + fileNameTmp);
+                        boolean okSize = isOksize(localPath + File.separator + fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
                             dataWrite(dataFileWriter, line, "U");
@@ -239,15 +239,15 @@ public class WriteFileThread {
      * @param path
      * @return
      */
-    private boolean isOKSize(String path) {
+    private boolean isOksize(String path) {
         boolean flag = false;
 
         String fileSize = FileUtil.getFileSize(path);
         BigDecimal bigDecimal = new BigDecimal(fileSize);
         BigDecimal bigDecimal1 = new BigDecimal("1048576");
-        BigDecimal BigDecimal2 = new BigDecimal("500");
+        BigDecimal bigDecimal2 = new BigDecimal("500");
         BigDecimal divide = bigDecimal.divide(bigDecimal1);
-        int i = divide.compareTo(BigDecimal2);
+        int i = divide.compareTo(bigDecimal2);
         if (i > 0) {
             flag = true;
         }

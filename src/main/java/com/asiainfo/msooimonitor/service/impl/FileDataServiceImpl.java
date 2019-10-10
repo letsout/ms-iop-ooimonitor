@@ -40,7 +40,6 @@ public class FileDataServiceImpl implements FileDataService {
             return;
         }
         getFileDataMapper.insertFailDetails(list);
-
     }
 
     @Override
@@ -55,25 +54,25 @@ public class FileDataServiceImpl implements FileDataService {
         float inOutRate = 0;
         float terminalFlowRate = 0;
         int i = 0;
-        String customer_group_id = "";
-        String customer_group_name = "";
-        String customer_num = "";
-        String customer_filter_rule = "";
-        String activityIds = "";
+        String customerGroupId = "";
+        String customerGroupName = "";
+        String customerNumStr = "";
+        String customerFilterRule = "";
+        StringBuilder activityIds = new StringBuilder();
         for (Map<String, Object> map : activityEndTimeList) {
             // 获取最大时间
 //            String time = interfaceInfoMpper.getMaxTime(map.get("activity_id").toString());
             String time = map.get("end_time").toString();
             Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), time);
             if (summaryEffect == null) {
-                activityIds = activityIds + "," + map.get("activity_id");
+                activityIds.append(",").append(map.get("activity_id"));
                 log.info("activityIds:{}", activityIds);
                 continue;
             }
-            customer_group_id += "," + summaryEffect.get("customer_group_id");
-            customer_group_name += "," + summaryEffect.get("customer_group_name");
-            customer_num += "," + summaryEffect.get("customer_num");
-            customer_filter_rule = summaryEffect.get("customer_filter_rule").toString();
+            customerGroupId += "," + summaryEffect.get("customer_group_id");
+            customerGroupName += "," + summaryEffect.get("customer_group_name");
+            customerNumStr += "," + summaryEffect.get("customer_num");
+            customerFilterRule = summaryEffect.get("customer_filter_rule").toString();
             customerNum += Integer.valueOf(summaryEffect.get("customer_num").toString());
             touchNum += Integer.valueOf(summaryEffect.get("touch_num").toString());
             vicNum += Integer.valueOf(summaryEffect.get("vic_num").toString());
@@ -85,10 +84,10 @@ public class FileDataServiceImpl implements FileDataService {
 
         Map<String, String> map = new HashMap<>();
         if (i > 0) {
-            map.put("customer_filter_rule", customer_filter_rule.substring(1));
-            map.put("customer_num", customer_num.substring(1));
-            map.put("customer_group_id", customer_group_id.substring(1));
-            map.put("customer_group_name", customer_group_name.substring(1));
+            map.put("customer_filter_rule", customerFilterRule.substring(1));
+            map.put("customer_num", customerNumStr.substring(1));
+            map.put("customer_group_id", customerGroupId.substring(1));
+            map.put("customer_group_name", customerGroupName.substring(1));
         }
         map.put("customer_num", String.valueOf(customerNum));
         map.put("touch_num", String.valueOf(touchNum));
@@ -100,9 +99,8 @@ public class FileDataServiceImpl implements FileDataService {
         map.put("vic_rate", df.format((float) vicNum / touchNum));
         map.put("in_out_rate", df.format(inOutRate / i));
         map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
-        if (StringUtils.isNotEmpty(activityIds)) {
-            activityIds = activityIds.substring(1);
-            String message = activityIds + "在" + activityEndDate + "当天缺少效果数据，请核查";
+        if (StringUtils.isNotEmpty(activityIds.toString())) {
+            String message = activityIds.toString().substring(1) + "在" + activityEndDate + "当天缺少效果数据，请核查";
             sendMessage.sendSms(message);
         }
         return map;
@@ -119,81 +117,55 @@ public class FileDataServiceImpl implements FileDataService {
     public List<Map<String, String>> getMarkingInfo93005(String activityEndDate) throws Exception {
         List<Map<String, String>> markingInfo93005 = getFileDataMapper.getMarkingInfo93005(activityEndDate);
         for (Map<String, String> map : markingInfo93005) {
-            String activity_id = map.get("activity_id");
-//            iop_activity_id,c.activity_name,c.start_time,c.end_time
-            List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
+            String activityId = map.get("activity_id");
+            List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activityId);
             if (campaignedInfo == null || campaignedInfo.size() == 0) {
                 continue;
             }
             Map<String, String> campaignedMap = new HashMap<>();
-            String campaign_id = "";
-            String campaign_name = "";
-            String campaign_starttime = "";
-            String campaign_endtime = "";
-            String offer_code = "";
-            String offer_name = "";
-            String offer_type = "";
-            String channel_name = "";
-            String channel_id = "";
-            String channel_type = "";
-            String channel_rule = "";
-            String time_distindes = "";
+            String campaignId = "";
+            String campaignName = "";
+            String campaignStarttime = "";
+            String campaignEndtime = "";
+            String offerCode = "";
+            String offerName = "";
+            String offerType = "";
+            String channelName = "";
+            String channelId = "";
+            String channelType = "";
+            String channelRule = "";
+            String timeDistindes = "";
             for (Map<String, Object> map1 : campaignedInfo) {
-                campaign_id += ",280_" + map1.get("campaign_id") + "_" + map1.get("iop_activity_id").toString().substring(1);
-                campaign_name += "," + map1.get("activity_name");
-                campaign_starttime += "," + TimeUtil.getOoiDate(map1.get("campaign_starttime").toString());
-                campaign_endtime += "," + TimeUtil.getOoiDate(map1.get("end_time").toString());
-                offer_code += "," + map1.get("offer_code");
-                offer_name += "," + map1.get("offer_name");
-                offer_type += "," + map1.get("offer_type");
-                channel_name += "," + map1.get("channel_name");
-                channel_id += "," + map1.get("channel_id");
-                channel_type += "," + map1.get("channe_type");
-                channel_rule += "," + map1.get("channel_rule");
-                time_distindes += "," + map1.get("time_distindes");
+                campaignId += ",280_" + map1.get("campaign_id") + "_" + map1.get("iop_activity_id").toString().substring(1);
+                campaignName += "," + map1.get("activity_name");
+                campaignStarttime += "," + TimeUtil.getOoiDate(map1.get("campaign_starttime").toString());
+                campaignEndtime += "," + TimeUtil.getOoiDate(map1.get("end_time").toString());
+                offerCode += "," + map1.get("offer_code");
+                offerName += "," + map1.get("offer_name");
+                offerType += "," + map1.get("offer_type");
+                channelName += "," + map1.get("channel_name");
+                channelId += "," + map1.get("channel_id");
+                channelType += "," + map1.get("channe_type");
+                channelRule += "," + map1.get("channel_rule");
+                timeDistindes += "," + map1.get("time_distindes");
             }
-            campaignedMap.put("campaign_id", campaign_id.substring(1));
-            campaignedMap.put("campaign_name", campaign_name.substring(1));
-            campaignedMap.put("campaign_starttime", campaign_starttime.substring(1));
-            campaignedMap.put("campaign_endtime", campaign_endtime.substring(1));
-            campaignedMap.put("offer_code", offer_code.substring(1));
-            campaignedMap.put("offer_name", offer_name.substring(1));
-            campaignedMap.put("offer_type", offer_type.substring(1));
-            campaignedMap.put("channel_name", channel_name.substring(1));
-            campaignedMap.put("channel_id", channel_id.substring(1));
-            campaignedMap.put("channel_type", channel_type.substring(1));
-            campaignedMap.put("channel_rule", channel_rule.substring(1));
-            campaignedMap.put("time_distindes", time_distindes.substring(1));
+            campaignedMap.put("campaign_id", campaignId.substring(1));
+            campaignedMap.put("campaign_name", campaignName.substring(1));
+            campaignedMap.put("campaign_starttime", campaignStarttime.substring(1));
+            campaignedMap.put("campaign_endtime", campaignEndtime.substring(1));
+            campaignedMap.put("offer_code", offerCode.substring(1));
+            campaignedMap.put("offer_name", offerName.substring(1));
+            campaignedMap.put("offer_type", offerType.substring(1));
+            campaignedMap.put("channel_name", channelName.substring(1));
+            campaignedMap.put("channel_id", channelId.substring(1));
+            campaignedMap.put("channel_type", channelType.substring(1));
+            campaignedMap.put("channel_rule", channelRule.substring(1));
+            campaignedMap.put("time_distindes", timeDistindes.substring(1));
             map.putAll(campaignedMap);
 
         }
         return markingInfo93005;
     }
-//    @Override
-//    public List<Map<String, String>> getMarkingInfo93006(String activityEndDate) {
-//        // 一级策划省级执行
-//        List<Map<String, String>> markingInfo93006 = getFileDataMapper.getMarkingInfo93006(activityEndDate);
-//        markingInfo93006.forEach(markingmap -> {
-//            final String activity_id = markingmap.get("activity_id");
-//            final List<Map<String, Object>> campaignedInfo = getFileDataMapper.getCampaignedInfo(activity_id);
-//            String campaignId = "";
-//            String campaignName = "";
-//            for (Map<String, Object> map : campaignedInfo) {
-//                campaignId += ",280_" + map.get("campaign_id") + "_" + map.get("iop_activity_id").toString().substring(1);
-//                campaignName += "," + map.get("activity_name");
-//            }
-//            if (StringUtils.isNotEmpty(campaignId)) {
-//                campaignId = campaignId.substring(1);
-//            }
-//            if (StringUtils.isNotEmpty(campaignName)) {
-//                campaignName = campaignName.substring(1);
-//            }
-//            markingmap.put("campaign_id", campaignId);
-//            markingmap.put("campaign_name", campaignName);
-//        });
-//        return markingInfo93006;
-//    }
-
 
     @Override
     public void insertFlow() {
@@ -207,21 +179,10 @@ public class FileDataServiceImpl implements FileDataService {
         }
     }
 
-
-//    @Override
-//    public String getIOPActivityIds(String activityId, String date) {
-//        List<String> iopActivityIds = getFileDataMapper.getIOPActivityIds(activityId, date);
-//        String activitys = "'" + StringUtils.join(iopActivityIds, "','") + "'";
-//        return activitys;
-//    }
-
-
     @Override
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
-
-
     @Override
     @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
@@ -235,11 +196,11 @@ public class FileDataServiceImpl implements FileDataService {
         ArrayList<Map<String, String>> errorParamList = new ArrayList<>();
 
         int errorNum = 0;
-        for (ActivityProcessInfo Info :
+        for (ActivityProcessInfo info :
                 allActivitys) {
             Map<String, String> paramMap = new HashMap();
-            String activityId = Info.getActivityId();
-            String processId = Info.getProcessId();
+            String activityId = info.getActivityId();
+            String processId = info.getProcessId();
             // 记录活动信息
             if (CommonConstant.SJCHSJ.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
                 // 查询活动详情
@@ -346,11 +307,11 @@ public class FileDataServiceImpl implements FileDataService {
         ArrayList<Map<String, String>> errorParamList = new ArrayList<>();
 
         int errorNum = 0;
-        for (ActivityProcessInfo Info :
+        for (ActivityProcessInfo info :
                 allActivitys) {
             Map<String, String> paramMap = new HashMap();
-            String activityId = Info.getActivityId();
-            String processId = Info.getProcessId();
+            String activityId = info.getActivityId();
+            String processId = info.getProcessId();
             // 记录活动信息
             if (CommonConstant.SJCHSJ.equals(processId) || CommonConstant.SJCHHLW.equals(processId)) {
                 // 查询活动详情
@@ -456,7 +417,6 @@ public class FileDataServiceImpl implements FileDataService {
 
         // 清空当前数据表
         interfaceInfoMpper.truncateTable("93056");
-
         // 插入数据表待上传
         interfaceInfoMpper.insert93056(paramList);
     }

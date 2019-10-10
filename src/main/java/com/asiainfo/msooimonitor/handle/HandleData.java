@@ -56,7 +56,7 @@ public class HandleData {
             if (collect.size() > 0) {
                 for (String fileName:
                 collect) {
-                    readFileThread.ReadFile(fileName,localPath,interfaceId,tableName,date);
+                    readFileThread.readFile(fileName,localPath,interfaceId,tableName,date);
                 }
             } else {
                 logger.info("接口：{" + interfaceId + "} 文件不存在！！！");

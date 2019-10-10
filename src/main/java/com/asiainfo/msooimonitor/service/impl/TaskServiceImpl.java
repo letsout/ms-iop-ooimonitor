@@ -100,9 +100,9 @@ public class TaskServiceImpl implements TaskService {
             String prcName = baseOfferBo.get("prc_name");
             activity.setProName(prcName);
             //	22	产品编码"0428000" + activity.get("activity_id").toString().substring(1)
-            String prc_id = baseOfferBo.get("prc_id");
-            activity.setProCode(prc_id);
-            activity.setProCode(activity.getProCodeSplite() + prc_id);
+            String prcId = baseOfferBo.get("prc_id");
+            activity.setProCode(prcId);
+            activity.setProCode(activity.getProCodeSplite() + prcId);
             //	23	产品编码截取
             //	24	0x0D0A
             try {
@@ -226,8 +226,8 @@ public class TaskServiceImpl implements TaskService {
 
             //营销活动相关信息
             //5	营销活动编号	必填,前三位必须为省份编码
-            String activity_id = activity.get("activity_id");
-            map.put("A5", activity_id);
+            String activityId = activity.get("activity_id");
+            map.put("A5", activityId);
             //6	营销活动名称	必填
             map.put("A6", activity.get("activity_name"));
             //7	活动开始时间	必填,长度14位,为数据生成时间
@@ -246,12 +246,12 @@ public class TaskServiceImpl implements TaskService {
             map.put("A13", "1");
 
             //子活动相关信息
-            List<Map<String, Object>> campaignedList = getFileDataMapper.getBeforeCampaignedInfo(activity_id, activityEndDate);
+            List<Map<String, Object>> campaignedList = getFileDataMapper.getBeforeCampaignedInfo(activityId, activityEndDate);
             for (Map<String, Object> campaignedmap : campaignedList) {
                 resultmap = new HashMap<>();
                 //14	子活动编号	必填,参考附录1统一编码规则中的营销子活动编号编码规则,所属流程为2、8、9、10时，前3位编号为省份编码
-                final String iop_activity_id = campaignedmap.get("iop_activity_id").toString();
-                resultmap.put("A14", "280_" + campaignedmap.get("campaign_id") + "_" + iop_activity_id.substring(1));
+                final String iopActivityId = campaignedmap.get("iop_activity_id").toString();
+                resultmap.put("A14", "280_" + campaignedmap.get("campaign_id") + "_" + iopActivityId.substring(1));
                 //15	子活动名称	必填
                 resultmap.put("A15", campaignedmap.get("activity_name"));
                 //16	子活动开始时间	必填,长度14位,为数据生成时间
@@ -279,11 +279,11 @@ public class TaskServiceImpl implements TaskService {
                 //31	渠道类型	必填,参考10附录3渠道类型编码,位数为偶数位
                 resultmap.put("A31", campaignedmap.get("channe_type"));
                 //32	渠道接触规则	必填
-                String channel_rule = campaignedmap.get("channel_rule").toString();
-                if (channel_rule.equals("null") || channel_rule.equals("")) {
-                    channel_rule = getFileDataMapper.getBaseChannelInfo(iop_activity_id).get("channel_id");
+                String channelRule = campaignedmap.get("channel_rule").toString();
+                if ("null".equals(channelRule)|| "".equals(channelRule)) {
+                    channelRule = getFileDataMapper.getBaseChannelInfo(iopActivityId).get("channel_id");
                 }
-                resultmap.put("A32", channel_rule);
+                resultmap.put("A32", channelRule);
                 //33	时机识别	必填，填写枚举值ID
                 resultmap.put("A33", campaignedmap.get("time_id"));
                 //34	时机识别描述	可为空
@@ -293,12 +293,12 @@ public class TaskServiceImpl implements TaskService {
                 //36	资源使用情况	描述性信息,可为空
                 resultmap.put("A36", "");
                 //子活动效果评估指标
-                Map<String, String> mapEffect = interfaceInfoMpper.getSummaryEffect(iop_activity_id, activityEndDate);
+                Map<String, String> mapEffect = interfaceInfoMpper.getSummaryEffect(iopActivityId, activityEndDate);
                 String beforeDate = TimeUtil.getLastDaySql(TimeUtil.strToDate(activityEndDate));
-                Map<String, String> mapEffect1 = interfaceInfoMpper.getSummaryEffect(iop_activity_id, beforeDate);
+                Map<String, String> mapEffect1 = interfaceInfoMpper.getSummaryEffect(iopActivityId, beforeDate);
                 if (mapEffect == null) {
                     uploadDetailInfos.add(UploadDetailInfo.builder().interfaceId("93001")
-                            .activityId(iop_activity_id)
+                            .activityId(iopActivityId)
                             .activitytype("1")
                             .failDesc("效果数据表ooi_activity_summary_effect为空")
                             .activityTime(activityEndDate)
@@ -306,7 +306,7 @@ public class TaskServiceImpl implements TaskService {
                     continue;
                 }
                 if (mapEffect1 == null) {
-                    String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(iop_activity_id, beforeDate);
+                    String maxDate = interfaceInfoMpper.getSummaryEffectMaxDate(iopActivityId, beforeDate);
                     if (maxDate == null || maxDate.equals("")) {
                         //System.out.println("mapEffect:" + JSON.toJSONString(mapEffect));
                         //42	成功接触客户数	日指标，必填,口径：inser运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
@@ -322,28 +322,28 @@ public class TaskServiceImpl implements TaskService {
                         //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                         resultmap.put("A47", df.format(Float.parseFloat(mapEffect.get("terminal_flow_rate"))));
                     } else {
-                        iopActivityIds = iopActivityIds + "," + iop_activity_id;
+                        iopActivityIds = iopActivityIds + "," + iopActivityId;
                         continue;
                     }
                 } else {
                     //成功接触客户数
-                    int touch_num = Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"));
+                    int touchNum = Integer.parseInt(mapEffect.get("touch_num")) - Integer.parseInt(mapEffect1.get("touch_num"));
                     //营销成功用户数
-                    int vic_num = Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"));
+                    int vicNum = Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"));
 //
-                    String response_rate = String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate")));
+                    String responseRate = String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate")));
                     DecimalFormat df = new DecimalFormat("0.000000");
                     //42	成功接触客户数	日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
-                    resultmap.put("A42", touch_num);
+                    resultmap.put("A42", touchNum);
                     //43	接触成功率	日指标，必填且取值小于1；,口径：成功接触客户数/活动总客户数,例：填0.1代表10%（注意需填小数，而不是百分数）
                     resultmap.put("A43", df.format(Float.valueOf(mapEffect.get("touhe_rate")) - Float.valueOf(mapEffect1.get("touhe_rate"))));
                     //44	响应率	日指标，必填且取值小于1；,口径：运营活动参与用户/成功接触用户,例：填0.1代表10%,		（注意需填小数，而不是百分数）
-                    resultmap.put("A44", df.format(Float.parseFloat(response_rate)));
+                    resultmap.put("A44", df.format(Float.parseFloat(responseRate)));
 //                    resultmap.put("A44", String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate"))));
                     //45	营销成功用户数	日指标，必填；,口径：根据运营目的，成功办理或者成功使用的用户数
-                    resultmap.put("A45", vic_num);
+                    resultmap.put("A45", vicNum);
                     //46	营销成功率	NUMBER (20,6)日指标,必填且取值小于1；,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%
-                    resultmap.put("A46", df.format(Float.parseFloat(response_rate)));
+                    resultmap.put("A46", df.format(Float.parseFloat(responseRate)));
 //                    resultmap.put("A46", String.valueOf(Float.valueOf(mapEffect.get("vic_rate")) - Float.valueOf(mapEffect1.get("vic_rate"))));
                     //47	4G终端4G流量客户占比	日指标，必填且取值小于1；,口径：4G流量客户数/4G终端用户数,例：填0.1代表10%,		（注意需填小数，而不是百分数）
                     resultmap.put("A47", df.format(Float.parseFloat(mapEffect.get("terminal_flow_rate"))));
@@ -495,11 +495,11 @@ public class TaskServiceImpl implements TaskService {
             //15 子活动名称 可为空，当营销活动涉及多子活动时，以逗号分隔
             map.put("A15", activity.get("campaign_name"));
             //16 子活动开始时间 可为空,格式：YYYYMMDDHH24MISS,示例：20170213161140
-            String campaign_starttime = activity.get("campaign_starttime");
-            map.put("A16", campaign_starttime.split(",")[0]);
+            String campaignStarttime = activity.get("campaign_starttime");
+            map.put("A16", campaignStarttime.split(",")[0]);
             //17 子活动结束时间 可为空,格式：YYYYMMDDHH24MISS,子活动结束时间不早于子活动开始时间,示例：20170213161140
-            String campaign_endtime = activity.get("campaign_starttime");
-            map.put("A17", campaign_endtime.split(",")[0]);
+            String campaignEndtime = activity.get("campaign_starttime");
+            map.put("A17", campaignEndtime.split(",")[0]);
 
 
             /**
@@ -1014,20 +1014,19 @@ public class TaskServiceImpl implements TaskService {
             map.put("A25", baseOfferBo.get("prc_name"));
             //26,产品分类,1：电信服务,必填，填写枚举值ID,2：客户服务,3：数字内容服务,4：实物,5：虚拟物品
             map.put("A26", baseOfferBo.get("prc_type"));
-//                Map<String, String> positionInfo = fileDataService.getPositionInfo(activity_id);
-            String channel_code = activity.get("channel_code").toString() + activity.get("channel_id");// positionInfo.getOrDefault("CHANNELID", "28000" + channelInfo.get("channel_id"));
-            String channel_name = activity.get("channel_name").toString();//positionInfo.getOrDefault("CHANNELNAME", channelInfo.get("channel_name"));
-            String channel_type = activity.get("channel_type").toString();//positionInfo.getOrDefault("CHANNETYPE", channelInfo.get("channel_name"));
-            //27,渠道编码,必填,比如,00108xxxx,001：一级分类,08：二级分类,Xxxx：自定义渠道编码,编码规则参考8.2渠道和运营位编码规则
-            map.put("A27", channel_code);//024800
+            String channelCode = activity.get("channel_code").toString() + activity.get("channel_id");
+            String channelName = activity.get("channel_name").toString();
+            String channelType = activity.get("channel_type").toString();
+//27,渠道编码,必填,比如,00108_xxxx,001：一级分类,08：二级分类,xxxx：自定义渠道编码,编码规则参考_8_2_渠道和运营位编码规则
+            map.put("A27", channelCode);//024800
             //28,渠道编码一级分类,截取“渠道编码”前三位,必填,编码规则参考8.2渠道和运营位编码规则,长度3位,（省份截取前3位）
-            map.put("A28", channel_code.substring(0, 3));
+            map.put("A28", channelCode.substring(0, 3));
             //29,渠道编码二级分类,截取“渠道编码”第四、五位,必填,编码规则参考8.2渠道和运营位编码规则,长度2位,（省份截取第4、5位）
-            map.put("A29", channel_code.substring(3, 5));
+            map.put("A29", channelCode.substring(3, 5));
             //30,渠道名称,必填
-            map.put("A30", channel_name);
+            map.put("A30", channelName);
             //31,渠道类型,参考10附录3渠道类型编码,必填,渠道类型为偶数位
-            map.put("A31", channel_type);
+            map.put("A31", channelType);
             //32,渠道接触规则,可为空
             map.put("A32", "");
             //33,时机识别,1：互联网使用事件,必填，填写枚举值ID,2：社会事件,3：位置行踪事件,4：业务办理事件,5：业务使用事件,6：周期业务事件,7：自助系统接触事件,8：PCC事件,9：其它事件,0：无事件

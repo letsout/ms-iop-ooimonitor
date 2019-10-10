@@ -36,7 +36,7 @@ public class ReadFileThread {
 
     ArrayList<Map<String, String>> mapList = new ArrayList<>();
 
-    public void ReadFile(String fileName, String dir, String interfaceId, String tableName, String date) {
+    public void readFile(String fileName, String dir, String interfaceId, String tableName, String date) {
 
         if (StringUtils.isEmpty(tableName)) {
             throw new RuntimeException("接口号[" + interfaceId + "]对应表名不存在！！");

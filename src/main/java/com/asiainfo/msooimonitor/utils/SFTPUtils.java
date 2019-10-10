@@ -216,8 +216,8 @@ public class SFTPUtils {
     private boolean isDirExit(String dir, ChannelSftp sftp) {
         boolean isDirExistFlag = false;
         try {
-            SftpATTRS sftpATTRS = sftp.lstat(dir);
-            isDirExistFlag = sftpATTRS.isDir();
+            SftpATTRS sftpAttrs = sftp.lstat(dir);
+            isDirExistFlag = sftpAttrs.isDir();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
