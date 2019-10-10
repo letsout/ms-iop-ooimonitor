@@ -50,7 +50,7 @@
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
-          and a.activity_id = #{activity_id}
+          and a.activity_id = #{activityId}
     </select>
     <select id="getBeforeCampaignedInfo" resultType="map">
         select a.*,b.iop_activity_id,c.activity_name,c.start_time,c.end_time,d.*
@@ -61,7 +61,7 @@
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
-          and a.activity_id = #{activity_id}
+          and a.activity_id = #{activityId}
           and DATE_FORMAT(c.end_time, '%Y%m%d') >= #{activityEndDate}
     </select>
     <select id="getCampaignedEndInfo" resultType="map">
@@ -73,7 +73,7 @@
                  inner join ooi_marking_campaign_offerbo_info d on a.campaign_id = d.campaign_id
         where b.data_state = 'U'
           and b.is_feedback = '2'
-          and a.activity_id = #{activity_id}
+          and a.activity_id = #{activityId}
           and DATE_FORMAT(c.end_time, '%Y%m%d') = #{campaignedEndTime}
     </select>
 
@@ -125,14 +125,14 @@
     <!--<select id="getChannelInfo" resultType="map">-->
     <!--select *-->
     <!--from activity_rel_channel_parameter a-->
-    <!--where a.activity_id = #{activity_id} limit 1-->
+    <!--where a.activity_id = #{activityId} limit 1-->
     <!--</select>-->
     <!--<select id="getPositionInfo" resultType="map">-->
     <!--select *-->
     <!--from activity_rel_channel_parameter a-->
     <!--inner join marking_activity_iop_info b on a.`value` = b.POSITIONID-->
     <!--where a.parameter = 'internet_base_pos_name'-->
-    <!--and a.activity_id = #{activity_id}-->
+    <!--and a.activity_id = #{activityId}-->
     <!--</select>-->
 
 
@@ -141,7 +141,7 @@
     <!--INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,-->
     <!--error_desc-->
     <!--)-->
-    <!--VALUES (#{activity_id}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});-->
+    <!--VALUES (#{activityId}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});-->
 
     <!--</insert>-->
 
@@ -205,9 +205,17 @@
                  activity_obj_user c on a.activity_id = c.activity_id
                  inner join activity_rel_channel_parameter d on a.activity_id = d.activity_id
                  inner join marking_activity_iop_info e on d.value = e.POSITIONID
-        where parameter = 'internet_base_pos_name' and    a.end_time=#{activityEndDate}
+                 INNER JOIN activity_syn_log f ON a.activity_id = f.activity_id
+        where parameter = 'internet_base_pos_name'
+          and f.upload_time IS NULL
+          and a.end_time = #{activityEndDate}
     </select>
-
+    <update id="updateUploadTime">
+        update activity_syn_log
+        set upload_time=#{uploadTime}
+        where activity_id in
+              (${activityIds}) ;
+    </update>
     <!--<select id="getIOPActivityDates" parameterType="string" resultType="string">-->
 
     <!--select distinct b.end_time-->

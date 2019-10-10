@@ -20,9 +20,9 @@ public interface GetFileDataMapper {
 //
 //    List<Map<String, String>> getCustGroupInfo(String activityId);
 //
-//    Map<String, String> getChannelInfo(String activity_id);
+//    Map<String, String> getChannelInfo(String activityId);
 //
-//    Map<String, String> getPositionInfo(String activity_id);
+//    Map<String, String> getPositionInfo(String activityId);
 
     //93006查询省级策划省级执行的
 //    List<Map<String, String>> getBaseInfo93006(String activityEndDate);
@@ -37,13 +37,13 @@ public interface GetFileDataMapper {
     List<Map<String, String>> getMarkingInfo93006(String activityEndDate);
 
 
-    List<Map<String, Object>> getCampaignedInfo(String activity_id);
+    List<Map<String, Object>> getCampaignedInfo(String activityId);
 
-    List<Map<String, Object>> getBeforeCampaignedInfo(String activity_id, String activityEndDate);
+    List<Map<String, Object>> getBeforeCampaignedInfo(String activityId, String activityEndDate);
 
-    List<Map<String, Object>> getCampaignedEndInfo(String activity_id, String campaignedEndTime);
+    List<Map<String, Object>> getCampaignedEndInfo(String activityId, String campaignedEndTime);
 
-    List<Map<String, String>> getOfferBo(String campaign_id);
+    List<Map<String, String>> getOfferBo(String campaignId);
 
     List<Map<String, Object>> getBaseInfo93005(String activityEndDate);
 
@@ -96,11 +96,13 @@ public interface GetFileDataMapper {
 
     List<Map<String, String>> getJTActivityInfoByOOIId(String activityId);
 
-//    List<String> getIOPActivityByOoiId(String activity_id);
+//    List<String> getIOPActivityByOoiId(String activityId);
 
     List<Act93006Info> getJTActivityInfo(String activityEndDate);
 
     List<Act93006Info> getIOPActivityInfo(String activityEndDate);
 
     List<Act93004Info> getBase93004(String activityEndDate);
+
+    void updateUploadTime(String uploadTime, String activityIds);
 }

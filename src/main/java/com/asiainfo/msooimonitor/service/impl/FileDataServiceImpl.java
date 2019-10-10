@@ -36,8 +36,9 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public void insertFailDetails(List<UploadDetailInfo> list) {
-        if (list == null || list.size() == 0)
+        if (list == null || list.size() == 0) {
             return;
+        }
         getFileDataMapper.insertFailDetails(list);
 
     }
@@ -45,8 +46,9 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public Map<String, String> getSummaryEffectAll(String activityId, String activityEndDate) {
         List<Map<String, Object>> activityEndTimeList = getFileDataMapper.getActivityEndTime(activityId);
-        if (activityEndTimeList == null || activityEndTimeList.size() == 0)
+        if (activityEndTimeList == null || activityEndTimeList.size() == 0) {
             return null;
+        }
         int customerNum = 0;
         int touchNum = 0;
         int vicNum = 0;
@@ -196,11 +198,13 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public void insertFlow() {
         final List<Map<String, String>> flowInfo1 = getFileDataMapper.getFlowInfo1();
-        if (flowInfo1.size() != 0)
+        if (flowInfo1.size() != 0) {
             getFileDataMapper.insertFlow(flowInfo1);
+        }
         final List<Map<String, String>> flowInfo2 = getFileDataMapper.getFlowInfo2();
-        if (flowInfo2.size() != 0)
+        if (flowInfo2.size() != 0) {
             getFileDataMapper.insertFlow(flowInfo2);
+        }
     }
 
 
@@ -410,10 +414,10 @@ public class FileDataServiceImpl implements FileDataService {
                 paramMap.put("A5", ooiActivityName.get());
                 paramMap.put("A6", "9");
                 // TODO 具备多个子活动怎么处理 联调时与一级沟通
-                paramMap.put("A7", StringUtils.join(campaignIdList,","));
-                paramMap.put("A8",StringUtils.join(campaigNameList,","));
-                paramMap.put("A9", StringUtils.join(offerCodeList,","));
-                paramMap.put("A10", StringUtils.join(offerNameList,","));
+                paramMap.put("A7", StringUtils.join(campaignIdList, ","));
+                paramMap.put("A8", StringUtils.join(campaigNameList, ","));
+                paramMap.put("A9", StringUtils.join(offerCodeList, ","));
+                paramMap.put("A10", StringUtils.join(offerNameList, ","));
             }
             // 不记录最终插入语句
             paramMap.put("processId", processId);

@@ -59,8 +59,9 @@ public class TaskServiceImpl implements TaskService {
         interfaceInfoMpper.truncateTable("93004");
         List<UploadDetailInfo> uploadDetailInfoList = new ArrayList<>();
         List<Act93004Info> activityList = getFileDataMapper.getBase93004(activityEndDate);
+        List<String> successList = new ArrayList<>();
         for (Act93004Info activity : activityList) {
-            String activityId=activity.getActivityId();
+            String activityId = activity.getActivityId();
             //	1	行号
             //	2	省份
             //	3	营销活动编号
@@ -71,7 +72,7 @@ public class TaskServiceImpl implements TaskService {
             //	6	活动结束时间
             //String endTime = sdf.format(activity.get("end_time").toString());
             activity.setEndTime(TimeUtil.getOoiDate(activity.getEndTime()));
-//	7	子活动编号
+            //	7	子活动编号
             activity.setCampaignId(activity.getCampaignId().substring(1));
             //	8	子活动名称
             //	9	子活动开始时间
@@ -92,12 +93,10 @@ public class TaskServiceImpl implements TaskService {
             //	17	运营位编码二级分类
             activity.setPositionidTwo(activity.getPositionId().substring(3, 5));
             //	18	运营位名称
-//            final String prc_name = baseOfferBo.get("prc_name");
-//            activity.setProName(prc_name);
             //	19	用户号码OBJ_1090774410875366/A603613154957590528
             //	20	IMEImap.put("A",startTime);
             //	21	产品名称
-            	Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
+            Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
             String prcName = baseOfferBo.get("prc_name");
             activity.setProName(prcName);
             //	22	产品编码"0428000" + activity.get("activity_id").toString().substring(1)
@@ -108,6 +107,7 @@ public class TaskServiceImpl implements TaskService {
             //	24	0x0D0A
             try {
                 interfaceInfoMpper.insertIop93004(activity);
+                successList.add(activityId);
             } catch (Exception e) {
                 log.error("93004 生成数据出现异常{}", e);
                 uploadDetailInfoList.add(UploadDetailInfo.builder()
@@ -120,10 +120,13 @@ public class TaskServiceImpl implements TaskService {
             }
 
         }
+        String activityIds = "'" + StringUtils.join(successList, "','") + "'";
+        fileDataService.insertFailDetails(uploadDetailInfoList);
+        getFileDataMapper.updateUploadTime(activityEndDate, activityIds);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93004");
-        uploadCountInfo.setUploadNum(activityList.size());
-        uploadCountInfo.setFailNum(0);
+        uploadCountInfo.setUploadNum(successList.size());
+        uploadCountInfo.setFailNum(uploadDetailInfoList.size());
         uploadCountInfo.setActivityTime(activityEndDate);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
 

@@ -116,7 +116,7 @@ public class FtpUtil {
 
         StringBuffer dirPath = new StringBuffer("/");
         for (String str : strings) {
-            if (str.equals("")) {
+            if ("".equals(str)) {
                 continue;
             }
             dirPath.append(str + "/");

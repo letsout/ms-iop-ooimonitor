@@ -49,8 +49,9 @@ public class SqlUtil {
     }
 
     public static void getInsertsql(String interfaceName, List<Map<String, Object>> list) {
-        if (list.size() == 0)
+        if (list.size() == 0) {
             return;
+        }
 
         int columSize = tableMap.get(interfaceName);
         StringBuilder sb = new StringBuilder();
@@ -70,9 +71,9 @@ public class SqlUtil {
             sbvalue.append("('");
             for (int a = 2; a <= columSize; a++) {
                 String key = "A" + a;
-                String value =  mapinsert.getOrDefault(key, "")+"";
+                String value = mapinsert.getOrDefault(key, "") + "";
                 value = value.replaceAll("\n", "");
-                if (value == null || value.equals("null") || value.replaceAll("null", "").replaceAll(",", "").equals("")) {
+                if (value == null || "null".equals(value) || "".equals(value.replaceAll("null", "").replaceAll(",", ""))) {
                     value = null;
                 }
                 System.out.println(key + "->" + value);

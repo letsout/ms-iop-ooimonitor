@@ -200,7 +200,7 @@ public class FileUtil {
     }
 
 
-    public static int[] BinstrToIntArray(String binStr) {
+    public static int[] binstrToIntArray(String binStr) {
         char[] temp = binStr.toCharArray();
         int[] result = new int[temp.length];
         for (int i = 0; i < temp.length; i++) {
@@ -209,8 +209,8 @@ public class FileUtil {
         return result;
     }
 
-    public static char BinstrToChar(String binStr) {
-        int[] temp = BinstrToIntArray(binStr);
+    public static char binstrToChar(String binStr) {
+        int[] temp = binstrToIntArray(binStr);
         int sum = 0;
         for (int i = 0; i < temp.length; i++) {
             sum += temp[temp.length - 1 - i] << i;
