@@ -20,6 +20,7 @@ public interface TaskService {
     void saveMarking93002(String activityEndDate) throws Exception;
 
     void saveBase93002(String activityEndDate) throws Exception;
+    void saveBase93004(String activityEndDate) throws Exception;
 
     void uploadFile();
 }

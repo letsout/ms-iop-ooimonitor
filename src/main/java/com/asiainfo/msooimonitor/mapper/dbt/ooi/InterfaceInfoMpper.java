@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.mapper.dbt.ooi;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93004Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
@@ -75,4 +76,6 @@ public interface InterfaceInfoMpper {
     int getTableRowsByTableName(@Param("tableName") String tableName);
 
     int tableIsExit(@Param("schema") String schema,@Param("tableName") String tableName);
+
+    void insertIop93004(Act93004Info activity);
 }

@@ -48,6 +48,28 @@ public class TaskMethod {
         }
     }
 
+//    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
+    public void save93004() {
+        fileDataService.truncateTable("93006");
+        try {
+            final String activityEndDate = TimeUtil.getDaySql(new Date());
+            taskService.saveBase93004(activityEndDate);
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93004")
+                            .tableName("iop_93004")
+                            .fileName("i_13000_time_IOP-93004_00_fileNum.dat")
+                            .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                            .step("1")
+                            .build()
+            );
+            taskService.uploadFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+//            fileDataService.truncateTable("93006");
+        }
+    }
+
     @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
     public void testsave93001() {
         fileDataService.truncateTable("93001");
@@ -124,7 +146,7 @@ public class TaskMethod {
     }
 
     @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
-    public void save93055(){
+    public void save93055() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
         fileDataService.truncateTable("93055");
         try {
@@ -148,7 +170,7 @@ public class TaskMethod {
     }
 
     @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
-    public void save93056(){
+    public void save93056() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 
         fileDataService.truncateTable("93056");

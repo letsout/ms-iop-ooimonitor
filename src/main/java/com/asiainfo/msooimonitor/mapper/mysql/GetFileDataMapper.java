@@ -101,4 +101,6 @@ public interface GetFileDataMapper {
     List<Act93006Info> getJTActivityInfo(String activityEndDate);
 
     List<Act93006Info> getIOPActivityInfo(String activityEndDate);
+
+    List<Act93004Info> getBase93004(String activityEndDate);
 }

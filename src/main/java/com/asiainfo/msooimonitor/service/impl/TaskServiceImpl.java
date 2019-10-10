@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
 import com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper;
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93004Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadCountInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.UploadDetailInfo;
@@ -52,6 +53,81 @@ public class TaskServiceImpl implements TaskService {
     WriteFileThread writeFileThread;
     @Autowired
     UploadService uploadService;
+
+    @Override
+    public void saveBase93004(String activityEndDate) throws Exception {
+        interfaceInfoMpper.truncateTable("93004");
+        List<UploadDetailInfo> uploadDetailInfoList = new ArrayList<>();
+        List<Act93004Info> activityList = getFileDataMapper.getBase93004(activityEndDate);
+        for (Act93004Info activity : activityList) {
+            String activityId=activity.getActivityId();
+            //	1	行号
+            //	2	省份
+            //	3	营销活动编号
+            activity.setActivityId("280" + activity.getActivityId().substring(1));
+            //	4	营销活动名称
+            //	5	活动开始时间
+            activity.setStartTime(TimeUtil.getOoiDate(activity.getStartTime()));
+            //	6	活动结束时间
+            //String endTime = sdf.format(activity.get("end_time").toString());
+            activity.setEndTime(TimeUtil.getOoiDate(activity.getEndTime()));
+//	7	子活动编号
+            activity.setCampaignId(activity.getCampaignId().substring(1));
+            //	8	子活动名称
+            //	9	子活动开始时间
+            //String childStartTime = sdf.format(activity.get("start_time").toString());
+            activity.setCampaignStartTime(activity.getStartTime());
+            //	10	子活动结束时间
+            //String childEndTime = sdf.format(activity.get("end_time").toString());
+            activity.setCampaignEndTime(activity.getEndTime());
+            //	11	渠道编码
+            //	12	渠道编码一级分类0100520917
+            activity.setChanneTypeOne(activity.getChannelId().substring(0, 3));
+            //	13	渠道编码二级分类
+            activity.setChanneTypeTwo(activity.getChannelId().substring(3, 5));
+            //	14	渠道名称
+            //	15	运营位编码
+            //	16	运营位编码一级分类
+            activity.setPositionidOne(activity.getPositionId().substring(0, 3));
+            //	17	运营位编码二级分类
+            activity.setPositionidTwo(activity.getPositionId().substring(3, 5));
+            //	18	运营位名称
+//            final String prc_name = baseOfferBo.get("prc_name");
+//            activity.setProName(prc_name);
+            //	19	用户号码OBJ_1090774410875366/A603613154957590528
+            //	20	IMEImap.put("A",startTime);
+            //	21	产品名称
+            	Map<String, String> baseOfferBo = getFileDataMapper.getBaseOfferBo(activityId);
+            String prcName = baseOfferBo.get("prc_name");
+            activity.setProName(prcName);
+            //	22	产品编码"0428000" + activity.get("activity_id").toString().substring(1)
+            String prc_id = baseOfferBo.get("prc_id");
+            activity.setProCode(prc_id);
+            activity.setProCode(activity.getProCodeSplite() + prc_id);
+            //	23	产品编码截取
+            //	24	0x0D0A
+            try {
+                interfaceInfoMpper.insertIop93004(activity);
+            } catch (Exception e) {
+                log.error("93004 生成数据出现异常{}", e);
+                uploadDetailInfoList.add(UploadDetailInfo.builder()
+                        .activityId(activityId)
+                        .activityTime(activityEndDate)
+                        .interfaceId("93004")
+                        .activitytype("base")
+                        .failDesc("数据融合出现异常")
+                        .build());
+            }
+
+        }
+        UploadCountInfo uploadCountInfo = new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93004");
+        uploadCountInfo.setUploadNum(activityList.size());
+        uploadCountInfo.setFailNum(0);
+        uploadCountInfo.setActivityTime(activityEndDate);
+        getFileDataMapper.insertUploadCount(uploadCountInfo);
+
+    }
 
     @Override
     public void saveAll93006(String activityEndDate) throws Exception {

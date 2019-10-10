@@ -220,7 +220,7 @@
         TRUNCATE TABLE iop_${tableName}
     </delete>
 
-    <insert id="insert93055" >
+    <insert id="insert93055">
         insert into iop_93055 (
         a2,a3,a4,a5,a6,a7,a8,a9,a10
         ) values
@@ -244,10 +244,12 @@
 
 
     <select id="getMaxTime" parameterType="string" resultType="string">
-        select max(data_time) from iop_public.ooi_activity_summary_effect where activity_id = #{activityId}
+        select max(data_time)
+        from iop_public.ooi_activity_summary_effect
+        where activity_id = #{activityId}
     </select>
 
-    <insert id="insert93006Info" >
+    <insert id="insert93006Info">
         insert into iop_93006_info (
         count_time,
         province,
@@ -267,19 +269,65 @@
         </foreach>
     </insert>
 
-    <insert id="insertiop93006" >
+    <insert id="insertiop93006">
         insert into iop_93006
-        select b.count_time,b.province,b.city,a.phone_no,b.activity_id,b.activity_name,'null','null','null','null','null',
-        a.is_touch,a.is_join_activity,a.is_marketed from iop_93006_info b
-        inner join  iop_public.ooi_activity_detail_effect_${activityEndDate} a  on a.activity_id = b.iop_activity_id
+        select b.count_time,
+               b.province,
+               b.city,
+               a.phone_no,
+               b.activity_id,
+               b.activity_name,
+               'null',
+               'null',
+               'null',
+               'null',
+               'null',
+               a.is_touch,
+               a.is_join_activity,
+               a.is_marketed
+        from iop_93006_info b
+                 inner join iop_public.ooi_activity_detail_effect_${activityEndDate} a
+                            on a.activity_id = b.iop_activity_id
+    </insert>
+    <insert id="insertIop93004">
+        insert into iop_93004
+
+        select #{city},
+               #{activityId},
+               #{activityName},
+               #{startTime},
+               #{endTime},
+               #{campaignId},
+               #{campaignName},
+               #{campaignStartTime},
+               #{campaignEndTime},
+               #{channelId},
+               #{channeTypeOne},
+               #{channeTypeTwo},
+               #{channelName},
+               #{positionId},
+               #{positionidOne},
+               #{positionidTwo},
+               #{positionName},
+               b.PHONE_NO,
+               b.IMEI,
+               #{proName},
+               #{proCode},
+               #{proCodeSplite}
+        from ${finalObjTableName} a
+                 inner join dw_terminal_imei_user_yx_d b on a.PHONE_NO = b.PHONE_NO
     </insert>
 
     <select id="getTableRowsByTableName" parameterType="string" resultType="int">
-        select count(*) from ${tableName}
+        select count(*)
+        from ${tableName}
     </select>
 
     <select id="tableIsExit" parameterType="string" resultType="int">
-        select count(*)  from information_schema.tables where table_schema =#{schema} and table_name = #{tableName}
+        select count(*)
+        from information_schema.tables
+        where table_schema = #{schema}
+          and table_name = #{tableName}
     </select>
 
     <select id="getSummaryEffectMaxDate" parameterType="string" resultType="string">

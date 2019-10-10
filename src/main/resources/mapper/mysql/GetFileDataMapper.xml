@@ -175,11 +175,37 @@
           and b.ooi_activity_id is not null
     </select>
 
-    <select id="getIOPActivityInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
-        select distinct a.activity_id,a.activity_name,a.city_id as city,a.activity_id as iop_activity_id from activity_base_info a
-        inner join activity_flow b on a.activity_id = b.activity_id
-        where b.flow ='3'
-        and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
+    <select id="getIOPActivityInfo" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
+        select distinct a.activity_id,a.activity_name,a.city_id as city,a.activity_id as iop_activity_id
+        from activity_base_info a
+                 inner join activity_flow b on a.activity_id = b.activity_id
+        where b.flow = '3'
+          and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
+    </select>
+    <select id="getBase93004" parameterType="string"
+            resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93004Info">
+        select a.activity_id,
+               a.start_time,
+               a.activity_name,
+               a.activity_name as campaign_name,
+               a.activity_id   as campaign_id,
+               a.end_time,
+               e.POSITIONID,
+               e.CHANNELID,
+               e.CHANNETYPE,
+               e.CHANNELNAME,
+               e.POSITIONID,
+               e.POSITIONNAME,
+               c.final_obj_user_amount,
+               c.final_obj_table_name
+        from activity_base_info a
+                 inner join activity_flow b on a.activity_id = b.activity_id
+                 inner join
+                 activity_obj_user c on a.activity_id = c.activity_id
+                 inner join activity_rel_channel_parameter d on a.activity_id = d.activity_id
+                 inner join marking_activity_iop_info e on d.value = e.POSITIONID
+        where parameter = 'internet_base_pos_name' and    a.end_time=#{activityEndDate}
     </select>
 
     <!--<select id="getIOPActivityDates" parameterType="string" resultType="string">-->

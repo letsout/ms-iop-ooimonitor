@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,6 +27,33 @@ public class TaskSaveController {
     @Autowired
     FileDataService fileDataService;
 
+    @RequestMapping("/93004/{activityEndDate}")
+    public String testsav93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
+        new Thread() {
+
+            @Override
+            public void run() {
+                fileDataService.truncateTable("93004");
+                try {
+                    taskService.saveBase93004(activityEndDate);
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93004")
+                                    .tableName("iop_93004")
+                                    .fileName("i_13000_time_IOP-93004_" + num + "_fileNum.dat")
+                                    .dataTime(TimeUtil.getAfterDay(activityEndDate))
+                                    .step("1")
+                                    .build()
+                    );
+                    taskService.uploadFile();
+                } catch (Exception e) {
+                    log.error("93006 error :{}", e);
+                    fileDataService.truncateTable("93006");
+                }
+            }
+        }.start();
+        return "success：请查看日志";
+    }
     @RequestMapping("/93006/{activityEndDate}")
     public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
