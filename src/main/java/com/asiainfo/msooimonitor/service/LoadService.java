@@ -21,5 +21,5 @@ public interface LoadService {
 
     void insertRecord(InterfaceRecord interfaceRecord);
 
-    String getInterfaceTableName(String interfaceId);
+    void updateRelTable(String interfaceId, String date);
 }

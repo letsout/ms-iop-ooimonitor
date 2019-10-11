@@ -71,6 +71,6 @@
     </select>
 
     <select id="listInterfaceInfoById" parameterType="string" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo">
-        select * from ooi_interface_info where interface_id = #{interfaceId}
+        select * from ooi_interface_info where interface_id = #{interfaceId} and data_state = 'U';
     </select>
 </mapper>

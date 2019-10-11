@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.time.LocalDate;
+
 
 @SpringCloudApplication
 @EnableScheduling
@@ -42,7 +44,6 @@ public class MsOoiMonitorApplication {
                             "/instances",
                             "/actuator/**"
                     ).and().csrf().disable();
-
         }
     }
 }

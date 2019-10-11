@@ -76,9 +76,7 @@ public class LoadServiceImpl implements LoadService {
     }
 
     @Override
-    public String getInterfaceTableName(String interfaceId) {
-        return downloadFileMapper.getInterfaceTableName(interfaceId);
+    public void updateRelTable(String interfaceId, String date) {
+        downloadFileMapper.updateRelTable(interfaceId,date);
     }
-
-
 }

@@ -52,7 +52,7 @@ public class DownloadFileTask {
      * 月接口 每月一次
      */
     @RequestMapping("/dotask")
-    @Scheduled(fixedDelay = 1000 * 60 * 5)
+    @Scheduled(fixedDelay = 1000 * 60 * 30)
     public void downloadFile() {
         // 查询需要处理的下载接口
         List<InterfaceInfo> interfaceInfos = downloadInterfaceServic.listDownloadFileInterface();
@@ -67,8 +67,8 @@ public class DownloadFileTask {
                 String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
                 String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
 
-                 String   interfaceId = info.getInterfaceId();
-
+                 String interfaceId = info.getInterfaceId();
+                 String tableName = info.getFileName();
 
                 // 查询此接口成功入库的最大时间
                   String  startTime = downloadInterfaceServic.getMaxSuccessTime(interfaceId);
@@ -137,7 +137,7 @@ public class DownloadFileTask {
                  //         boolean isDownload = false;
                         if (isDownload) {
                             log.info("接口：{}准备入库周期:{}！！！", info.getInterfaceId(), time);
-                            handleData.killFile(interfaceId, localPath.replace("replaceTime", time), time);
+                            handleData.killFile(interfaceId, localPath.replace("replaceTime", time), tableName, time);
                         }
                     }
                 }

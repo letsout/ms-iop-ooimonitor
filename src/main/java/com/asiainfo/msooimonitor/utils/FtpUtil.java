@@ -1,5 +1,8 @@
 package com.asiainfo.msooimonitor.utils;
 
+import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
+import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
+import com.asiainfo.msooimonitor.service.LoadService;
 import com.jcraft.jsch.*;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -113,7 +116,7 @@ public class FtpUtil {
 
         StringBuffer dirPath = new StringBuffer("/");
         for (String str : strings) {
-            if (str.equals("")) {
+            if ("".equals(str)) {
                 continue;
             }
             dirPath.append(str + "/");
@@ -280,40 +283,31 @@ public class FtpUtil {
     /**
      * ftp上传文件
      *
-     * @param pathname    远程文件路径
-     * @param fileName    文件名
-     * @param inputStream 文件流
+     * @param localPath  本地文件路径
+     * @param remotePath 远程文件路劲
+     * @param interfaceId 接口id
+     * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String pathname, String fileName,
-                                        InputStream inputStream) {
+    public static boolean uploadFileFTP(String localPath,String remotePath, String interfaceId, LoadService loadService,String date) {
 
         FTPClient ftpClient = new FTPClient();
-
+        FileInputStream inputStream = null;
         try {
             int reply;
 
-            // 连接FTP服务器
-            logger.info("连接FTP服务器:{}：{}", USER, FTP_PORT);
             ftpClient.connect(HOST, FTP_PORT);
-
-            // 登录
-            logger.info("登录:{},{}", USER, PASS);
             ftpClient.login(USER, PASS);
 
             reply = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
-                logger.info("ftp connect error");
                 ftpClient.disconnect();
                 return false;
             }
-
-            logger.info("登陆成功！！！");
-
             // 切换到上传目录
-            if (!ftpClient.changeWorkingDirectory(pathname)) {
+            if (!ftpClient.changeWorkingDirectory(remotePath)) {
                 // 如果目录不存在创建目录
-                String[] dirs = pathname.split("/");
+                String[] dirs = remotePath.split("/");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {
@@ -325,14 +319,12 @@ public class FtpUtil {
                         // 创建目录
                         if (!ftpClient.makeDirectory(tempPath)) {
                             //如果创建文件目录失败，则返回
-                            System.out.println("创建文件目录" + tempPath + "失败");
+                           logger.error("创建文件目录" + tempPath + "失败");
                             return false;
                         } else {
                             //目录存在，则直接进入该目录
-
                             logger.info("进入：{}", tempPath);
                             ftpClient.changeWorkingDirectory(tempPath);
-
                         }
                     }
                 }
@@ -340,23 +332,81 @@ public class FtpUtil {
 
             //设置上传文件的类型为二进制类型
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            // 删除与此接口相关的文件
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            Arrays.stream(ftpFiles)
+                    .filter(Objects::nonNull)
+                    .forEach(file ->{
+                        if(file.getName().contains(interfaceId)){
+                            try {
+                                ftpClient.deleteFile(file.getName());
+                            } catch (IOException e) {
+                               logger.error("228  接口[{}]文件删除失败",file.getName());
+                               logger.error("{}",e);
+                            }
+                        }
+                    });
 
-            logger.info("开始上传文件：{}", fileName);
-            //上传文件
-            if (!ftpClient.storeFile(fileName, inputStream)) {
-                return false;
+
+            String[] fileNames = FileUtil.listUploadFile(localPath);
+            boolean flag = true;
+            for (String fileName :
+                    fileNames) {
+                if (fileName.contains(interfaceId)) {
+                    logger.info("开始上传文件{}从{}到{}", fileName,localPath,remotePath);
+                    inputStream = new FileInputStream(new File(localPath + File.separator + fileName));
+                    if (ftpClient.storeFile(fileName, inputStream)) {
+                        logger.info("文件[{}]上传成功！！！", fileName);
+                    } else {
+                        flag = false;
+                    }
+                }
             }
-            inputStream.close();
             ftpClient.logout();
+
+            if (flag) {
+                logger.info("文件[]接口上传成功！！！", interfaceId);
+                InterfaceRecord interfaceRecord = new InterfaceRecord();
+                interfaceRecord.setInterfaceId(interfaceId);
+                interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
+                interfaceRecord.setTypeDesc(StateAndTypeConstant.TRUE);
+                interfaceRecord.setFileName("");
+                interfaceRecord.setFileNum("");
+                interfaceRecord.setFileSuccessNum("");
+                interfaceRecord.setFileTime(date);
+                loadService.insertRecord(interfaceRecord);
+                loadService.updateRelTable(interfaceId,date);
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("文件上传出现异常{}", e);
+            InterfaceRecord interfaceRecord = new InterfaceRecord();
+            interfaceRecord.setInterfaceId(interfaceId);
+            interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
+            interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
+            interfaceRecord.setFileName("");
+            interfaceRecord.setFileNum("");
+            interfaceRecord.setFileTime(date);
+            interfaceRecord.setFileSuccessNum("0");
+            interfaceRecord.setErrorDesc("文件上传出现异常:" + e.getMessage().substring(0, 470));
+            loadService.insertRecord(interfaceRecord);
+
         } finally {
             if (ftpClient.isConnected()) {
                 try {
                     ftpClient.disconnect();
                 } catch (IOException ioe) {
+                    logger.error("ftp 断开链接出现异常{}", ioe);
                 }
             }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error("输入流关闭出现异常{}", e);
+                }
+            }
+
         }
         return true;
     }
@@ -371,9 +421,9 @@ public class FtpUtil {
      */
     public static boolean downloadFileFTP(String remotePath, String localPath, String interfaceId) throws RuntimeException, IOException {
 
-        logger.info("remotePath:{};localPath{};interfaceId{}",remotePath,localPath,interfaceId);
+        logger.info("remotePath:{};localPath{};interfaceId{}", remotePath, localPath, interfaceId);
 
-        boolean flag= false;
+        boolean flag = false;
 
         FTPClient ftpClient = new FTPClient();
 
@@ -401,12 +451,12 @@ public class FtpUtil {
 
         FTPFile[] ftpFiles = ftpClient.listFiles();
 
-       // ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        // ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
         if (ftpFiles.length > 0) {
             for (FTPFile file :
                     ftpFiles) {
-                if (file.getName().contains(interfaceId) && file.getName().contains(".dat")) {
+                if (file.getName().contains(interfaceId) && (file.getName().endsWith(".dat")|| file.getName().endsWith(".txt"))) {
                     FileUtil.dirExit(localPath);
                     FileOutputStream out = new FileOutputStream(localPath + File.separator + file.getName());
                     boolean b = ftpClient.retrieveFile(file.getName(), out);
@@ -419,13 +469,13 @@ public class FtpUtil {
                     out.close();
                 }
             }
-        }else {
-            logger.info("remotePath:{} 接口：{} 文件不存在！！！！",remotePath,interfaceId);
+        } else {
+            logger.info("remotePath:{} 接口：{} 文件不存在！！！！", remotePath, interfaceId);
         }
         ftpClient.logout();
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
         }
-     return flag;
+        return flag;
     }
 }

@@ -66,7 +66,7 @@ public class FileUtil {
     }
 
     /**
-     * 计算文件大小（字节）
+     * 计算文件大小（M）
      *
      * @param filePath 文件全路径
      * @return
@@ -82,7 +82,7 @@ public class FileUtil {
      * @param filePath 文件路径
      * @return
      */
-    public static int getFileRows(String filePath) {
+    public static String getFileRows(String filePath) {
         int rows = 0;
         try {
             File file = new File(filePath);
@@ -90,29 +90,9 @@ public class FileUtil {
             LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
             lineNumberReader.skip(Long.MAX_VALUE);
             rows = lineNumberReader.getLineNumber();
-            fileReader.close();
-            lineNumberReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rows;
-    }
-
-    /**
-     * 判断生成文件的数量
-     *
-     * @param filePath
-     * @param fileName
-     * @return
-     */
-    public static String getFileRows(String filePath, String fileName) {
-        int rows = 0;
-        try {
-            File file1 = new File(filePath + File.separator + fileName);
-            FileReader fileReader = new FileReader(file1);
-            LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
-            lineNumberReader.skip(Long.MAX_VALUE);
-            rows = lineNumberReader.getLineNumber();
+            /*if(rows != 0){
+                rows +=1;
+            }*/
             fileReader.close();
             lineNumberReader.close();
         } catch (Exception e) {
@@ -120,7 +100,6 @@ public class FileUtil {
         }
         return String.valueOf(rows);
     }
-
 
     /**
      * 遍历指定文件夹下的文件名
@@ -134,11 +113,25 @@ public class FileUtil {
         File file = new File(dir);
         String[] list = file.list();
         try {
-            dat = Arrays.stream(list).filter(name -> name.endsWith("dat")).collect(Collectors.toList());
+            dat = Arrays.stream(list).filter(name -> name.endsWith("dat") || name.endsWith(".txt")).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("遍历指定文件夹下的文件名出错：{}", dir);
         }
         return dat;
+    }
+
+    /**
+     * 遍历指定文件夹下的文件名
+     *
+     * @param dir
+     * @return List文件名
+     */
+    public static String[]  listUploadFile(String dir) {
+        List<String> dat = null;
+        // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+        File file = new File(dir);
+        String[] list = file.list();
+        return list;
     }
 
 
@@ -207,7 +200,7 @@ public class FileUtil {
     }
 
 
-    public static int[] BinstrToIntArray(String binStr) {
+    public static int[] binstrToIntArray(String binStr) {
         char[] temp = binStr.toCharArray();
         int[] result = new int[temp.length];
         for (int i = 0; i < temp.length; i++) {
@@ -216,8 +209,8 @@ public class FileUtil {
         return result;
     }
 
-    public static char BinstrToChar(String binStr) {
-        int[] temp = BinstrToIntArray(binStr);
+    public static char binstrToChar(String binStr) {
+        int[] temp = binstrToIntArray(binStr);
         int sum = 0;
         for (int i = 0; i < temp.length; i++) {
             sum += temp[temp.length - 1 - i] << i;
@@ -228,7 +221,7 @@ public class FileUtil {
     /**
      * 删除文件最后一行为空行的
      *
-     * @param file file全路径
+     * @param path file全路径
      *             a_13000_20190214_IOP-93001_00_001.dat
      *             a_13000_20190214_IOP-93002_00.verf
      */

@@ -34,7 +34,8 @@
     SELECT max(file_time) from ooi_interfacae_run_record_dtl where interface_id = #{interfaceId} and type_desc = 0 and run_step = 2;
     </select>
 
-    <select id="getInterfaceTableName" parameterType="string" resultType="string">
-    select distinct table_name from ooi_interface_rel_table where data_state = 'U'
-    </select>
+    <update id="updateRelTable" parameterType="string">
+        update ooi_interface_rel_table set step = 2  where interface_id = #{interfaceId} and data_time = #{date}
+    </update>
+
 </mapper>

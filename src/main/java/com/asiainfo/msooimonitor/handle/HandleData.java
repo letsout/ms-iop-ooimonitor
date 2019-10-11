@@ -41,7 +41,7 @@ public class HandleData {
      *
      * @param interfaceId
      */
-    public void killFile(String interfaceId, String localPath, String date) {
+    public void killFile(String interfaceId, String localPath, String tableName, String date) {
 
         List<String> list = FileUtil.listFile(localPath);
        /* String newPath= localPath+File.separator+"tmp";
@@ -52,11 +52,11 @@ public class HandleData {
             List<String> collect = list.stream().filter(name -> name.contains(interfaceId)).collect(Collectors.toList());
             // 加载文件之前先删除当天入库文件
             logger.info("清除接口[{}]-[{}]周期",interfaceId,date);
-            loadService.deleteSql("delete from " +  "IOP_" + interfaceId + " where data_time='" + date + "'");
+            loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
             if (collect.size() > 0) {
                 for (String fileName:
                 collect) {
-                    readFileThread.ReadFile(fileName,localPath,interfaceId,date);
+                    readFileThread.readFile(fileName,localPath,interfaceId,tableName,date);
                 }
             } else {
                 logger.info("接口：{" + interfaceId + "} 文件不存在！！！");

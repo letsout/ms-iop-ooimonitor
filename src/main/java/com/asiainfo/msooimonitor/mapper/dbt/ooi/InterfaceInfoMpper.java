@@ -1,5 +1,8 @@
 package com.asiainfo.msooimonitor.mapper.dbt.ooi;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93004Info;
+import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
+import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import org.apache.ibatis.annotations.Param;
@@ -10,39 +13,34 @@ import java.util.Map;
 
 @Repository
 public interface InterfaceInfoMpper {
+    List<Map<String, String>> getDetailEffect(@Param("activityIds") String activityIds, @Param("date") String date, @Param("start") int start, @Param("limit") int limit);
 
-    /**
-     * 获取接口信息
-     * @param params
-     * @return
-     */
-    List<InterfaceInfo> getInterfaceInfo(Map params);
+    Map<String, String> getSummaryEffect(@Param("activityId") String activityId, @Param("date") String date);
 
-    int checkInterface(String interfaceId);
+    int getTableRows(@Param("activityIds") String activityIds, @Param("dateTimeFormat") String dateTimeFormat);
 
-    void saveInterfceInfo(InterfaceInfo params);
+    List<Map<String, String>> getSummaryEffects(@Param("activityIds") String activityIds, @Param("date") String date);
 
- /*   List<InterfaceRecord> getInterfaceRecord(@Param("start") int start,@Param("end") int end);*/
+    void truncateTable(@Param("tableName") String tableName);
 
-    List<InterfaceRecord> getInterfaceRecord(Map params);
+    void insert93055(List<Map<String, String>> list);
 
-    void saveInterfaceRecord(Map params);
+    String getSummaryEffectMaxDate(@Param("activityId") String activityId, @Param("beforeDate") String beforeDate);
 
-    void deleteInterfaceId(String interfaceId);
+    void insert93056(List<Map<String, String>> list);
 
-    void editInterfaceInfo(InterfaceInfo params);
+    String getMaxTime(String activityId);
 
-    List<String> getDownloadFile(String date);
+    void insert93006Info(List<Act93006Info> list);
 
-    List<InterfaceInfo> getuploadInterface();
+    void insertiop93006(@Param("activityEndDate") String activityEndDate);
 
-    List<InterfaceInfo> getLoadInterface();
+    int getTableRowsByTableName(@Param("tableName") String tableName);
 
-    List<InterfaceRecord> getInterfaceRecordByParam(@Param("start") int start,
-                                                    @Param("end") int end,
-                                                    @Param("interfaceId") String interfaceId,
-                                                    @Param("updateType") String updateType,
-                                                    @Param("state") String state,
-                                                    @Param("updateTime") String updateTime);
-    String getInterfaceIdType(@Param("interfaceId") String interfaceId);
+    int tableIsExit(@Param("schema") String schema, @Param("tableName") String tableName);
+
+    void insertIop93004(Act93004Info activity);
+
+    Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
+
 }

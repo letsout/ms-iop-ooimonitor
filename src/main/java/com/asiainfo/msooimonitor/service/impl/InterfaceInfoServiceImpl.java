@@ -51,7 +51,6 @@ public class InterfaceInfoServiceImpl implements InterfaceInfoService {
 
     @Override
     public InterfaceInfo listInterfaceInfoById(String interfaceId) {
-
         return interfaceInfoMapper.listInterfaceInfoById(interfaceId);
     }
 
