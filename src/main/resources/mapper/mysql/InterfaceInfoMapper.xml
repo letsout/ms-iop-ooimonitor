@@ -34,7 +34,7 @@
         interface_cycle = #{interfaceCycle},
         interface_local_path = #{interfaceLocalPath},
         interface_remote_path = #{interfaceRemotePath},
-        interface_run_time = #{interfaceRunTime},
+        interface_vgop_path = #{interfaceVgopPath},
         file_name = #{fileName}
         where
         interface_id = #{interfaceId}
@@ -50,7 +50,7 @@
         interface_cycle,
         interface_local_path,
         interface_remote_path,
-        interface_run_time,
+        interface_vgop_path,
         file_name
         ) values (
         #{interfaceId},
@@ -61,7 +61,7 @@
         #{interfaceCycle},
         #{interfaceLocalPath},
         #{interfaceRemotePath},
-        #{interfaceRunTime},
+        #{interfaceVgopPath},
         #{fileName}
         );
     </insert>

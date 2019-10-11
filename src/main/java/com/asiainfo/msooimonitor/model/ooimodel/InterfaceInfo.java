@@ -61,9 +61,9 @@ public class InterfaceInfo {
     private String interfaceRemotePath;
 
     /**
-     * 接口运行时间 接口运行时间 日接口/月接口为日期  周接口为星期几（1，2，3，4，5）
+     * 228主机文件存放地址
      */
-    private String interfaceRunTime;
+    private String interfaceVgopPath;
 
     /**
      * 接口文件名称
