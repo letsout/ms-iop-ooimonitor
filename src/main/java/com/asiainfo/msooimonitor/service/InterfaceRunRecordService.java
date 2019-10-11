@@ -13,4 +13,11 @@ public interface InterfaceRunRecordService {
      * @return
      */
     PageInfo<InterfaceRecord> getInterfaceRunRecordInfo(InterfaceRecord serachFilter, int pageNum, int pageSize);
+
+
+    /**
+     * 根据id删除接口信息
+     * @param interfaceId
+     */
+    void deleteInterfaceInfos(String interfaceId);
 }
