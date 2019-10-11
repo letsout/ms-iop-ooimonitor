@@ -54,6 +54,35 @@ public class TaskSaveController {
         }.start();
         return "success：请查看日志";
     }
+
+    @RequestMapping("/93003/{month}")
+    public String saveAll93003(@PathVariable String month, @RequestParam(defaultValue = "00") String num) {
+        new Thread() {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
+            @Override
+            public void run() {
+                fileDataService.truncateTable("93003");
+                try {
+                    taskService.saveAll93003(month);
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93003")
+                                    .tableName("iop_93003")
+                                    .fileName("a_13000_time_IOP-93003_" + num + "_fileNum.dat")
+                                    .dataTime(TimeUtil.getAfterMonthSql(TimeUtil.strToDate(month+"10")))
+                                    .step("1")
+                                    .build()
+                    );
+                    taskService.uploadFile();
+                } catch (Exception e) {
+                    log.error("93003 error :{}", e);
+                    fileDataService.truncateTable("93003");
+                }
+            }
+        }.start();
+        return "success：请查看日志";
+    }
     @RequestMapping("/93006/{activityEndDate}")
     public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
@@ -202,13 +231,12 @@ public class TaskSaveController {
     }
 
     /**
-     *
      * @param activityEndDate 上传数据活动结束日期
-     * @param num 重传序号 默认00  重传之后依次加1
+     * @param num             重传序号 默认00  重传之后依次加1
      * @return
      */
     @RequestMapping("/93056/{activityEndDate}")
-    public String sqve93056(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num){
+    public String sqve93056(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {
@@ -241,13 +269,12 @@ public class TaskSaveController {
 
 
     /**
-     *
      * @param activityEndDate 上传数据活动结束日期
-     * @param num 重传序号 默认00  重传之后依次加1
+     * @param num             重传序号 默认00  重传之后依次加1
      * @return
      */
     @RequestMapping("/93055/{activityEndDate}")
-    public String sqve93055(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num){
+    public String sqve93055(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Runnable() {
             @Override
             public void run() {

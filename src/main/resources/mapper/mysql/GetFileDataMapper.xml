@@ -2,21 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper">
-    <!--<select id="getCustGroupInfo" resultType="map">-->
-    <!--select b.*-->
-    <!--FROM activity_rel_custgroup a-->
-    <!--inner JOIN cust_group_info b ON a.cust_group_id = b.cust_group_id-->
-    <!--where ACTIVITY_ID = #{activityId }-->
-    <!--</select>-->
-    <!--<select id="getBaseInfo93006" resultType="map">-->
-    <!--select a.*-->
-    <!--from activity_base_info a-->
-    <!--where a.activity_state = '9'-->
-    <!--and a.is_deleted = 0-->
-    <!--and a.is_send_approval = 1-->
-    <!--and activity_id in (select distinct activity_id from activity_flow where flow = '3')-->
-    <!--and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}-->
-    <!--</select>-->
     <select id="getMarkingInfo93006" resultType="map">
         select *
         from ooi_MARKING_ACTIVITY_INFO
@@ -35,8 +20,9 @@
     <select id="getBaseInfo93002" resultType="map">
         select a.*,c.flow,d.*
         from activity_base_info a
+                 inner join activity_rel_channel b on a.activity_id = b.activity_id
                  inner join activity_flow c on a.activity_id = c.activity_id
-                 inner join base_channel_info d on c.channel_id = d.channel_id
+                 inner join base_channel_info d on b.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
     </select>
@@ -101,9 +87,9 @@
                                   and data_state = 'U')
     </select>
     <insert id="insertFlow" parameterType="java.util.HashMap">
-        INSERT INTO `activity_flow`(`activity_id`, `flow`,channel_id)values
+        INSERT INTO `activity_flow`(`activity_id`, `flow`)values
         <foreach collection="list" item="map" separator=",">
-            (#{map.activity_id}, #{map.flow},#{map.channel_id})
+            (#{map.activity_id}, #{map.flow})
         </foreach>
     </insert>
     <select id="getFlowInfo1" resultType="map">
@@ -122,28 +108,7 @@
                  inner join base_channel b on a.channel_id = b.channel_id
         where a.activity_id not in (select activity_id from activity_flow)
     </select>
-    <!--<select id="getChannelInfo" resultType="map">-->
-    <!--select *-->
-    <!--from activity_rel_channel_parameter a-->
-    <!--where a.activity_id = #{activityId} limit 1-->
-    <!--</select>-->
-    <!--<select id="getPositionInfo" resultType="map">-->
-    <!--select *-->
-    <!--from activity_rel_channel_parameter a-->
-    <!--inner join marking_activity_iop_info b on a.`value` = b.POSITIONID-->
-    <!--where a.parameter = 'internet_base_pos_name'-->
-    <!--and a.activity_id = #{activityId}-->
-    <!--</select>-->
 
-
-    <!--<insert id="insertFailInterface" parameterType="java.util.HashMap">-->
-
-    <!--INSERT INTO `ooi_activity_syn_fail_interface`(`activity_id`, `campaign_id`, `interface_name`, `syn_time`,-->
-    <!--error_desc-->
-    <!--)-->
-    <!--VALUES (#{activityId}, #{campaign_id}, #{interface_name}, #{syn_time}, #{error_desc});-->
-
-    <!--</insert>-->
 
     <select id="getIOPActivityIds" parameterType="string" resultType="string">
         select distinct iop_activity_id
@@ -154,14 +119,6 @@
           and ooi_activity_id = #{activityId}
     </select>
 
-
-    <!--<select id="getIOPActivityByOoiId" parameterType="string" resultType="string">-->
-    <!--select distinct iop_activity_id-->
-    <!--from ooi_iop_rel_activity_info a-->
-    <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
-    <!--where data_state = 'U'-->
-    <!--and is_feedback = '2'-->
-    <!--</select>-->
 
     <select id="getJTActivityInfo" parameterType="string"
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
@@ -216,34 +173,7 @@
         where activity_id in
               (${activityIds}) ;
     </update>
-    <!--<select id="getIOPActivityDates" parameterType="string" resultType="string">-->
 
-    <!--select distinct b.end_time-->
-    <!--from ooi_iop_rel_activity_info a-->
-    <!--inner join activity_base_info b on a.iop_activity_id = b.activity_id-->
-    <!--where ooi_activity_id = #{ooiActivityId}-->
-    <!--and data_state = 'U'-->
-    <!--and is_feedback = '2'-->
-    <!--</select>-->
-
-
-    <!--<select id="getZHDIOPActivityIds" parameterType="string" resultType="string">-->
-    <!--select distinct iop_activity_id-->
-    <!--from ooi_iop_rel_activity_info-->
-    <!--where ooi_activity_id = #{activityId}-->
-    <!--and data_state = 'U'-->
-    <!--and is_feedback = '2'-->
-    <!--</select>-->
-    <!--<select id="getAllOfferBo" parameterType="string" resultType="map">-->
-    <!--select a.activity_id,-->
-    <!--GROUP_CONCAT(offer_code) as offer_code,-->
-    <!--GROUP_CONCAT(offer_name) as offer_name,-->
-    <!--GROUP_CONCAT(offer_type) as offer_type-->
-    <!--from ooi_marking_campaign_info a-->
-    <!--inner join ooi_marking_campaign_offerbo_info b on a.campaign_id = b.campaign_id-->
-    <!--where a.activity_id = #{activityId}-->
-
-    <!--</select>-->
     <select id="getBaseOfferBo" parameterType="string" resultType="map">
         select *
         from activity_rel_product
@@ -275,13 +205,6 @@
           and d.activity_id is not null
     </select>
 
-    <!--<insert id="insertFailDetail" parameterType="java.util.HashMap">-->
-    <!--INSERT INTO `ooi_activity_upload_detail`( `activity_id`, `interface_id`, `activity_type`,-->
-    <!--`fail_time`, `fail_desc`) VALUES-->
-    <!--<foreach collection="list" item="map" separator=",">-->
-    <!--(#{map.activity_id}, #{map.interface_id}, #{map.activity_type}, #{map.fail_time}, #{map.fail_desc})-->
-    <!--</foreach>-->
-    <!--</insert>-->
 
     <select id="getYJCH" parameterType="string"
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo">
@@ -422,5 +345,13 @@
         from activity_rel_channel
         where activity_Id = #{activityId}
         ORDER BY channel_id limit 1
+    </select>
+    <select id="getData93003" resultType="java.util.Map">
+        select *
+        from activity_base_info a
+                 inner join activity_rel_channel b on a.activity_id = b.activity_id
+                 inner join activity_flow c on a.activity_id = c.activity_id
+        where c.flow in ('2', '3')
+          and date_format(a.end_time, '%Y%m') = #{month}
     </select>
 </mapper>

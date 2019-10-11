@@ -13,44 +13,6 @@ import java.util.Map;
 
 @Repository
 public interface InterfaceInfoMpper {
-//
-//    /**
-//     * 获取接口信息
-//     *
-//     * @param params
-//     * @return
-//     */
-//    List<InterfaceInfo> getInterfaceInfo(Map params);
-//
-//    int checkInterface(String interfaceId);
-//
-//    void saveInterfceInfo(InterfaceInfo params);
-//
-//    /*   List<InterfaceRecord> getInterfaceRecord(@Param("start") int start,@Param("end") int end);*/
-//
-//    List<InterfaceRecord> getInterfaceRecord(Map params);
-//
-//    void saveInterfaceRecord(Map params);
-//
-//    void deleteInterfaceId(String interfaceId);
-//
-//    void editInterfaceInfo(InterfaceInfo params);
-//
-//    List<String> getDownloadFile(String date);
-//
-//    List<InterfaceInfo> getuploadInterface();
-//
-//    List<InterfaceInfo> getLoadInterface();
-//
-//    List<InterfaceRecord> getInterfaceRecordByParam(@Param("start") int start,
-//                                                    @Param("end") int end,
-//                                                    @Param("interfaceId") String interfaceId,
-//                                                    @Param("updateType") String updateType,
-//                                                    @Param("state") String state,
-//                                                    @Param("updateTime") String updateTime);
-//
-//    String getInterfaceIdType(@Param("interfaceId") String interfaceId);
-
     List<Map<String, String>> getDetailEffect(@Param("activityIds") String activityIds, @Param("date") String date, @Param("start") int start, @Param("limit") int limit);
 
     Map<String, String> getSummaryEffect(@Param("activityId") String activityId, @Param("date") String date);
@@ -63,7 +25,7 @@ public interface InterfaceInfoMpper {
 
     void insert93055(List<Map<String, String>> list);
 
-    String getSummaryEffectMaxDate(@Param("activityId")String activityId,@Param("beforeDate")String beforeDate);
+    String getSummaryEffectMaxDate(@Param("activityId") String activityId, @Param("beforeDate") String beforeDate);
 
     void insert93056(List<Map<String, String>> list);
 
@@ -75,7 +37,10 @@ public interface InterfaceInfoMpper {
 
     int getTableRowsByTableName(@Param("tableName") String tableName);
 
-    int tableIsExit(@Param("schema") String schema,@Param("tableName") String tableName);
+    int tableIsExit(@Param("schema") String schema, @Param("tableName") String tableName);
 
     void insertIop93004(Act93004Info activity);
+
+    Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
+
 }

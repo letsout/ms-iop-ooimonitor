@@ -32,6 +32,8 @@ public class SqlUtil {
     static {
         tableMap.put("93001", 48);
         tableMap.put("93002", 83);
+        tableMap.put("93003", 13);
+        tableMap.put("93004", 23);
         tableMap.put("93005", 80);
         tableMap.put("93006", 15);
     }
@@ -62,8 +64,6 @@ public class SqlUtil {
             sbcolum.append(",").append("A").append(a);
         }
         sb.append(sbcolum.substring(1)).append(") values ");
-//        System.out.println("ab==" + sb);
-
         StringBuilder sbvalue;
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> mapinsert = list.get(i);

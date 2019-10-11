@@ -194,5 +194,28 @@ public class TaskMethod {
             fileDataService.truncateTable("93056");
         }
     }
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void save93003() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+        fileDataService.truncateTable("93056");
+        try {
+            String month = TimeUtil.getLastMonthSql(new Date());
+
+            taskService.saveAll93003(month);
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93003")
+                            .tableName("iop_93003")
+                            .fileName("a_13000_time_IOP-93003_00_fileNum.dat")
+                            .dataTime(sdf.format(new Date()))
+                            .step("1")
+                            .build()
+            );
+            taskService.uploadFile();
+        } catch (Exception e) {
+            log.error("93056 error :{}", e);
+            fileDataService.truncateTable("93056");
+        }
+    }
 }
 

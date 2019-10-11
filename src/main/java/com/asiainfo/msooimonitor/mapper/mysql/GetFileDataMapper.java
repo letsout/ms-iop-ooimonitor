@@ -105,4 +105,6 @@ public interface GetFileDataMapper {
     List<Act93004Info> getBase93004(String activityEndDate);
 
     void updateUploadTime(String uploadTime, String activityIds);
+
+    List<Map<String, String>> getData93003(String month);
 }
