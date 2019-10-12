@@ -62,7 +62,7 @@ layui.use(['table', 'form'], function(){
                 demoReload = '%' + demoReload + '%';
             }
 
-            //执行重载
+            //执行重载, where: {
             table.reload('interfaceRunRecord', {
                 page: {
                     curr: 1 //重新从第 1 页开始

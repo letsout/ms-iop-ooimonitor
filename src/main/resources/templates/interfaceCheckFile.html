@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口基本信息</title>
+    <meta http-equiv="refresh" content="1800"/>
+    <link rel="stylesheet" href="./static/plugins/layui/css/layui.css" />
+    <link rel="stylesheet" href="./static/css/interfaceRunRecord.css" />
+
+    <style>
+        .layui-form-label{
+            width: 140px;
+            padding-right: 27px;
+        }
+        .clearAdd, .clearEdit{
+            width: 200px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<!-- 搜索框 -->
+<div class="demoTable layui-form" style="margin-top: 5px;">
+    &nbsp;
+    <div class="layui-input-inline" style="width: 150px;">
+        <input class="layui-input" name="id" id="fileDate" autocomplete="off" type="date" placeholder="运行时间">
+    </div>
+    <button class="layui-btn" data-type="runInterface">提交</button>
+</div>
+
+<table class="layui-hide" id="interfaceCheckFile" lay-filter="interfaceCheckFile"></table>
+
+</body>
+</html>
+
+<script src="./static/plugins/jquery/jquery-2.0.3.min.js"></script>
+<script src="./static/plugins/layui/layui.js"></script>
+<script src="./static/plugins/jquery/jquery.base64.js"></script>
+<script src="./static/js/interfaceCheckFile.js"></script>

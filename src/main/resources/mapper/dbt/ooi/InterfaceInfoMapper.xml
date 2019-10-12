@@ -96,7 +96,8 @@
                'null',
                a.is_touch,
                a.is_join_activity,
-               a.is_marketed
+               a.is_marketed,
+               b.spetopic_id
         from iop_93006_info b
                  inner join iop_public.ooi_activity_detail_effect_${activityEndDate} a
                             on a.activity_id = b.iop_activity_id

@@ -194,10 +194,10 @@ public class TaskMethod {
             fileDataService.truncateTable("93056");
         }
     }
-    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+//    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
     public void save93003() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-        fileDataService.truncateTable("93056");
+        fileDataService.truncateTable("93003");
         try {
             String month = TimeUtil.getLastMonthSql(new Date());
 
@@ -214,7 +214,7 @@ public class TaskMethod {
             taskService.uploadFile();
         } catch (Exception e) {
             log.error("93056 error :{}", e);
-            fileDataService.truncateTable("93056");
+            fileDataService.truncateTable("93003");
         }
     }
 }

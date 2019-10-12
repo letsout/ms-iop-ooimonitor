@@ -1,5 +1,9 @@
 package com.asiainfo.msooimonitor.service;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author yx
  * @date 2019/9/6  17:29
@@ -61,4 +65,6 @@ public interface TaskService {
     void saveBase93004(String activityEndDate) throws Exception;
 
     void uploadFile();
+
+    List<Map<String, String>> getCheckFileByDate(String fileDate) throws IOException;
 }
