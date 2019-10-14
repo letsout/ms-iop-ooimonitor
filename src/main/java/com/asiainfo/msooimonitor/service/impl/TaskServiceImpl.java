@@ -61,65 +61,38 @@ public class TaskServiceImpl implements TaskService {
     public void saveAll93003(String month) throws Exception {
         List<Map<String, Object>> list = new LinkedList<>();
         Map<String, Object> map = null;
-        List<Map<String, String>> activitys = getFileDataMapper.getData93003(month);
-        List<UploadDetailInfo> uploadDetailInfos = new LinkedList<>();
+        List<Map<String, String>> activitys = fileDataService.getData93003(month);
         for (Map<String, String> activity : activitys) {
             map = new HashMap<>(14);
             //1行号
-            String activityId = activity.get("activity_id");
             //2营销活动类型,必填
-            map.put("A2", "9");
+            map.put("A2", activity.get("activityType"));
             //3统计月份,必填，比如，201704
             map.put("A3", month);
             //4省份,必填，参考9.1省公司编码
             map.put("A4", CommonConstant.SC);
             //5地市,可为空，参考9.2市公司编码，当营销活动涉及多个地市时，以逗号分隔
-            map.put("A5", CommonConstant.cityMap.get(activity.getOrDefault("city_id", "1")));
+            map.put("A5", activity.get("cityCode"));
             //6渠道编码,必填，比如,00108xxxx,001：一级分类,08：二级分类,当营销活动涉及多个活动时，以逗号分隔
-            map.put("A6", activity.get("channel_code"));
+            map.put("A6", activity.get("channelCode"));
             //7渠道名称,可为空，当营销活动涉及多个活动时，以逗号分隔
-            map.put("A7", activity.get("channel_name"));
+            map.put("A7", activity.get("channelName"));
             //8营销活动数,必填
-            int activityNum = 1;
-            map.put("A8", String.valueOf(activityNum));
+            map.put("A8", activity.get("activityNum"));
             //9活动总客户数（人次）,必填
-//int allUserNum = interfaceInfoMpper.getTableRowsByTableName(activity.get("final_obj_table_name"));
-            Map<String, String> lastSummaryEffect = interfaceInfoMpper.getLastSummaryEffect(activityId, month);
-            if (lastSummaryEffect == null) {
-                uploadDetailInfos.add(UploadDetailInfo.builder()
-                        .activityId(activityId)
-                        .activityTime(month)
-                        .interfaceId("93003")
-                        .activitytype("base")
-                        .failDesc("缺少效果数据")
-                        .build());
-                continue;
-            }
-            String allUserNum = lastSummaryEffect.get("customer_num");
-            map.put("A9", allUserNum);
+            map.put("A9", activity.get("allUserNum"));
             //10成功接触用户数（人次）,必填
-            String successUserNum = lastSummaryEffect.get("touch_num");
-            map.put("A10", successUserNum);
+            map.put("A10", activity.get("successUserNum"));
             //11营销成功用户数（人次）,必填
-            String successMarkingUserNum = lastSummaryEffect.get("vic_num");
-            map.put("A11", String.valueOf(successMarkingUserNum));
+            map.put("A11", activity.get("successMarkingUserNum"));
             //12预留字段名称,预留字段
             //13运营活动参与用户（人次）,选填
-            String responseRate = lastSummaryEffect.get("response_rate");
-            final Float aFloat = Float.valueOf(responseRate);
-            int operateUserNum = (int) (Integer.parseInt(successUserNum) * aFloat);
-            map.put("A13", String.valueOf(operateUserNum));
+            map.put("A13",activity.get("operateUserNum"));
             //140x0D0A
             list.add(map);
         }
         SqlUtil.getInsert("93003", list);
-        fileDataService.insertFailDetails(uploadDetailInfos);
-        UploadCountInfo uploadCountInfo = new UploadCountInfo();
-        uploadCountInfo.setInterfaceId("93003");
-        uploadCountInfo.setUploadNum(list.size());
-        uploadCountInfo.setFailNum(uploadDetailInfos.size());
-        uploadCountInfo.setActivityTime(month);
-        getFileDataMapper.insertUploadCount(uploadCountInfo);
+
     }
 
     @Override

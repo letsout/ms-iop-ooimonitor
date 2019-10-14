@@ -35,6 +35,76 @@ public class FileDataServiceImpl implements FileDataService {
     SendMessage sendMessage;
 
     @Override
+    public List<Map<String, String>> getData93003(String month) {
+        List<Map<String, String>> activitys = getFileDataMapper.getData93003(month);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (activitys == null || activitys.size() == 0)
+            return list;
+        Map<String, String> map = new HashMap<>(9);
+        String activityType = "9";
+        String cityCode = "";
+        String channelCode = "";
+        String channelName = "";
+
+        int activityNum = activitys.size();
+        //9活动总客户数（人次）,必填
+        int allUserNum = 0;
+        //10成功接触用户数（人次）,必填
+        int successUserNum = 0;
+        //11营销成功用户数（人次）,必填
+        int successMarkingUserNum = 0;
+        //13运营活动参与用户（人次）,选填
+        int operateUserNum = 0;
+        List<UploadDetailInfo> uploadDetailInfos = new LinkedList<>();
+
+        for (Map<String, String> activity : activitys) {
+            String activityId = activity.get("activity_id");
+
+            Map<String, String> lastSummaryEffect = interfaceInfoMpper.getLastSummaryEffect(activityId, month);
+            if (lastSummaryEffect == null) {
+                uploadDetailInfos.add(UploadDetailInfo.builder()
+                        .activityId(activityId)
+                        .activityTime(month)
+                        .interfaceId("93003")
+                        .activitytype("base")
+                        .failDesc("当月" + month + "缺少效果数据")
+                        .build());
+                continue;
+            }
+            cityCode += "," + CommonConstant.cityMap.get(activity.getOrDefault("city_id", "1"));
+            channelCode += "," + activity.get("channel_code");
+            channelName += "," + activity.get("channel_name");
+            allUserNum += Integer.parseInt(lastSummaryEffect.get("customer_num"));
+            String activitySuccessUserNum = lastSummaryEffect.get("touch_num");
+            successUserNum += Integer.parseInt(activitySuccessUserNum);
+            //11营销成功用户数（人次）,必填
+            successMarkingUserNum += Integer.parseInt(lastSummaryEffect.get("vic_num"));
+            String responseRate = lastSummaryEffect.get("response_rate");
+            final Float aFloat = Float.valueOf(responseRate);
+            operateUserNum += (int) (Integer.parseInt(activitySuccessUserNum) * aFloat);
+            //140x0D0A
+        }
+        map.put("activityType", activityType);
+        map.put("cityId", cityCode.substring(1));
+        map.put("channelCode", channelCode.substring(1));
+        map.put("channelName", channelName.substring(1));
+        map.put("activityNum", String.valueOf(activityNum));
+        map.put("allUserNum", String.valueOf(allUserNum));
+        map.put("successUserNum", String.valueOf(successUserNum));
+        map.put("successMarkingUserNum", String.valueOf(successMarkingUserNum));
+        map.put("operateUserNum", String.valueOf(operateUserNum));
+        list.add(map);
+        this.insertFailDetails(uploadDetailInfos);
+        UploadCountInfo uploadCountInfo = new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93003");
+        uploadCountInfo.setUploadNum(activitys.size()-uploadDetailInfos.size());
+        uploadCountInfo.setFailNum(uploadDetailInfos.size());
+        uploadCountInfo.setActivityTime(month);
+        getFileDataMapper.insertUploadCount(uploadCountInfo);
+        return list;
+    }
+
+    @Override
     public void insertFailDetails(List<UploadDetailInfo> list) {
         if (list == null || list.size() == 0) {
             return;
@@ -183,6 +253,7 @@ public class FileDataServiceImpl implements FileDataService {
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
+
     @Override
     @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
