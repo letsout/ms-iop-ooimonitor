@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author yx
@@ -30,6 +31,15 @@ public class TaskSaveController {
     @Autowired
     FileDataService fileDataService;
 
+    @RequestMapping("/getCheckFile")
+    public Result getCheckFile(@RequestParam(value = "fileDate", required = false) String fileDate) throws Exception {
+        if (StringUtils.isEmpty(fileDate)) {
+            fileDate = TimeUtil.getDaySql(new Date());
+        }
+        List<Map<String, String>> list = taskService.getCheckFileByDate(fileDate);
+        log.info("需要获取校验文件的日期{}", fileDate);
+        return ResultUtil.success(list, list.size());
+    }
     @RequestMapping("/93004/{activityEndDate}")
     public String testsav93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
@@ -73,7 +83,7 @@ public class TaskSaveController {
                                     .interfaceId("93003")
                                     .tableName("iop_93003")
                                     .fileName("a_13000_time_IOP-93003_" + num + "_fileNum.dat")
-                                    .dataTime(TimeUtil.getAfterMonthSql(TimeUtil.strToDate(month+"10")))
+                                    .dataTime(TimeUtil.getAfterMonthSql(TimeUtil.strToDate(month + "10")))
                                     .step("1")
                                     .build()
                     );
