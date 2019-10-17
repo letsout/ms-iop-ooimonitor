@@ -47,6 +47,27 @@ public class TaskMethod {
 //            fileDataService.truncateTable("93006");
         }
     }
+    @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
+    public void save93011() {
+        fileDataService.truncateTable("93011");
+        try {
+            final String date = TimeUtil.getLastDaySql(new Date());
+            taskService.saveAll93011(date);
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93011")
+                            .tableName("iop_93011")
+                            .fileName("i_13000_time_IOP-93011_00_fileNum.dat")
+                            .dataTime(date)
+                            .step("1")
+                            .build()
+            );
+            taskService.uploadFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+//            fileDataService.truncateTable("93006");
+        }
+    }
 
 //    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
     public void save93004() {

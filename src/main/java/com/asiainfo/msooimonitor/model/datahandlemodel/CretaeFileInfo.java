@@ -17,7 +17,9 @@ public class CretaeFileInfo {
     private String tableName;
 
     private String fileName;
-
+    /**
+     * 文件日期
+     */
     private String dataTime;
 
     private String step;

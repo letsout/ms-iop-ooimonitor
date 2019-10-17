@@ -60,5 +60,17 @@ public interface TaskService {
 
     void saveBase93004(String activityEndDate) throws Exception;
 
+    /**
+     * 营销回避用户信息
+     * IOP-93011
+     * 营销回避用户信息
+     * 省级IOP
+     * 省侧每天14:00前上传前一天的数据文件。
+     *
+     * @param date
+     * @throws Exception
+     */
+    void saveAll93011(String date) throws Exception;
+
     void uploadFile();
 }
