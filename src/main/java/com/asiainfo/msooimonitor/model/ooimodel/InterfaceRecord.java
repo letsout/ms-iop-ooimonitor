@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class InterfaceRecord {
 
+    private String aid;
     private String interfaceId;
 
     /**

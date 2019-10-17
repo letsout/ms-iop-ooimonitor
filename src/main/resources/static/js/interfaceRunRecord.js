@@ -19,7 +19,8 @@ layui.use(['table', 'form'], function(){
         , id: 'interfaceRunRecord'
         , height: 580
         , cols: [[
-            {field: 'interfaceId', align: 'center', width: '10%', title: '接口编码'}
+            {checkbox: true, aline: 'center', LAY_CHECKED: false, filter: 'test', width: '3%'}
+            , {field: 'interfaceId', align: 'center', width: '7%', title: '接口编码'}
             , {field: 'typeDesc', align: 'center', width: '7%', title: '状态描述',
                 templet: function (data) {
                     if (data.typeDesc == "0") {
@@ -51,6 +52,7 @@ layui.use(['table', 'form'], function(){
             , {field: 'errorDesc', align: 'center', width: '13%', title: '错误描述'}
             , {field: 'updateTime', align: 'center', width: '13%', title: '记录时间'}
             ,{field: 'fileTime', align: 'center', width: '8%', title: '文件周期'}
+            , {field: 'aid', style: 'display:none;'}
         ]]
 
     });
@@ -101,7 +103,42 @@ layui.use(['table', 'form'], function(){
             }else{
                 layer.msg("请将接口编码、运行步骤、运行时间填写完整", {icon: 5});
             }
-        }
+        },
+        getCheckedData:function () {
+            var checkStatus=table.checkStatus('interfaceRunRecord')
+                ,data=checkStatus.data;
+            var ids='';
+            if (data==""){
+                layer.msg("没有选中数据",{icon:2});
+                return;
+            }
+            if (data.length>0){
+                for (var i=0;i<data.length;i++){
+                    ids+= '"' + data[i].aid+'",';
+                }
+                layer.confirm('确定删除？', function(index) {
+                    ids = ids.substring(0,ids.length-1);
+                    ids = '(' + ids + ')';
+                    $.ajax({
+                        url: "deleteInterfaceInfos",
+                        data: {
+                            interfaceId: ids
+                        },
+                        success: function (data) {
+                            if(data.code == 0){
+                                layer.closeAll();
+                                layer.msg("删除成功",{icon:1});
+                                active.reload();
+                            }else{
+                                layer.closeAll();
+                                layer.msg("删除失败",{icon:5});
+                                active.reload();
+                            }
+                        }
+                    })
+                })
+            }
+        },
     };
     $('.demoTable .layui-btn').on('click', function(){
         var type = $(this).data('type');

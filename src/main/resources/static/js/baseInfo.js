@@ -56,22 +56,10 @@ layui.use(['table', 'form'], function(){
                     }
                     return html;
                 }}
-            , {field: 'interfaceLocalPath', align: 'center', width: '10%', title: '存放路径'}
-            , {field: 'interfaceRemotePath', align: 'center', width: '10%', title: '本地路径'}
+            , {field: 'interfaceLocalPath', align: 'center', width: '10%', title: '17主机路径'}
+            , {field: 'interfaceVgopPath', align: 'center', width: '6%', title: '228主机路径'}
+            , {field: 'interfaceRemotePath', align: 'center', width: '10%', title: '集团路径'}
             , {field: 'fileName', align: 'center', width: '6%', title: '文件名称'}
-            , {
-                field: 'interfaceRunTime', align: 'center', width: '6%', title: '运行时间',
-                templet: function (data) {
-                    var html = '';
-                    switch (data.interfaceCycle) {
-                        case '1': html = data.interfaceRunTime + '时';break;
-                        case '2': html = '星期' + data.interfaceRunTime;break;
-                        case '3': html = data.interfaceRunTime + '日';break;
-                        case '4': html = data.interfaceRunTime + '时';break;
-                    }
-                    return html;
-                }
-            }
             , {fixed: 'right', width: '10%', align: 'center', title: '操作', toolbar: '#barBaseInfo'}
         ]]
     });
@@ -146,6 +134,7 @@ layui.use(['table', 'form'], function(){
                 $('select[id="interfaceDealType1"]').siblings("div.layui-form-select").find('dl dd[lay-value="'+editData.interfaceDealType+'"]').click();
                 $("#interfaceLocalPath1").val(editData.interfaceLocalPath);
                 $("#interfaceRemotePath1").val(editData.interfaceRemotePath);
+                $("#interfaceVgopPath1").val(editData.interfaceVgopPath);
                 $("#interfaceFileName1").val(editData.fileName);
             }else{
                 $("#interfaceId1").val('');
@@ -155,7 +144,7 @@ layui.use(['table', 'form'], function(){
                 $('select[id="interfaceType1"]').siblings("div.layui-form-select").find('dl dd[lay-value="1"]').click();
                 $('select[id="interfaceDealType1"]').siblings("div.layui-form-select").find('dl dd[lay-value="1"]').click();
                 $('select[id="interfaceCycle1"]').siblings("div.layui-form-select").find('dl dd[lay-value="1"]').click();
-                $('select[id="interfaceRunTime1"]').siblings("div.layui-form-select").find('dl dd[lay-value="0"]').click();
+                $("#interfaceVgopPath1").val('');
                 $("#interfaceLocalPath1").val('');
                 $("#interfaceRemotePath1").val('');
                 $("#interfaceFileName1").val('');
@@ -170,90 +159,8 @@ layui.use(['table', 'form'], function(){
                     layui.use(['form'], function() {
                         form = layui.form;
                         form.on('select(interface-cycle)', function(data){
-                            var val=data.value;
-                            if(val != '') {
-                                switch (val) {
-                                    case "1":
-                                        $("#interfaceRunTime1").html("<option value=\"0\">0时</option>\n" +
-                                            "                    <option value=\"1\">1时</option>\n" +
-                                            "                    <option value=\"2\">2时</option>\n" +
-                                            "                    <option value=\"3\">3时</option>\n" +
-                                            "                    <option value=\"4\">4时</option>\n" +
-                                            "                    <option value=\"5\">5时</option>\n" +
-                                            "                    <option value=\"6\">6时</option>\n" +
-                                            "                    <option value=\"7\">7时</option>\n" +
-                                            "                    <option value=\"8\">8时</option>\n" +
-                                            "                    <option value=\"9\">9时</option>\n" +
-                                            "                    <option value=\"10\">10时</option>\n" +
-                                            "                    <option value=\"11\">11时</option>\n" +
-                                            "                    <option value=\"12\">12时</option>\n" +
-                                            "                    <option value=\"13\">13时</option>\n" +
-                                            "                    <option value=\"14\">14时</option>\n" +
-                                            "                    <option value=\"15\">15时</option>\n" +
-                                            "                    <option value=\"16\">16时</option>\n" +
-                                            "                    <option value=\"17\">17时</option>\n" +
-                                            "                    <option value=\"18\">18时</option>\n" +
-                                            "                    <option value=\"19\">19时</option>\n" +
-                                            "                    <option value=\"20\">20时</option>\n" +
-                                            "                    <option value=\"21\">21时</option>\n" +
-                                            "                    <option value=\"22\">22时</option>\n" +
-                                            "                    <option value=\"23\">23时</option>");
-                                        break;
-                                    case "2":
-                                        $("#interfaceRunTime1").html("<option value=\"1\">星期一</option>\n" +
-                                            "                    <option value=\"2\">星期二</option>\n" +
-                                            "                    <option value=\"3\">星期三</option>\n" +
-                                            "                    <option value=\"4\">星期四</option>\n" +
-                                            "                    <option value=\"5\">星期五</option>");
-                                        break;
-                                    case "3":
-                                        $("#interfaceRunTime1").html("<option value=\"1\">1日</option>\n" +
-                                            "                    <option value=\"2\">2日</option>\n" +
-                                            "                    <option value=\"3\">3日</option>\n" +
-                                            "                    <option value=\"4\">4日</option>\n" +
-                                            "                    <option value=\"5\">5日</option>\n" +
-                                            "                    <option value=\"6\">6日</option>\n" +
-                                            "                    <option value=\"7\">7日</option>\n" +
-                                            "                    <option value=\"8\">8日</option>\n" +
-                                            "                    <option value=\"9\">9日</option>\n" +
-                                            "                    <option value=\"10\">10日</option>\n" +
-                                            "                    <option value=\"11\">11日</option>\n" +
-                                            "                    <option value=\"12\">12日</option>\n" +
-                                            "                    <option value=\"13\">13日</option>\n" +
-                                            "                    <option value=\"14\">14日</option>\n" +
-                                            "                    <option value=\"15\">15日</option>");
-                                        break;
-                                    case "4":
-                                        $("#interfaceRunTime1").html("<option value=\"0\">0时</option>\n" +
-                                            "                    <option value=\"1\">1时</option>\n" +
-                                            "                    <option value=\"2\">2时</option>\n" +
-                                            "                    <option value=\"3\">3时</option>\n" +
-                                            "                    <option value=\"4\">4时</option>\n" +
-                                            "                    <option value=\"5\">5时</option>\n" +
-                                            "                    <option value=\"6\">6时</option>\n" +
-                                            "                    <option value=\"7\">7时</option>\n" +
-                                            "                    <option value=\"8\">8时</option>\n" +
-                                            "                    <option value=\"9\">9时</option>\n" +
-                                            "                    <option value=\"10\">10时</option>\n" +
-                                            "                    <option value=\"11\">11时</option>\n" +
-                                            "                    <option value=\"12\">12时</option>\n" +
-                                            "                    <option value=\"13\">13时</option>\n" +
-                                            "                    <option value=\"14\">14时</option>\n" +
-                                            "                    <option value=\"15\">15时</option>\n" +
-                                            "                    <option value=\"16\">16时</option>\n" +
-                                            "                    <option value=\"17\">17时</option>\n" +
-                                            "                    <option value=\"18\">18时</option>\n" +
-                                            "                    <option value=\"19\">19时</option>\n" +
-                                            "                    <option value=\"20\">20时</option>\n" +
-                                            "                    <option value=\"21\">21时</option>\n" +
-                                            "                    <option value=\"22\">22时</option>\n" +
-                                            "                    <option value=\"23\">23时</option>");
-                                        break;
-                                }
-                                layui.form.render();
-                            }
+                            layui.form.render();
                         });
-
                         form.on('submit(Save)', function () {
                             var interfaceId1 = $("#interfaceId1").val();
                             var interfaceName1 = $("#interfaceName1").val();
@@ -264,7 +171,7 @@ layui.use(['table', 'form'], function(){
                             var interfaceLocalPath1 = $("#interfaceLocalPath1").val();
                             var interfaceRemotePath1 = $("#interfaceRemotePath1").val();
                             var interfaceFileName1 = $("#interfaceFileName1").val();
-                            var interfaceRunTime1= $("#interfaceRunTime1").val();
+                            var interfaceVgopPath1= $("#interfaceVgopPath1").val();
                             if(interfaceId1 == '' || !isNaN(interfaceId1)){}else{
                                 layer.msg("接口编号为数字",{icon:5});
                                 $("#interfaceId1").focus();
@@ -301,10 +208,11 @@ layui.use(['table', 'form'], function(){
                                 layer.msg("请输入接口文件名称",{icon:5});
                                 $("#interfaceFileName1").focus();
                             }
-                            if(interfaceRunTime1 == '' || interfaceRunTime1 == null){
-                                layer.msg("请选择接口运行时间",{icon:5});
-                                $("#interfaceRunTime1").focus();
+                            if(interfaceVgopPath1 == '' || interfaceVgopPath1 == null){
+                                layer.msg("请输入228主机路径",{icon:5});
+                                $("#interfaceVgopPath1").focus();
                             }
+
                             $.ajax({
                                 url: url,
                                 type: "POST",
@@ -318,7 +226,7 @@ layui.use(['table', 'form'], function(){
                                     interfaceLocalPath:interfaceLocalPath1,
                                     interfaceRemotePath:interfaceRemotePath1,
                                     fileName:interfaceFileName1,
-                                    interfaceRunTime:interfaceRunTime1
+                                    interfaceVgopPath:interfaceVgopPath1
                                 }),
                                 dataType: "json",
                                 contentType: "application/json",
@@ -340,7 +248,6 @@ layui.use(['table', 'form'], function(){
                     });
                     if(isEdit) {
                         $('select[id="interfaceCycle1"]').siblings("div.layui-form-select").find('dl dd[lay-value="' + editData.interfaceCycle + '"]').click();
-                        $('select[id="interfaceRunTime1"]').siblings("div.layui-form-select").find('dl dd[lay-value="' + editData.interfaceRunTime + '"]').click();
                     }
                     isEdit = false;
                 }
