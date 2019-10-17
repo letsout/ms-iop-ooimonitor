@@ -1,13 +1,10 @@
 package com.asiainfo.msooimonitor.utils;
 
 import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
-import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
-import com.asiainfo.msooimonitor.service.FileDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +27,12 @@ public class SqlUtil {
     }
 
     static {
-        tableMap.put("93001", 48);
-        tableMap.put("93002", 83);
+        tableMap.put("93001", 50);
+        tableMap.put("93002", 89);
         tableMap.put("93003", 13);
         tableMap.put("93004", 23);
-        tableMap.put("93005", 80);
-        tableMap.put("93006", 15);
+        tableMap.put("93005", 86);
+        tableMap.put("93006", 16);
     }
 
     public static void getInsert(String interfaceName, List<Map<String, Object>> list) {
@@ -57,7 +54,6 @@ public class SqlUtil {
 
         int columSize = tableMap.get(interfaceName);
         StringBuilder sb = new StringBuilder();
-
         StringBuilder sbcolum = new StringBuilder();
         sb.append("insert into iop_" + interfaceName + "(");
         for (int a = 2; a <= columSize; a++) {

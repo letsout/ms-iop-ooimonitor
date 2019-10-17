@@ -87,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
             map.put("A11", activity.get("successMarkingUserNum"));
             //12预留字段名称,预留字段
             //13运营活动参与用户（人次）,选填
-            map.put("A13",activity.get("operateUserNum"));
+//            map.put("A13",activity.get("operateUserNum"));
             //140x0D0A
             list.add(map);
         }
@@ -201,6 +201,7 @@ public class TaskServiceImpl implements TaskService {
                     activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
                     activityInfo.setCity(CommonConstant.cityMap.get("1"));
                     activityInfo.setProvince(CommonConstant.SC);
+                    activityInfo.setCampaignId("280_" + activityInfo.getCampaignId() + "_" + activityInfo.getIopActivityId().substring(1));
                 }
 
                 //省级策划省级执行
@@ -286,7 +287,7 @@ public class TaskServiceImpl implements TaskService {
             //13所属流程,必填,数字枚举值
             map.put("A13", "1");
 //    42	活动专题ID，当创建营销活动引用到一级IOP下发的活动专题时，此字段必填
-            resultmap.put("A42", activity.get("spetopic_id"));
+            map.put("A42", activity.get("spetopic_id"));
             //子活动相关信息
             List<Map<String, Object>> campaignedList = getFileDataMapper.getBeforeCampaignedInfo(activityId, activityEndDate);
             for (Map<String, Object> campaignedmap : campaignedList) {
@@ -559,6 +560,9 @@ public class TaskServiceImpl implements TaskService {
             map.put("A42", mapEffect.get("response_rate"));
             //43 营销成功用户数 必填,口径：根据运营目的，成功办理或者成功使用的用户数
             map.put("A43", mapEffect.get("vic_num"));
+            log.info("40:{}", mapEffect.get("touch_num"));
+            log.info("41:{}", mapEffect.get("touhe_rate"));
+            log.info("43:{}", mapEffect.get("vic_num"));
             //44 营销成功率 必填且取值小于1,口径：营销成功用户数/成功接触客户数,例：填0.1代表10%,（注意需填小数，而不是百分数）
             map.put("A44", mapEffect.get("vic_rate"));
             //45,使用用户数,必填,运营成功用户产生本业务使用行为的用户
@@ -875,7 +879,7 @@ public class TaskServiceImpl implements TaskService {
                 //53,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
                 map.put("A53", "");
                 //90投入产出比,NUMBER (20,6),必填且取值小于1；,口径：,统计周期（活动开始时间至活动结束时间）,运营活动成功用户产生的收入/运营活动投入的成本,例：填0.1代表10%
-                map.put("A90", mapEffect.get("in_out_rate"));
+//                map.put("A90", mapEffect.get("in_out_rate"));
                 resultmap.putAll(map);
                 list.add(resultmap);
             }
@@ -971,7 +975,7 @@ public class TaskServiceImpl implements TaskService {
             //53,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
             map.put("A53", "");
             //90投入产出比,NUMBER (20,6),必填且取值小于1；,口径：,统计周期（活动开始时间至活动结束时间）,运营活动成功用户产生的收入/运营活动投入的成本,例：填0.1代表10%
-            map.put("A90", mapEffect.get("in_out_rate"));
+//            map.put("A90", mapEffect.get("in_out_rate"));
 
 /**
  * 14-36子活动相关信息
@@ -1043,7 +1047,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void uploadFile() {
-
+        String path = "";
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
@@ -1062,8 +1066,7 @@ public class TaskServiceImpl implements TaskService {
             String remotePath = "";
             // 设置基本属性
             // TODO 后面修改表模型然后优化
-            for (Map.Entry enty :
-                    map.entrySet()) {
+            for (Map.Entry enty : map.entrySet()) {
                 String k = (String) enty.getKey();
                 String v = (String) enty.getValue();
                 switch (k) {
@@ -1081,19 +1084,20 @@ public class TaskServiceImpl implements TaskService {
                         break;
                     case "interface_cycle":
                         if (("1").equals(v) || "2".equals(v)) {
-                            localPath = path17 + File.separator + "upload" + File.separator + "time/day";
-                            remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
+                            localPath = path17 + File.separator + "path" + File.separator + "time/day";
+                            remotePath = path228 + File.separator + "path" + File.separator + "time/day";
                         } else if ("3".equals(v)) {
-                            localPath = path17 + File.separator + "upload" + File.separator + "time/month";
-                            remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
+                            localPath = path17 + File.separator + "path" + File.separator + "time/month";
+                            remotePath = path228 + File.separator + "path" + File.separator + "time/month";
                         }
                         break;
                     default:
                         break;
                 }
             }
-            localPath = localPath.replaceAll("time", date);
-            remotePath = remotePath.replaceAll("time", date);
+            path = CommonConstant.interfaceSet.contains(interfaceId) ? "new-upload" : "upload";
+            localPath = localPath.replaceAll("path", path).replaceAll("time", date);
+            remotePath = remotePath.replaceAll("path", path).replaceAll("time", date);
             log.info("interfaceId:{},fileName：{}", interfaceId, fileName);
             writeFileThread.write(interfaceId, fileName, tableName, localPath, remotePath, date);
         }

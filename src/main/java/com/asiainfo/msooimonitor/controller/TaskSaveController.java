@@ -40,6 +40,7 @@ public class TaskSaveController {
         log.info("需要获取校验文件的日期{}", fileDate);
         return ResultUtil.success(list, list.size());
     }
+
     @RequestMapping("/93004/{activityEndDate}")
     public String testsav93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
@@ -58,7 +59,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
                     fileDataService.truncateTable("93006");
@@ -71,8 +72,6 @@ public class TaskSaveController {
     @RequestMapping("/93003/{month}")
     public String saveAll93003(@PathVariable String month, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-
             @Override
             public void run() {
                 fileDataService.truncateTable("93003");
@@ -87,9 +86,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
-                    log.error("93003 error :{}", e);
+                    log.error("93003 error :{}", e.getMessage());
+                    e.printStackTrace();
                     fileDataService.truncateTable("93003");
                 }
             }
@@ -114,7 +114,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
                     fileDataService.truncateTable("93006");
@@ -142,7 +142,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
                     fileDataService.truncateTable("93001");
@@ -178,7 +178,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
                     fileDataService.truncateTable("93005");
@@ -215,7 +215,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
                     fileDataService.truncateTable("93002");
@@ -270,7 +270,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
                     fileDataService.truncateTable("93056");
@@ -306,7 +306,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    //taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
                     fileDataService.truncateTable("93055");
