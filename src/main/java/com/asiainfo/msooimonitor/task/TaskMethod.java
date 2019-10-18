@@ -43,10 +43,13 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
 //            fileDataService.truncateTable("93006");
         }
     }
+
     @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
     public void save93011() {
         fileDataService.truncateTable("93011");
@@ -64,12 +67,14 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
 //            fileDataService.truncateTable("93006");
         }
     }
 
-//    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
+    //    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
     public void save93004() {
         fileDataService.truncateTable("93006");
         try {
@@ -86,13 +91,15 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
 //            fileDataService.truncateTable("93006");
         }
     }
 
     @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void testsave93001() {
+    public void save93001() {
         fileDataService.truncateTable("93001");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
@@ -108,7 +115,9 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
 //       fileDataService.truncateTable("93001");
         }
     }
@@ -133,13 +142,14 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
 //       fileDataService.truncateTable("93006");
         }
     }
 
     @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
-    public void savemarking93002() {
+    public void saveMarking93002() {
         fileDataService.truncateTable("93002");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
@@ -156,13 +166,16 @@ public class TaskMethod {
             );
             taskService.uploadFile();
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
 //      fileDataService.truncateTable("93006");
         }
     }
 
     @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发
     public void insertFlow() {
+        log.info("插入当前新建活动的流程信息");
         fileDataService.insertFlow();
     }
 
@@ -215,6 +228,7 @@ public class TaskMethod {
             fileDataService.truncateTable("93056");
         }
     }
+
     @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
     public void save93003() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");

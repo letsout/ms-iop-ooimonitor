@@ -72,7 +72,8 @@
         select a.*,b.flow,d.*
         from activity_base_info a
                  inner join ooi_activity_flow b on a.activity_id = b.activity_id
-                 inner join ooi_base_channel_info d on b.channel_id = d.channel_id
+                 inner join activity_rel_channel c on a.activity_id = c.activity_id
+                 inner join ooi_base_channel_info d on c.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -124,7 +125,7 @@
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
         select distinct a.activity_id,
                         a.activity_name,
-                        a.activity_name as campaignName,
+                        a.activity_name   as campaignName,
                         b.ooi_campaign_id as campaignId,
                         a.spetopic_id,
                         b.iop_activity_id

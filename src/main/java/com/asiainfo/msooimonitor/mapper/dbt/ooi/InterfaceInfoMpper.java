@@ -43,4 +43,5 @@ public interface InterfaceInfoMpper {
 
     Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
 
+    void insertIop93011();
 }

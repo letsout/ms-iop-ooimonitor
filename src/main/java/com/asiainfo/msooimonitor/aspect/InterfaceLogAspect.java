@@ -51,7 +51,9 @@ public class InterfaceLogAspect {
             final int length = returnValue.toString().length();
             log.info("mapper层方法" + point.getSignature().getName() + "被调用，参数为：" + Arrays.toString(args) + "结果数据是否为空:" + (length == 2 ? true : false));
         } catch (Exception e) {
-//            e.printStackTrace();
+//            log.error("运行异常："+e);log.error("运行异常："+e);e.printStackTrace();
+
+
             log.info("mapper层方法" + point.getSignature().getName() + "被调用，参数为：" + Arrays.toString(args) + "结果数据是否为空:" + true);
         }
         return returnValue;

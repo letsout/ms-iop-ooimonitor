@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
 import com.jcraft.jsch.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -19,6 +20,7 @@ import java.util.*;
 /**
  * Created by H on 2018/1/11.
  */
+@Slf4j
 public class FtpUtil {
     private static final Logger logger = LoggerFactory.getLogger(FtpUtil.class);
 
@@ -58,7 +60,9 @@ public class FtpUtil {
             FTP_PORT = Integer.parseInt(properties.getProperty("ftp.port", "21"));
             SFTP_PORT = Integer.parseInt(properties.getProperty("ftp.sport", "22"));
         } catch (IOException e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
         }
     }
 
@@ -151,7 +155,9 @@ public class FtpUtil {
         try {
             inputStream.close();
         } catch (IOException e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
         }
 
         return flag;
@@ -262,7 +268,9 @@ public class FtpUtil {
             }
 
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
             returnMap.put("flag", "false");
             return returnMap;
         } finally {
@@ -283,13 +291,13 @@ public class FtpUtil {
     /**
      * ftp上传文件
      *
-     * @param localPath  本地文件路径
-     * @param remotePath 远程文件路劲
+     * @param localPath   本地文件路径
+     * @param remotePath  远程文件路劲
      * @param interfaceId 接口id
      * @param loadService
      * @return
      */
-    public static boolean uploadFileFTP(String localPath,String remotePath, String interfaceId, LoadService loadService,String date) {
+    public static boolean uploadFileFTP(String localPath, String remotePath, String interfaceId, LoadService loadService, String date) {
 
         FTPClient ftpClient = new FTPClient();
         FileInputStream inputStream = null;
@@ -319,7 +327,7 @@ public class FtpUtil {
                         // 创建目录
                         if (!ftpClient.makeDirectory(tempPath)) {
                             //如果创建文件目录失败，则返回
-                           logger.error("创建文件目录" + tempPath + "失败");
+                            logger.error("创建文件目录" + tempPath + "失败");
                             return false;
                         } else {
                             //目录存在，则直接进入该目录
@@ -336,13 +344,13 @@ public class FtpUtil {
             FTPFile[] ftpFiles = ftpClient.listFiles();
             Arrays.stream(ftpFiles)
                     .filter(Objects::nonNull)
-                    .forEach(file ->{
-                        if(file.getName().contains(interfaceId)){
+                    .forEach(file -> {
+                        if (file.getName().contains(interfaceId)) {
                             try {
                                 ftpClient.deleteFile(file.getName());
                             } catch (IOException e) {
-                               logger.error("228  接口[{}]文件删除失败",file.getName());
-                               logger.error("{}",e);
+                                logger.error("228  接口[{}]文件删除失败", file.getName());
+                                logger.error("{}", e);
                             }
                         }
                     });
@@ -353,7 +361,7 @@ public class FtpUtil {
             for (String fileName :
                     fileNames) {
                 if (fileName.contains(interfaceId)) {
-                    logger.info("开始上传文件{}从{}到{}", fileName,localPath,remotePath);
+                    logger.info("开始上传文件{}从{}到{}", fileName, localPath, remotePath);
                     inputStream = new FileInputStream(new File(localPath + File.separator + fileName));
                     if (ftpClient.storeFile(fileName, inputStream)) {
                         logger.info("文件[{}]上传成功！！！", fileName);
@@ -375,7 +383,7 @@ public class FtpUtil {
                 interfaceRecord.setFileSuccessNum("");
                 interfaceRecord.setFileTime(date);
                 loadService.insertRecord(interfaceRecord);
-                loadService.updateRelTable(interfaceId,date);
+                loadService.updateRelTable(interfaceId, date);
             }
 
         } catch (IOException e) {
@@ -456,7 +464,7 @@ public class FtpUtil {
         if (ftpFiles.length > 0) {
             for (FTPFile file :
                     ftpFiles) {
-                if (file.getName().contains(interfaceId) && (file.getName().endsWith(".dat")|| file.getName().endsWith(".txt"))) {
+                if (file.getName().contains(interfaceId) && (file.getName().endsWith(".dat") || file.getName().endsWith(".txt"))) {
                     FileUtil.dirExit(localPath);
                     FileOutputStream out = new FileOutputStream(localPath + File.separator + file.getName());
                     boolean b = ftpClient.retrieveFile(file.getName(), out);
