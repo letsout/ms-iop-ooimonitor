@@ -28,7 +28,7 @@ public class TaskSaveController {
     FileDataService fileDataService;
 
     @RequestMapping("/93004/{activityEndDate}")
-    public String testsav93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
+    public String saveAll93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
 
             @Override
@@ -48,7 +48,35 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-                    fileDataService.truncateTable("93006");
+//                    fileDataService.truncateTable("93006");
+                }
+            }
+        }.start();
+        return "success：请查看日志";
+    }
+
+    @RequestMapping("/93011/{activityEndDate}")
+    public String saveAll93011(@PathVariable String date, @RequestParam(defaultValue = "00") String num) {
+        new Thread() {
+
+            @Override
+            public void run() {
+                fileDataService.truncateTable("93011");
+                try {
+                    taskService.saveAll93011(date);
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93011")
+                                    .tableName("iop_93011")
+                                    .fileName("i_13000_time_IOP-93011_" + num + "_fileNum.dat")
+                                    .dataTime(date)
+                                    .step("1")
+                                    .build()
+                    );
+                    taskService.uploadFile();
+                } catch (Exception e) {
+                    log.error("93011 error :{}", e);
+//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -77,7 +105,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93003 error :{}", e);
-                    fileDataService.truncateTable("93003");
+//                    fileDataService.truncateTable("93003");
                 }
             }
         }.start();
@@ -104,7 +132,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-                    fileDataService.truncateTable("93006");
+//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -132,7 +160,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
-                    fileDataService.truncateTable("93001");
+//                    fileDataService.truncateTable("93001");
                 }
 
             }
@@ -168,7 +196,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
-                    fileDataService.truncateTable("93005");
+//                    fileDataService.truncateTable("93005");
                 }
 
             }
@@ -205,7 +233,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
-                    fileDataService.truncateTable("93002");
+//                    fileDataService.truncateTable("93002");
                 }
             }
         }.start();
@@ -260,7 +288,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
-                    fileDataService.truncateTable("93056");
+//                    fileDataService.truncateTable("93056");
                 }
             }
         }.run();
@@ -296,7 +324,7 @@ public class TaskSaveController {
                     taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
-                    fileDataService.truncateTable("93055");
+//                    fileDataService.truncateTable("93055");
                 }
             }
         }.run();

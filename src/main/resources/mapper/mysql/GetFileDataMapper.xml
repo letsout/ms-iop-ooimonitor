@@ -21,8 +21,8 @@
         select a.*,c.flow,d.*
         from activity_base_info a
                  inner join activity_rel_channel b on a.activity_id = b.activity_id
-                 inner join activity_flow c on a.activity_id = c.activity_id
-                 inner join base_channel_info d on b.channel_id = d.channel_id
+                 inner join ooi_activity_flow c on a.activity_id = c.activity_id
+                 inner join ooi_base_channel_info d on b.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and c.flow in (2, 3)
     </select>
@@ -71,8 +71,9 @@
     <select id="getBaseInfo93005" resultType="map">
         select a.*,b.flow,d.*
         from activity_base_info a
-                 inner join activity_flow b on a.activity_id = b.activity_id
-                 inner join base_channel_info d on b.channel_id = d.channel_id
+                 inner join ooi_activity_flow b on a.activity_id = b.activity_id
+                 inner join activity_rel_channel c on a.activity_id = c.activity_id
+                 inner join ooi_base_channel_info d on c.channel_id = d.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -87,7 +88,7 @@
                                   and data_state = 'U')
     </select>
     <insert id="insertFlow" parameterType="java.util.HashMap">
-        INSERT INTO `activity_flow`(`activity_id`, `flow`)values
+        INSERT INTO `ooi_activity_flow`(`activity_id`, `flow`)values
         <foreach collection="list" item="map" separator=",">
             (#{map.activity_id}, #{map.flow})
         </foreach>
@@ -100,13 +101,13 @@
                              GROUP BY activity_id
                              ORDER BY channel_id) b
                             on a.iop_activity_id = b.activity_id
-        where a.iop_activity_id not in (select activity_id from activity_flow)
+        where a.iop_activity_id not in (select activity_id from ooi_activity_flow)
     </select>
     <select id="getFlowInfo2" resultType="map">
         select a.activity_id, a.channel_id,CASE b.is_syn WHEN 'U' THEN '2' ELSE '3' END as flow
         from (select a.*,max(a.channel_id) from activity_rel_channel a GROUP BY activity_id ORDER BY channel_id) a
                  inner join base_channel b on a.channel_id = b.channel_id
-        where a.activity_id not in (select activity_id from activity_flow)
+        where a.activity_id not in (select activity_id from ooi_activity_flow)
     </select>
 
 
@@ -124,19 +125,21 @@
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
         select distinct a.activity_id,
                         a.activity_name,
+                        a.activity_name   as campaignName,
+                        b.ooi_campaign_id as campaignId,
                         a.spetopic_id,
                         b.iop_activity_id
         from ooi_marking_activity_info a
-                 left join ooi_iop_rel_activity_info b on a.activity_id = b.ooi_activity_id
+                 inner join ooi_iop_rel_activity_info b on a.activity_id = b.ooi_activity_id
+                 inner join activity_base_info c on c.activity_id = b.iop_activity_id
         where DATE_FORMAT(activity_endtime, '%Y%m%d') = #{activityEndDate}
-          and b.ooi_activity_id is not null
     </select>
 
     <select id="getIOPActivityInfo" parameterType="string"
             resultType="com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info">
         select distinct a.activity_id,a.activity_name,a.city_id as city,a.activity_id as iop_activity_id
         from activity_base_info a
-                 inner join activity_flow b on a.activity_id = b.activity_id
+                 inner join ooi_activity_flow b on a.activity_id = b.activity_id
         where b.flow = '3'
           and DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
     </select>
@@ -157,7 +160,7 @@
                c.final_obj_user_amount,
                c.final_obj_table_name
         from activity_base_info a
-                 inner join activity_flow b on a.activity_id = b.activity_id
+                 inner join ooi_activity_flow b on a.activity_id = b.activity_id
                  inner join
                  activity_obj_user c on a.activity_id = c.activity_id
                  inner join activity_rel_channel_parameter d on a.activity_id = d.activity_id
@@ -350,7 +353,7 @@
         select *
         from activity_base_info a
                  inner join activity_rel_channel b on a.activity_id = b.activity_id
-                 inner join activity_flow c on a.activity_id = c.activity_id
+                 inner join ooi_activity_flow c on a.activity_id = c.activity_id
         where c.flow in ('2', '3')
           and date_format(a.end_time, '%Y%m') = #{month}
     </select>

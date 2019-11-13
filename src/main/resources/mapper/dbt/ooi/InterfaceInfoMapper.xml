@@ -200,4 +200,9 @@
             )
         </foreach>
     </insert>
+    <insert id="insertIop93011">
+        insert into iop_93011
+        select distinct phone_no
+        from user_list_type
+    </insert>
 </mapper>

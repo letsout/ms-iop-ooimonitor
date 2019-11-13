@@ -44,6 +44,7 @@ public interface InterfaceInfoMpper {
 
     Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
 
+    void insertIop93011();
     String getNewTableName(@Param("tableName") String tableName,@Param("length") int length);
 
     void countLabeData(@Param("tableName") String tableName,@Param("rule") String rule,@Param("uploadTableName") String uploadTableName);
