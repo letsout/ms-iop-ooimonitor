@@ -61,4 +61,10 @@ public interface TaskService {
     void saveBase93004(String activityEndDate) throws Exception;
 
     void uploadFile();
+
+    void saveAll93052OR93053();
+
+    void saveAll93050OR93051();
+
+    void saveAll93054() throws Exception;
 }

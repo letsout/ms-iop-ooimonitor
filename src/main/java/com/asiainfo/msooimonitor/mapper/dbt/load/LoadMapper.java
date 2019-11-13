@@ -16,4 +16,6 @@ public interface LoadMapper {
 
 
     int getrows(@Param("tableName") String tableName);
+
+    void createTablesql(@Param("sql") String sql);
 }

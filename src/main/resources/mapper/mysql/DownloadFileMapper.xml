@@ -38,4 +38,10 @@
         update ooi_interface_rel_table set step = 2  where interface_id = #{interfaceId} and data_time = #{date}
     </update>
 
+    <select id="getLabelInfoBytaskId" parameterType="string" resultType="map">
+        select a.label_id,b.table_name
+        from ooi_coc_label_info a
+        left join ooi_coc_label_rel b on a.label_id = b.ooi_label_id
+        where a.task_id = #{taskId} and a.label_id is not null
+    </select>
 </mapper>

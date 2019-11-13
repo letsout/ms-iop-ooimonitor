@@ -10,7 +10,7 @@ public interface LoadService {
      * @param tableName 表名 默认schem 为iop
      * @return insert 语句
      */
-    Map<String,Object> sqlTemplate(String tableName);
+    Map<String,Object> sqlTemplate(String tableName,String schema);
 
 
    // void batchInsert(String sql, List<Map<String,String>> mapList,String tableName,String date);
@@ -22,4 +22,6 @@ public interface LoadService {
     void insertRecord(InterfaceRecord interfaceRecord);
 
     void updateRelTable(String interfaceId, String date);
+
+    void createTablesql(String sql);
 }

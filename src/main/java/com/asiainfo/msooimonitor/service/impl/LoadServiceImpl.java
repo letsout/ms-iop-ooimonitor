@@ -30,13 +30,13 @@ public class LoadServiceImpl implements LoadService {
     private DownloadFileMapper downloadFileMapper;
 
     @Override
-    public Map<String,Object> sqlTemplate(String tableName) {
+    public Map<String,Object> sqlTemplate(String tableName,String schema) {
 
-        String structureSql = "select column_name from information_schema.columns where table_schema = 'iop' and table_name = '"+tableName+"' order by ordinal_position";
+        String structureSql = "select column_name from information_schema.columns where table_schema = '"+schema+"' and table_name = '"+tableName+"' order by ordinal_position";
 
         List<String> structureList = loadMapper.selectTableSutrct(structureSql);
 
-        StringBuffer sqlTemplate1 = new StringBuffer("insert into " + tableName + " (");
+        StringBuffer sqlTemplate1 = new StringBuffer("insert into " + schema+"."+tableName + " (");
 
         structureList.forEach(name -> sqlTemplate1.append(name+","));
 
@@ -78,5 +78,10 @@ public class LoadServiceImpl implements LoadService {
     @Override
     public void updateRelTable(String interfaceId, String date) {
         downloadFileMapper.updateRelTable(interfaceId,date);
+    }
+
+    @Override
+    public void createTablesql(String sql) {
+        loadMapper.createTablesql(sql);
     }
 }

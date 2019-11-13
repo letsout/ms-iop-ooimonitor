@@ -13,4 +13,8 @@
         select count(*) from ${tableName}
     </select>
 
+    <update id="createTablesql" parameterType="string">
+        ${sql}
+    </update>
+
 </mapper>

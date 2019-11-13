@@ -1,16 +1,22 @@
 package com.asiainfo.msooimonitor.task;
 
+import com.asiainfo.msooimonitor.model.datahandlemodel.ActPh93004;
+import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.stream.Stream;
 
 /**
  * @author yx
@@ -48,7 +54,7 @@ public class TaskMethod {
         }
     }
 
-//    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
+    @Scheduled(cron = "0 00 23 * * ?")//每天23:00触发
     public void save93004() {
         fileDataService.truncateTable("93006");
         try {
@@ -140,10 +146,6 @@ public class TaskMethod {
         }
     }
 
-    @Scheduled(cron = "0 50 9 * * ?")//每天09:50触发
-    public void insertFlow() {
-        fileDataService.insertFlow();
-    }
 
     @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
     public void save93055() {
@@ -194,10 +196,11 @@ public class TaskMethod {
             fileDataService.truncateTable("93056");
         }
     }
+   // @Scheduled(cron = "0 00 10 * * ?")//每天10:00触发
     @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
     public void save93003() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-        fileDataService.truncateTable("93056");
+        fileDataService.truncateTable("93003");
         try {
             String month = TimeUtil.getLastMonthSql(new Date());
 
@@ -215,6 +218,53 @@ public class TaskMethod {
         } catch (Exception e) {
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93056");
+        }
+    }
+
+    // 两级标签互动省侧上传优秀标签数据
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void save93052OR93053(){
+     //   fileDataService.truncateTable("93051");
+        try {
+            taskService.saveAll93052OR93053();
+            taskService.uploadFile();
+        } catch (Exception e) {
+            log.error("save93052OR93053 error :{}", e);
+        }
+    }
+
+    // 两级标签互动省侧上传集团下发任务标签
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void saveAll93050OR93051(){
+     //   fileDataService.truncateTable("93050");
+        try {
+            taskService.saveAll93050OR93051();
+            taskService.uploadFile();
+        } catch (Exception e) {
+            log.error("93050 error :{}", e);
+          //  fileDataService.truncateTable("93050");
+        }
+    }
+
+    //标签引用次数同步接口
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void save93054(){
+          fileDataService.truncateTable("93054");
+        try {
+            taskService.saveAll93054();
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93054")
+                            .tableName("iop_93054")
+                            .fileName("i_280_time_IOP-93054_fileNum.dat")
+                            .dataTime(TimeUtil.getLastDaySql(new Date()))
+                            .step("1")
+                            .build()
+            );
+            taskService.uploadFile();
+        } catch (Exception e) {
+            log.error("93054 error :{}", e);
+            fileDataService.truncateTable("93054");
         }
     }
 }

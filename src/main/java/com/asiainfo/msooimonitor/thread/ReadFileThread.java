@@ -1,8 +1,8 @@
 package com.asiainfo.msooimonitor.thread;
-
 import com.alibaba.fastjson.JSON;
 import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.handle.HandleData;
+import com.asiainfo.msooimonitor.mapper.mysql.DownloadFileMapper;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
 import com.asiainfo.msooimonitor.utils.FileUtil;
@@ -32,17 +32,31 @@ public class ReadFileThread {
     LoadService loadService;
 
     @Autowired
+    DownloadFileMapper downloadFileMapper;
+
+    @Autowired
     HandleData handleData;
 
     ArrayList<Map<String, String>> mapList = new ArrayList<>();
 
     public void readFile(String fileName, String dir, String interfaceId, String tableName, String date) {
+        String schema = "iop";
+        if("91050".equals(interfaceId)){
+            // 根据taskId查询所属标签信息
+            schema = "sccoc";
+            String taskId = fileName.split("_")[2];
+            String time = fileName.split("_")[3];
+            Map<String, String> labelInfoBytaskId = downloadFileMapper.getLabelInfoBytaskId(taskId);
+            tableName = labelInfoBytaskId.get("table_name")+"_"+time;
+            loadService.deleteSql("drop table if exists "+schema+"."+tableName);
+            loadService.createTablesql("create table "+schema+"."+tableName+" (rows varchar(20),phone_no varchar(20),flag varchar(10))");
+        }
 
         if (StringUtils.isEmpty(tableName)) {
             throw new RuntimeException("接口号[" + interfaceId + "]对应表名不存在！！");
         }
 
-        Map<String, Object> sMap = loadService.sqlTemplate(tableName);
+        Map<String, Object> sMap = loadService.sqlTemplate(tableName,schema);
 
         List<String> paramList = (List<String>) sMap.get("structureList");
 
@@ -54,10 +68,14 @@ public class ReadFileThread {
 
         recordMap.put("interfaceId", interfaceId);
 
-        int count = 0;
-
         //读取指定文件
+        readFileInset(fileName,dir,interfaceId,date,paramList,sqlTemplate,tableName,schema);
+
+    }
+
+    private void readFileInset(String fileName,String dir,String interfaceId,String date,List<String> paramList,String sqlTemplate,String tableName,String schema) {
         try {
+            int count = 0;
             logger.info("开始读取文件 [{}]", fileName);
 
             //       dir = "C:\\Users\\40468\\Desktop\\";
@@ -94,7 +112,7 @@ public class ReadFileThread {
                 }
             }
 
-            //整个表数据循环完后，如果list中还有数据，就要再执行一次入表操作。（最后一批次数据不满10000）
+            //整个表数据循环完后，如果list中还有数据，就要再执行一次入表操作。（最后一批次数据不满50000）
             if (0 != mapList.size()) {
                 handleData.batchInsert(sqlTemplate, mapList);
                 logger.info("剩余条数不足50000，入库{}", mapList.size());
@@ -117,7 +135,9 @@ public class ReadFileThread {
 
             // logger.error("文件[{}]入库失败！！！错误行数{}", fileName, JSON.toJSONString(mapList));
             logger.error("message：{}", e);
-            loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
+            if(!"91050".equals(interfaceId)){
+                loadService.deleteSql("delete from " +schema+"."+ tableName + " where data_time='" + date + "'");
+            }
             InterfaceRecord interfaceRecord = new InterfaceRecord();
             interfaceRecord.setInterfaceId(interfaceId);
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
@@ -133,7 +153,6 @@ public class ReadFileThread {
             }
             loadService.insertRecord(interfaceRecord);
         }
-
     }
 
     /**
@@ -155,6 +174,12 @@ public class ReadFileThread {
         logger.debug("读取字符串信息：{},分割符{}", line,split);
 
         String s = line + split + date;
+
+        if("91050".equals(interfaceId)) {
+            s = line+split+"1";
+        }
+
         return s.split(split);
     }
+
 }

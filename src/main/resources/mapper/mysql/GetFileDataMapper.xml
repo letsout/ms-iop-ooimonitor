@@ -337,7 +337,7 @@
     <update id="updateStateInterfaceRelTable">
         update ooi_interface_rel_table
         set data_state='E'
-        where interface_id = #{interfaceId}
+        where table_name = #{tableName}
           and data_time = #{dataTime}
     </update>
     <select id="getBaseChannelInfo" resultType="map">
@@ -353,5 +353,48 @@
                  inner join activity_flow c on a.activity_id = c.activity_id
         where c.flow in ('2', '3')
           and date_format(a.end_time, '%Y%m') = #{month}
+    </select>
+
+    <select id="getUploadLabelInfo" resultType="com.asiainfo.msooimonitor.model.ooimodel.label.UploadLabelInfo">
+        select distinct substring(a.label_id, 4) as label_id ,a.refresh_cyc,a.cycle,a.task_id
+        from  ooi_coc_label_info a
+        where a.label_status = '2' and a.task_type = '103';
+    </select>
+
+    <select id="labelDataIsUpload" parameterType="string" resultType="int">
+        select count(*) from ooi_interface_rel_table where interface_id = '93051' and table_name = #{tableName}  and step = 2 and ${content}
+    </select>
+
+    <select id="getCocLabelInfo" parameterType="string" resultType="com.asiainfo.msooimonitor.model.ooimodel.label.CocLabelInfo">
+        SELECT distinct a.LABEL_ID as label_id ,a.LABEL_NAME as label_name ,e.SOURCE_TABLE_NAME as table_name ,a.UPDATE_CYCLE as update_cycle ,c.COUNT_RULES as rules , d.COLUMN_NAME  as column_name ,c.DEPEND_INDEX as depend_index
+        from scocc.loc_label_info a
+        left join scocc.loc_mda_sys_table_column b
+        on a.LABEL_ID=b.LABEL_ID
+        LEFT JOIN scocc.dim_label_count_rules c
+        on b.COUNT_RULES_CODE=c.COUNT_RULES_CODE
+        left join scocc.loc_source_info d
+        on c.DEPEND_INDEX=d.SOURCE_ID
+        left join scocc.loc_source_table_info e
+        on d.SOURCE_TABLE_ID=e.SOURCE_TABLE_ID
+        where a.LABEL_ID = #{labelId}
+    </select>
+
+    <select id="getJTUploadLabelInfo" resultType="com.asiainfo.msooimonitor.model.ooimodel.label.UploadLabelInfo">
+        SELECT DISTINCT a.task_id, a.cycle, b.coc_label_id as label_id, a.refresh_cyc
+        FROM ooi_coc_label_info a
+        LEFT JOIN ooi_coc_label_rel b ON a.label_id = b.ooi_label_id
+        WHERE label_status = '2' and task_type = '102'
+         AND b.ooi_label_id IS NOT NULL;
+    </select>
+
+    <select id="getQuoteLabelInfo" resultType="com.asiainfo.msooimonitor.model.ooimodel.label.UploadLabelInfo">
+       select distinct case when e.task_type='101' or e.task_type = '102' then '0' else '1' end as task_type,e.label_name,e.label_id,f.quote_num,date_format(now(),'%Y%m%d') as count_time
+       (select c.task_type,substring(c.label_id,4),c.label_name as label_id from ooi_coc_label_info c where c.task_type = '103'
+       union all
+       select a.task_type,b.coc_label_id as label_id,a.label_name from  ooi_coc_label_info a
+       left join ooi_coc_label_rel b on a.label_id = b.ooi_label_id
+       where b.ooi_label_id is not null and  a.task_type in ('101','102') ) e
+       left join scocc.loc_label_op_detail_view f on e.label_id = f.label_id
+       where f.label_id is not null
     </select>
 </mapper>
