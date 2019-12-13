@@ -1,7 +1,10 @@
 package com.asiainfo.msooimonitor.constant;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author H
@@ -13,6 +16,7 @@ public class CommonConstant {
      * 地市对应的编码
      */
     public static Map<String, String> cityMap = null;
+    public static Map<String, String> activityTypeMap = null;
     /**
      * 2.8接口规范需要的接口
      */
@@ -21,6 +25,15 @@ public class CommonConstant {
     // 初始化本省地市与集团地市对应关系
     static {
         cityMap = new HashMap();
+        activityTypeMap = new HashMap();
+        activityTypeMap.put("1", "7");
+        activityTypeMap.put("2", "6");
+        activityTypeMap.put("3", "5");
+        activityTypeMap.put("4", "9");
+        activityTypeMap.put("5", "3");
+        activityTypeMap.put("6", "6");
+        activityTypeMap.put("7", "9");
+        activityTypeMap.put("-1", "9");
         cityMap.put("1", "028");
         cityMap.put("2", "028");
         cityMap.put("3", "0816");

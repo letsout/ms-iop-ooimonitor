@@ -159,7 +159,8 @@ public class WriteFileThread {
                     verifyFileWriter.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("运行异常："+e);e.printStackTrace();
+
             }
         }
     }

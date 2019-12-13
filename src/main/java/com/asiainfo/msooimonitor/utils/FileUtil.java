@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
  * @Date 2019/1/17 17:56
  * @Desc 操作文件工具类
  **/
+@Slf4j
 public class FileUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
@@ -96,7 +98,8 @@ public class FileUtil {
             fileReader.close();
             lineNumberReader.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("运行异常："+e);e.printStackTrace();
+
         }
         return String.valueOf(rows);
     }
@@ -255,7 +258,8 @@ public class FileUtil {
             fileInputStream.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("运行异常："+e);e.printStackTrace();
+
         }
     }
 

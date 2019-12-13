@@ -4,6 +4,7 @@ import com.asiainfo.msooimonitor.constant.StateAndTypeConstant;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.LoadService;
 import com.jcraft.jsch.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -19,6 +20,7 @@ import java.util.*;
 /**
  * Created by H on 2018/1/11.
  */
+@Slf4j
 public class FtpUtil {
     private static final Logger logger = LoggerFactory.getLogger(FtpUtil.class);
 
@@ -58,7 +60,9 @@ public class FtpUtil {
             FTP_PORT = Integer.parseInt(properties.getProperty("ftp.port", "21"));
             SFTP_PORT = Integer.parseInt(properties.getProperty("ftp.sport", "22"));
         } catch (IOException e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
         }
     }
 
@@ -151,7 +155,9 @@ public class FtpUtil {
         try {
             inputStream.close();
         } catch (IOException e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
         }
 
         return flag;
@@ -262,7 +268,9 @@ public class FtpUtil {
             }
 
         } catch (Exception e) {
+            log.error("运行异常：" + e);
             e.printStackTrace();
+
             returnMap.put("flag", "false");
             return returnMap;
         } finally {

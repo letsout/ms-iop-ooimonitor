@@ -1,7 +1,6 @@
 package com.asiainfo.msooimonitor.controller;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
-import com.asiainfo.msooimonitor.model.ooimodel.Result;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.utils.ResultUtil;
@@ -14,14 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
+import com.asiainfo.msooimonitor.model.ooimodel.Result;
+
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yx
  * @date 2019/9/16  11:24
- * Description
+ * Description 手动补传的原则数据数据原则是需要补传那天的数据就输入那一天日期：数据日期是文件日期的前一个日期，比如11号要传的是10号的我呢见9号的数据，那么应该输入9号，93011除外
  */
 @RestController
 @Slf4j
@@ -42,7 +44,7 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/93004/{activityEndDate}")
-    public String testsav93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
+    public String saveAll93004(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
 
             @Override
@@ -59,10 +61,45 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-                    fileDataService.truncateTable("93006");
+//                    fileDataService.truncateTable("93006");
+                }
+            }
+        }.start();
+        return "success：请查看日志";
+    }
+
+    /**
+     * 日期指决定文件的日期，与数据无关，如果补昨天的数据就直接传昨天的日期就行
+     *
+     * @param date
+     * @param num
+     * @return
+     */
+    @RequestMapping("/93011/{activityEndDate}")
+    public String saveAll93011(@PathVariable String date, @RequestParam(defaultValue = "00") String num) {
+        new Thread() {
+
+            @Override
+            public void run() {
+                fileDataService.truncateTable("93011");
+                try {
+                    taskService.saveAll93011(date);
+                    fileDataService.insertInterfaceRelTable(
+                            CretaeFileInfo.builder()
+                                    .interfaceId("93011")
+                                    .tableName("iop_93011")
+                                    .fileName("i_13000_time_IOP-93011_" + num + "_fileNum.dat")
+                                    .dataTime(date)
+                                    .step("1")
+                                    .build()
+                    );
+                    taskService.uploadFile();
+                } catch (Exception e) {
+                    log.error("93011 error :{}", e);
+//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -72,6 +109,8 @@ public class TaskSaveController {
     @RequestMapping("/93003/{month}")
     public String saveAll93003(@PathVariable String month, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
             @Override
             public void run() {
                 fileDataService.truncateTable("93003");
@@ -86,16 +125,16 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
-                    log.error("93003 error :{}", e.getMessage());
-                    e.printStackTrace();
-                    fileDataService.truncateTable("93003");
+                    log.error("93003 error :{}", e);
+//                    fileDataService.truncateTable("93003");
                 }
             }
         }.start();
         return "success：请查看日志";
     }
+
     @RequestMapping("/93006/{activityEndDate}")
     public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
@@ -114,10 +153,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-                    fileDataService.truncateTable("93006");
+//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -142,10 +181,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
-                    fileDataService.truncateTable("93001");
+//                    fileDataService.truncateTable("93001");
                 }
 
             }
@@ -178,10 +217,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
-                    fileDataService.truncateTable("93005");
+//                    fileDataService.truncateTable("93005");
                 }
 
             }
@@ -215,10 +254,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
-                    fileDataService.truncateTable("93002");
+//                    fileDataService.truncateTable("93002");
                 }
             }
         }.start();
@@ -270,10 +309,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
-                    fileDataService.truncateTable("93056");
+//                    fileDataService.truncateTable("93056");
                 }
             }
         }.run();
@@ -306,10 +345,10 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    //taskService.uploadFile();
+                    taskService.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
-                    fileDataService.truncateTable("93055");
+//                    fileDataService.truncateTable("93055");
                 }
             }
         }.run();

@@ -174,6 +174,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public void saveAll93011(String date) throws Exception {
+        // 清空数据表
+        interfaceInfoMpper.truncateTable("93011");
+        // 迁移数据
+        interfaceInfoMpper.insertIop93011();
+        // 获取生成数据量
+        int rows = interfaceInfoMpper.getTableRowsByTableName("93011");
+        UploadCountInfo uploadCountInfo = new UploadCountInfo();
+        uploadCountInfo.setInterfaceId("93011");
+        uploadCountInfo.setUploadNum(rows);
+        uploadCountInfo.setFailNum(0);
+        uploadCountInfo.setActivityTime(date);
+        getFileDataMapper.insertUploadCount(uploadCountInfo);
+    }
+
+    @Override
     public void saveAll93006(String activityEndDate) throws Exception {
         UploadDetailInfo uploadDetailInfo = null;
 
@@ -620,7 +636,7 @@ public class TaskServiceImpl implements TaskService {
             String end_time = activity.get("end_time").toString();
             map.put("A8", TimeUtil.getOoiDate(end_time));
             //9 营销活动类型 必填，填写枚举值ID
-            map.put("A9", activity.getOrDefault("activity_type", "9").toString());
+            map.put("A9", CommonConstant.activityTypeMap.get(activity.get("business_bigtype_id")));
             //10 营销活动目的 必填，填写枚举值ID
             map.put("A10", activity.getOrDefault("activity_objective", "9").toString());
             //11 营销活动描述 对产品、服务等信息进行简要描述
@@ -926,7 +942,7 @@ public class TaskServiceImpl implements TaskService {
             //8,活动结束时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间,活动结束时间不早于活动开始时间
             map.put("A8", TimeUtil.getOoiDate(activity.get("end_time").toString()));
             //9,营销活动类型,1：入网类,必填，填写枚举值ID,2：终端类,3：流量类,4：数字化服务类,5：基础服务类,6：客户保有类,7：宽带类,8：融合套餐类,9：其它类
-            map.put("A9", activity.getOrDefault("activity_type", "9"));
+            map.put("A9", CommonConstant.activityTypeMap.get(activity.get("business_bigtype_id")));
             //10,营销活动目的,1：新增客户类,必填，填写枚举值ID,2：存量保有类,3：价值提升类,4：离网预警类,9：其它类
             map.put("A10", activity.getOrDefault("activity_objective", "9"));
             //11,营销活动描述,对产品、服务等信息进行简要描述
@@ -1009,7 +1025,7 @@ public class TaskServiceImpl implements TaskService {
             map.put("A25", baseOfferBo.get("prc_name"));
             //26,产品分类,1：电信服务,必填，填写枚举值ID,2：客户服务,3：数字内容服务,4：实物,5：虚拟物品
             map.put("A26", baseOfferBo.get("prc_type"));
-            String channelCode = activity.get("channel_code").toString() + activity.get("channel_id");
+            String channelCode = activity.get("channel_code").toString();
             String channelName = activity.get("channel_name").toString();
             String channelType = activity.get("channel_type").toString();
             //27,渠道编码,必填,比如,00108_xxxx,001：一级分类,08：二级分类,xxxx：自定义渠道编码,编码规则参考_8_2_渠道和运营位编码规则

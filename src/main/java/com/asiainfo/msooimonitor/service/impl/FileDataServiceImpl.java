@@ -253,7 +253,6 @@ public class FileDataServiceImpl implements FileDataService {
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
-
     @Override
     @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {

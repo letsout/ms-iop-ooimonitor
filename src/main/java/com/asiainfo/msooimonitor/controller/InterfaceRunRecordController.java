@@ -33,4 +33,10 @@ public class InterfaceRunRecordController {
 
         return ResultUtil.success(interfaceRunRecordInfo.getList(),interfaceRunRecordInfo.getTotal());
     }
+
+    @RequestMapping("/deleteInterfaceInfos")
+    public Result deleteInterfaceInfos(@RequestParam("interfaceId") String interfaceId) {
+        interfaceRunRecordService.deleteInterfaceInfos(interfaceId);
+        return ResultUtil.success();
+    }
 }

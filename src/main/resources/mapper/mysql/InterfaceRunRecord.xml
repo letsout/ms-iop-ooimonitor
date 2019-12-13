@@ -17,4 +17,8 @@
         </if>
         order by  update_time desc
     </select>
+
+    <delete id="deleteInterfaceInfos" parameterType="string">
+        delete from ooi_interfacae_run_record_dtl where aid in ${_parameter}
+    </delete>
 </mapper>

@@ -2,6 +2,7 @@ package com.asiainfo.msooimonitor.utils;
 
 import com.asiainfo.msooimonitor.exception.FileNotFoundException;
 import com.jcraft.jsch.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ import java.util.Vector;
  * @Date 2018/10/26 10:03
  * @Desc
  **/
-
+@Slf4j
 public class SFTPUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SFTPUtils.class);
@@ -114,7 +115,8 @@ public class SFTPUtils {
                     localFileStream.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("运行异常："+e);e.printStackTrace();
+
             }
             System.out.println("upload complete!");
             disconnect(sftp);

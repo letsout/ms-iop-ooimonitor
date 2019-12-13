@@ -25,4 +25,9 @@ public class InterfaceRunRecordServiceImpl implements InterfaceRunRecordService 
         PageInfo<InterfaceRecord> interfaceRecordPageInfo = new PageInfo<>(interfaceRecordList);
         return interfaceRecordPageInfo;
     }
+
+    @Override
+    public void deleteInterfaceInfos(String interfaceId) {
+        interfaceRunRecordMapper.deleteInterfaceInfos(interfaceId);
+    }
 }

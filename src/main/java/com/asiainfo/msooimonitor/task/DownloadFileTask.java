@@ -62,8 +62,8 @@ public class DownloadFileTask {
             try {
                 String yesterday = TimeUtil.getLastDaySql(new Date());
                 String lastMonth = TimeUtil.getLastMonthSql(new Date());
-                String remotePathDay = path228 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
-                String remotePathMon = path228 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
+                String remotePathDay = path228 + File.separator + info.getInterfaceVgopPath() + File.separator + "replaceTime" + File.separator + "day";
+                String remotePathMon = path228 + File.separator + info.getInterfaceVgopPath() + File.separator + "replaceTime" + File.separator + "month";
                 String localPathDay = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "day";
                 String localPathMon = path17 + File.separator + info.getInterfaceLocalPath() + File.separator + "replaceTime" + File.separator + "month";
 
