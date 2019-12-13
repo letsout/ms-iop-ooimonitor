@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-core</artifactId>
-            <version>4.0.1.RELEASE</version>
+            <version>4.0.3.RELEASE</version>
         </dependency>
 
         <!--解析XML-->
