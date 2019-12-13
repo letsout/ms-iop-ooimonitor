@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * @author yx
  * @date 2019/9/16  11:24
- * Description
+ * Description 手动补传的原则数据数据原则是需要补传那天的数据就输入那一天日期：数据日期是文件日期的前一个日期，比如11号要传的是10号的我呢见9号的数据，那么应该输入9号，93011除外
  */
 @RestController
 @Slf4j
@@ -55,6 +55,13 @@ public class TaskSaveController {
         return "success：请查看日志";
     }
 
+    /**
+     * 日期指决定文件的日期，与数据无关，如果补昨天的数据就直接传昨天的日期就行
+     *
+     * @param date
+     * @param num
+     * @return
+     */
     @RequestMapping("/93011/{activityEndDate}")
     public String saveAll93011(@PathVariable String date, @RequestParam(defaultValue = "00") String num) {
         new Thread() {
@@ -98,7 +105,7 @@ public class TaskSaveController {
                                     .interfaceId("93003")
                                     .tableName("iop_93003")
                                     .fileName("a_13000_time_IOP-93003_" + num + "_fileNum.dat")
-                                    .dataTime(TimeUtil.getAfterMonthSql(TimeUtil.strToDate(month+"10")))
+                                    .dataTime(TimeUtil.getAfterMonthSql(TimeUtil.strToDate(month + "10")))
                                     .step("1")
                                     .build()
                     );
@@ -111,6 +118,7 @@ public class TaskSaveController {
         }.start();
         return "success：请查看日志";
     }
+
     @RequestMapping("/93006/{activityEndDate}")
     public String testsav93006(@PathVariable String activityEndDate, @RequestParam(defaultValue = "00") String num) {
         new Thread() {

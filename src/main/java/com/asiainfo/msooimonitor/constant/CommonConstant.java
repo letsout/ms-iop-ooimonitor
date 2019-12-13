@@ -48,6 +48,7 @@ public class CommonConstant {
         activityTypeMap.put("5", "3");
         activityTypeMap.put("6", "6");
         activityTypeMap.put("7", "9");
+        activityTypeMap.put("-1", "9");
     }
 
     public static String SC = "280";

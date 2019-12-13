@@ -186,7 +186,7 @@
         select b.activity_id,b.end_time
         from ooi_iop_rel_activity_info a
                  inner join activity_base_info b on a.iop_activity_id = b.activity_id
-        where a.ooi_activity_id = #{activityId}
+        where b.is_deleted='0' and a.ooi_activity_id = #{activityId}
     </select>
 
     <select id="getJTActivityInfoByOOIId" parameterType="string" resultType="map">

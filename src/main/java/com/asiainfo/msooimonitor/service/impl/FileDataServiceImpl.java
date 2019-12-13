@@ -62,7 +62,7 @@ public class FileDataServiceImpl implements FileDataService {
         for (Map<String, Object> map : activityEndTimeList) {
             // 获取最大时间
 //            String time = interfaceInfoMpper.getMaxTime(map.get("activity_id").toString());
-            String time = map.get("end_time").toString();
+            String time = map.get("end_time").toString().replaceAll("-", "");
             Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), time);
             if (summaryEffect == null) {
                 activityIds.append(",").append(map.get("activity_id"));
@@ -183,6 +183,7 @@ public class FileDataServiceImpl implements FileDataService {
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
+
     @Override
     @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
