@@ -196,7 +196,7 @@ public class TaskMethod {
                             .interfaceId("93055")
                             .tableName("iop_93055")
                             .fileName("i_13000_time_IOP-93055_" + 00 + "_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(lastMonthSql)
                             .step("1")
                             .build()
             );
@@ -222,7 +222,7 @@ public class TaskMethod {
                             .interfaceId("93056")
                             .tableName("iop_93056")
                             .fileName("i_13000_time_IOP-93056_" + 00 + "_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(lastMonthSql)
                             .step("1")
                             .build()
             );
@@ -246,7 +246,7 @@ public class TaskMethod {
                             .interfaceId("93003")
                             .tableName("iop_93003")
                             .fileName("a_13000_time_IOP-93003_00_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(month)
                             .step("1")
                             .build()
             );
