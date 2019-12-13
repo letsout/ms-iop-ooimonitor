@@ -159,6 +159,48 @@
           and date_format(data_time, '%Y%m') &lt;= #{month}
         ORDER BY data_time desc limit 1
     </select>
+
+    <select id="getNewTableName" resultType="string">
+        select distinct table_name  from information_schema.columns
+        where table_name like concat('%',#{tableName},'%') and length(substring(table_name,length(#{tableName})+1)) = #{length}  order by table_name desc limit 1
+    </select>
+
+    <insert id="countLabeData" parameterType="string">
+       insert into iop.${uploadTableName}  select a.phone_no from (select phone_no,${rule} as flag from sccoc.${tableName}) a
+       where a.flag=1
+    </insert>
+
+    <update id="createTbale" parameterType="string">
+        CREATE TABLE  iop.${tableName} ${content}
+    </update>
+
+    <insert id="countJTLabeData" parameterType="string">
+    insert into iop.${uploadTableName} (phone_no,sex,age)  select distinct c.phone_no,c.sex,c.age
+    from
+     (select a.phone_no,case when b.sex=1 or b.sex=0 then b.sex else 3 end as sex ,b.age
+     from
+        (select distinct phone_no,${rule} as flag from sccoc.${cocTableName}) a
+        left join sccoc.${sexTable} b on a.phone_no = b.phone_no
+        where a.flag=1 and b.age is not null
+     ) c
+    </insert>
+
+    <update id="dropTable" parameterType="string">
+        drop table ${schema}.${tableName}
+    </update>
+
+    <insert id="insert93054" >
+        insert into iop_93054 (label_type,label_id,label_name,quote_num,count_time) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{taskType},
+            #{labelId},
+            #{labelName},
+            #{quoteNum},
+            #{countTime}
+            )
+        </foreach>
+    </insert>
     <insert id="insertIop93011">
         insert into iop_93011
         select distinct phone_no

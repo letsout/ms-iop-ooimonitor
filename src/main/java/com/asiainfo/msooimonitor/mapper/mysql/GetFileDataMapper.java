@@ -1,6 +1,8 @@
 package com.asiainfo.msooimonitor.mapper.mysql;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.*;
+import com.asiainfo.msooimonitor.model.ooimodel.label.CocLabelInfo;
+import com.asiainfo.msooimonitor.model.ooimodel.label.UploadLabelInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -107,4 +109,27 @@ public interface GetFileDataMapper {
     void updateUploadTime(String uploadTime, String activityIds);
 
     List<Map<String, String>> getData93003(String month);
+
+    List<UploadLabelInfo> getUploadLabelInfo();
+
+    /**
+     * 判断标签数据是否上传
+     * @param tableName
+     * @return
+     */
+    int labelDataIsUpload(@Param("tableName") String tableName,@Param("content")String content);
+
+    /**
+     * 根据标签id查找标签信息
+     * @param labelId
+     * @return
+     */
+    CocLabelInfo getCocLabelInfo(String labelId);
+
+    /**
+     * 查询集团下发任务省所需要上传的标签的数据的标签信息
+     */
+    List<UploadLabelInfo> getJTUploadLabelInfo();
+
+    List<UploadLabelInfo> getQuoteLabelInfo();
 }

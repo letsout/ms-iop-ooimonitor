@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface DownloadFileMapper {
@@ -30,4 +31,6 @@ public interface DownloadFileMapper {
     String getMaxSuccessTime(String interfaceId);
 
     void updateRelTable(@Param("interfaceId") String interfaceId,@Param("date") String date);
+
+    Map<String,String> getLabelInfoBytaskId(String taskId);
 }

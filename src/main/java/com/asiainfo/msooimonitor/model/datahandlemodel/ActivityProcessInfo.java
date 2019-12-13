@@ -1,5 +1,6 @@
 package com.asiainfo.msooimonitor.model.datahandlemodel;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -28,4 +29,6 @@ public class ActivityProcessInfo {
      *      99：其他
      */
     private String processId;
+
+    private int a;
 }

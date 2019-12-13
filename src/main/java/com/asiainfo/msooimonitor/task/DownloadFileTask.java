@@ -52,7 +52,7 @@ public class DownloadFileTask {
      * 月接口 每月一次
      */
     @RequestMapping("/dotask")
-    @Scheduled(fixedDelay = 1000 * 60 * 30)
+   // @Scheduled(fixedDelay = 1000 * 60 * 30)
     public void downloadFile() {
         // 查询需要处理的下载接口
         List<InterfaceInfo> interfaceInfos = downloadInterfaceServic.listDownloadFileInterface();

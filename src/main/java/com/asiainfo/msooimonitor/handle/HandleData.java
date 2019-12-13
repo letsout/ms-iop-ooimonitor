@@ -52,7 +52,9 @@ public class HandleData {
             List<String> collect = list.stream().filter(name -> name.contains(interfaceId)).collect(Collectors.toList());
             // 加载文件之前先删除当天入库文件
             logger.info("清除接口[{}]-[{}]周期",interfaceId,date);
-            loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
+            if(!"91050".equals(interfaceId)){
+                loadService.deleteSql("delete from " + tableName + " where data_time='" + date + "'");
+            }
             if (collect.size() > 0) {
                 for (String fileName:
                 collect) {

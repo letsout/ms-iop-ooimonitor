@@ -29,7 +29,7 @@ import java.util.Map;
 @Slf4j
 public class TaskSaveController {
     @Autowired
-    TaskService taskService;
+    TaskService taskServices;
     @Autowired
     FileDataService fileDataService;
 
@@ -38,7 +38,7 @@ public class TaskSaveController {
         if (StringUtils.isEmpty(fileDate)) {
             fileDate = TimeUtil.getDaySql(new Date());
         }
-        List<Map<String, String>> list = taskService.getCheckFileByDate(fileDate);
+        List<Map<String, String>> list = taskServices.getCheckFileByDate(fileDate);
         log.info("需要获取校验文件的日期{}", fileDate);
         return ResultUtil.success(list, list.size());
     }
@@ -51,7 +51,7 @@ public class TaskSaveController {
             public void run() {
                 fileDataService.truncateTable("93004");
                 try {
-                    taskService.saveBase93004(activityEndDate);
+                    taskServices.saveBase93004(activityEndDate);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93004")
@@ -61,7 +61,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
 //                    fileDataService.truncateTable("93006");
@@ -86,7 +86,7 @@ public class TaskSaveController {
             public void run() {
                 fileDataService.truncateTable("93011");
                 try {
-                    taskService.saveAll93011(date);
+                    taskServices.saveAll93011(date);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93011")
@@ -96,7 +96,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93011 error :{}", e);
 //                    fileDataService.truncateTable("93006");
@@ -115,7 +115,7 @@ public class TaskSaveController {
             public void run() {
                 fileDataService.truncateTable("93003");
                 try {
-                    taskService.saveAll93003(month);
+                    taskServices.saveAll93003(month);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93003")
@@ -125,7 +125,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93003 error :{}", e);
 //                    fileDataService.truncateTable("93003");
@@ -143,7 +143,7 @@ public class TaskSaveController {
             public void run() {
                 fileDataService.truncateTable("93006");
                 try {
-                    taskService.saveAll93006(activityEndDate);
+                    taskServices.saveAll93006(activityEndDate);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93006")
@@ -153,7 +153,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
 //                    fileDataService.truncateTable("93006");
@@ -171,7 +171,7 @@ public class TaskSaveController {
             public void run() {
                 fileDataService.truncateTable("93001");
                 try {
-                    taskService.saveMarking93001(activityEndDate);
+                    taskServices.saveMarking93001(activityEndDate);
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93001")
@@ -181,7 +181,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
 //                    fileDataService.truncateTable("93001");
@@ -201,12 +201,12 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93005");
                 try {
                     if (type.equals("1")) {
-                        taskService.saveBase93005(activityEndDate);
+                        taskServices.saveBase93005(activityEndDate);
                     } else if (type.equals("2")) {
-                        taskService.saveMarking93005(activityEndDate);
+                        taskServices.saveMarking93005(activityEndDate);
                     } else {
-                        taskService.saveBase93005(activityEndDate);
-                        taskService.saveMarking93005(activityEndDate);
+                        taskServices.saveBase93005(activityEndDate);
+                        taskServices.saveMarking93005(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
@@ -217,7 +217,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
 //                    fileDataService.truncateTable("93005");
@@ -238,12 +238,12 @@ public class TaskSaveController {
                 fileDataService.truncateTable("93002");
                 try {
                     if (type.equals("1")) {
-                        taskService.saveBase93002(activityEndDate);
+                        taskServices.saveBase93002(activityEndDate);
                     } else if (type.equals("2")) {
-                        taskService.saveMarking93002(activityEndDate);
+                        taskServices.saveMarking93002(activityEndDate);
                     } else {
-                        taskService.saveBase93002(activityEndDate);
-                        taskService.saveMarking93002(activityEndDate);
+                        taskServices.saveBase93002(activityEndDate);
+                        taskServices.saveMarking93002(activityEndDate);
                     }
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
@@ -254,7 +254,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
 //                    fileDataService.truncateTable("93002");
@@ -276,7 +276,7 @@ public class TaskSaveController {
 
             @Override
             public void run() {
-                taskService.uploadFile();
+                taskServices.uploadFile();
             }
         }.start();
         return "success";
@@ -309,7 +309,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
 //                    fileDataService.truncateTable("93056");
@@ -345,7 +345,7 @@ public class TaskSaveController {
                                     .step("1")
                                     .build()
                     );
-                    taskService.uploadFile();
+                    taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
 //                    fileDataService.truncateTable("93055");

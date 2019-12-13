@@ -28,7 +28,7 @@ public class InterfaceLogAspect {
      * 切点表达式:   execution(...)
      */
 //    com.asiainfo.msooimonitor.task.TaskSaveMethod
-    @Pointcut(value = "execution(* com.asiainfo.msooimonitor.service.impl.TaskServiceImpl.*(..))")
+    @Pointcut(value = "execution(* com.asiainfo.msooimonitor.service.impl.TaskServicesImpl.*(..))")
     public void logPointCut() {
     }
 

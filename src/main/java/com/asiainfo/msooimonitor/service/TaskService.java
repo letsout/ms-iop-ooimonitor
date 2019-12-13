@@ -79,4 +79,10 @@ public interface TaskService {
     void uploadFile();
 
     List<Map<String, String>> getCheckFileByDate(String fileDate) throws IOException;
+
+    void saveAll93052OR93053();
+
+    void saveAll93050OR93051();
+
+    void saveAll93054() throws Exception;
 }

@@ -22,7 +22,7 @@ import java.util.Date;
 public class TaskMethod {
 
     @Autowired
-    TaskService taskService;
+    TaskService taskServices;
     @Autowired
     FileDataService fileDataService;
 
@@ -31,7 +31,7 @@ public class TaskMethod {
         fileDataService.truncateTable("93006");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskService.saveAll93006(activityEndDate);
+            taskServices.saveAll93006(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93006")
@@ -41,7 +41,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("运行异常：" + e);
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class TaskMethod {
         fileDataService.truncateTable("93011");
         try {
             final String date = TimeUtil.getLastDaySql(new Date());
-            taskService.saveAll93011(date);
+            taskServices.saveAll93011(date);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93011")
@@ -65,7 +65,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("运行异常：" + e);
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class TaskMethod {
         fileDataService.truncateTable("93006");
         try {
             final String activityEndDate = TimeUtil.getDaySql(new Date());
-            taskService.saveBase93004(activityEndDate);
+            taskServices.saveBase93004(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93004")
@@ -88,7 +88,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             e.printStackTrace();
 //            fileDataService.truncateTable("93006");
@@ -100,7 +100,7 @@ public class TaskMethod {
         fileDataService.truncateTable("93001");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskService.saveMarking93001(activityEndDate);
+            taskServices.saveMarking93001(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93001")
@@ -110,7 +110,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             e.printStackTrace();
 //       fileDataService.truncateTable("93001");
@@ -124,8 +124,8 @@ public class TaskMethod {
         try {
 
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskService.saveBase93005(activityEndDate);
-            taskService.saveMarking93005(activityEndDate);
+            taskServices.saveBase93005(activityEndDate);
+            taskServices.saveMarking93005(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93005")
@@ -135,7 +135,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("运行异常：" + e);
             e.printStackTrace();
@@ -148,8 +148,8 @@ public class TaskMethod {
         fileDataService.truncateTable("93002");
         try {
             final String activityEndDate = TimeUtil.getTwoDaySql(new Date());
-            taskService.saveMarking93002(activityEndDate);
-            taskService.saveBase93002(activityEndDate);
+            taskServices.saveMarking93002(activityEndDate);
+            taskServices.saveBase93002(activityEndDate);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93002")
@@ -159,7 +159,7 @@ public class TaskMethod {
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("运行异常：" + e);
             e.printStackTrace();
@@ -186,11 +186,11 @@ public class TaskMethod {
                             .interfaceId("93055")
                             .tableName("iop_93055")
                             .fileName("i_13000_time_IOP-93055_" + 00 + "_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(lastMonthSql)
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("93055 error :{}", e);
             fileDataService.truncateTable("93055");
@@ -212,11 +212,11 @@ public class TaskMethod {
                             .interfaceId("93056")
                             .tableName("iop_93056")
                             .fileName("i_13000_time_IOP-93056_" + 00 + "_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(lastMonthSql)
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93056");
@@ -230,20 +230,67 @@ public class TaskMethod {
         try {
             String month = TimeUtil.getLastMonthSql(new Date());
 
-            taskService.saveAll93003(month);
+            taskServices.saveAll93003(month);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93003")
                             .tableName("iop_93003")
                             .fileName("a_13000_time_IOP-93003_00_fileNum.dat")
-                            .dataTime(sdf.format(new Date()))
+                            .dataTime(month)
                             .step("1")
                             .build()
             );
-            taskService.uploadFile();
+            taskServices.uploadFile();
         } catch (Exception e) {
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93003");
+        }
+    }
+
+    // 两级标签互动省侧上传优秀标签数据
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void save93052OR93053(){
+     //   fileDataService.truncateTable("93051");
+        try {
+            taskServices.saveAll93052OR93053();
+            taskServices.uploadFile();
+        } catch (Exception e) {
+            log.error("save93052OR93053 error :{}", e);
+        }
+    }
+
+    // 两级标签互动省侧上传集团下发任务标签
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void saveAll93050OR93051(){
+     //   fileDataService.truncateTable("93050");
+        try {
+            taskServices.saveAll93050OR93051();
+            taskServices.uploadFile();
+        } catch (Exception e) {
+            log.error("93050 error :{}", e);
+          //  fileDataService.truncateTable("93050");
+        }
+    }
+
+    //标签引用次数同步接口
+    @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
+    public void save93054(){
+          fileDataService.truncateTable("93054");
+        try {
+            taskServices.saveAll93054();
+            fileDataService.insertInterfaceRelTable(
+                    CretaeFileInfo.builder()
+                            .interfaceId("93054")
+                            .tableName("iop_93054")
+                            .fileName("i_280_time_IOP-93054_fileNum.dat")
+                            .dataTime(TimeUtil.getLastDaySql(new Date()))
+                            .step("1")
+                            .build()
+            );
+            taskServices.uploadFile();
+        } catch (Exception e) {
+            log.error("93054 error :{}", e);
+            fileDataService.truncateTable("93054");
         }
     }
 }

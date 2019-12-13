@@ -39,15 +39,20 @@ public class WriteFileThread {
 
 
     public void write(String interfaceId, String fileName, String tableName, String localPath, String remotePath, String date) {
-
+        localPath = "H:\\data1";
         File file = new File(localPath);
         file.mkdirs();
         // 删除与此接口相关文件
-        deleteFile(localPath, interfaceId);
+        deleteFile(localPath, fileName);
 
         fileName = fileName.replaceAll("time", date);
         // 校验文件名称
-        String verifyFileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".verf";
+        String verifyFileName = "";
+        if("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId) ){
+            verifyFileName = fileName.replace("dat","verf");
+        }else {
+            verifyFileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".verf";
+        }
         FileOutputStream dataFileWriter = null;
         FileOutputStream verifyFileWriter = null;
         // 记录写入文件条数
@@ -57,10 +62,13 @@ public class WriteFileThread {
         // 文件个数
         int fileNum = 1;
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
+        if("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId) ){
+            verifyFileName = verifyFileName.replace("fileNum", "00" + fileNum);
+        }
         int sum = loadMapper.getrows(tableName);
         try {
-            dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
-            verifyFileWriter = new FileOutputStream(localPath + File.separator + verifyFileName);
+            dataFileWriter = new FileOutputStream(localPath + "\\"+ fileNameTmp);
+            verifyFileWriter = new FileOutputStream(localPath + "\\"+ verifyFileName);
             // 分页读取文件
             List<String> sqlList = createsql(tableName);
 
@@ -77,7 +85,7 @@ public class WriteFileThread {
                     if (records % filterRecords == 0 && records > 0) {
                         log.info("开始监测文件{}大小！！！", fileNameTmp);
                         dataFileWriter.flush();
-                        boolean okSize = isOksize(localPath + File.separator + fileNameTmp);
+                        boolean okSize = isOksize(localPath + "\\"+ fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
                             dataWrite(dataFileWriter, line, "U");
@@ -89,10 +97,10 @@ public class WriteFileThread {
 
                             if (fileNum >= 10) {
                                 fileNameTmp = fileName.replaceAll("fileNum", "0" + fileNum);
-                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + "\\"+ fileNameTmp);
                             } else {
                                 fileNameTmp = fileName.replaceAll("fileNum", "00" + fileNum);
-                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + "\\"+ fileNameTmp);
                             }
                         } else {
                             dataWrite(dataFileWriter, line, "U");
@@ -130,7 +138,7 @@ public class WriteFileThread {
             loadService.insertRecord(interfaceRecord);
 
             // 上传到228
-            FtpUtil.uploadFileFTP(localPath, remotePath, interfaceId, loadService, date);
+    //        FtpUtil.uploadFileFTP(localPath, remotePath, interfaceId, loadService, date);
 
         } catch (Exception e) {
             log.error("message：{}", e);
@@ -139,7 +147,7 @@ public class WriteFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + "\\"+ fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             if (e.getMessage().length() > 480) {
@@ -169,15 +177,15 @@ public class WriteFileThread {
      * 删除与此接口相关的文件
      *
      * @param localPath   文件存放路径
-     * @param interfaceId 接口号
+     * @param fileName 文件名称
      * @return flag
      */
-    private void deleteFile(String localPath, String interfaceId) {
+    private void deleteFile(String localPath, String fileName) {
         File interfaceFile = new File(localPath);
         File[] files = interfaceFile.listFiles();
         Arrays.stream(files).filter(Objects::nonNull)
                 .forEach(file -> {
-                    if (file.getName().contains(interfaceId)) {
+                    if (file.getName().equals(fileName)) {
                         file.delete();
                     }
                 });
@@ -193,8 +201,8 @@ public class WriteFileThread {
      * @return
      */
     private String[] createverifyInfo(String fileName, String localPath, String date) {
-        String fileSize = FileUtil.getFileSize(localPath + File.separator + fileName);
-        String filerows = FileUtil.getFileRows(localPath + File.separator + fileName);
+        String fileSize = FileUtil.getFileSize(localPath + "\\"+ fileName);
+        String filerows = FileUtil.getFileRows(localPath + "\\"+ fileName);
         String longSeconds = TimeUtil.getLongSeconds(new Date());
 
         String[] verifyinfo = {fileName, fileSize, filerows, date, longSeconds};

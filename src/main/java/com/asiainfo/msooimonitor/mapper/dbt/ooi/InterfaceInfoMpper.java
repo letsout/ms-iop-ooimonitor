@@ -5,6 +5,7 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.Act93006Info;
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
+import com.asiainfo.msooimonitor.model.ooimodel.label.UploadLabelInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -44,4 +45,15 @@ public interface InterfaceInfoMpper {
     Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
 
     void insertIop93011();
+    String getNewTableName(@Param("tableName") String tableName,@Param("length") int length);
+
+    void countLabeData(@Param("tableName") String tableName,@Param("rule") String rule,@Param("uploadTableName") String uploadTableName);
+
+    void createTbale(@Param("tableName") String tableName,@Param("content") String content);
+
+    void countJTLabeData(@Param("cocTableName") String cocTableName,@Param("rule") String rule,@Param("uploadTableName") String uploadTableName,@Param("sexTable") String sexTable);
+
+    void dropTable(@Param("schema") String schema,@Param("tableName") String tableName);
+
+    void insert93054(List<UploadLabelInfo> quoteLabelInfo);
 }
