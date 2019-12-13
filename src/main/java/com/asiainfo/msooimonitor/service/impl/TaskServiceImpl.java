@@ -1251,7 +1251,7 @@ public class TaskServiceImpl implements TaskService {
                     interfaceInfoMpper.dropTable("iop",uploadTableName);
                 }
                 interfaceInfoMpper.createTbale(uploadTableName,content);
-                String sexTable = interfaceInfoMpper.getNewTableName("dw_user_agesex_info_ds", 9);
+                String sexTable = interfaceInfoMpper.getNewTableName("dw_user_agesex_info", 9);
                 interfaceInfoMpper.countJTLabeData(newTableName,rule,uploadTableName,sexTable);
             }
             insertStatusInfo(uploadTableName,taskId,type,interfaceId);
