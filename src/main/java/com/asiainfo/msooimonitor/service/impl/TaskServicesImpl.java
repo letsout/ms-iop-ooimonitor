@@ -1100,11 +1100,11 @@ public class TaskServicesImpl implements TaskService {
                         break;
                     case "interface_cycle":
                         if (("1").equals(v) || "2".equals(v)) {
-                            localPath = path17 + File.separator + "path" + File.separator + "time/day";
-                            remotePath = path228 + File.separator + "path" + File.separator + "time/day";
+                            localPath = path17 + File.separator + "path" + File.separator + "time" +File.separator+"day";
+                            remotePath = path228 + File.separator + "path" + File.separator +"time" +File.separator+"day";
                         } else if ("3".equals(v)) {
-                            localPath = path17 + File.separator + "path" + File.separator + "time/month";
-                            remotePath = path228 + File.separator + "path" + File.separator + "time/month";
+                            localPath = path17 + File.separator + "path" + File.separator + "time" +File.separator+"month";
+                            remotePath = path228 + File.separator + "path" + File.separator + "time" +File.separator+"month";
                         }
                         break;
                     default:
@@ -1115,11 +1115,11 @@ public class TaskServicesImpl implements TaskService {
             localPath = localPath.replaceAll("path", path).replaceAll("time", date);
             remotePath = remotePath.replaceAll("path", path).replaceAll("time", date);
             if(date.length()==8){
-                localPath = path17 + File.separator + "upload" + File.separator + "time/day";
-                remotePath = path228 + File.separator + "upload" + File.separator + "time/day";
+                localPath = path17 + File.separator + "upload" + File.separator +"time" +File.separator+"day";
+                remotePath = path228 + File.separator + "upload" + File.separator +"time" +File.separator+"day";
             }else {
-                localPath = path17 + File.separator + "upload" + File.separator + "time/month";
-                remotePath = path228 + File.separator + "upload" + File.separator + "time/month";
+                localPath = path17 + File.separator + "upload" + File.separator + "time" +File.separator+"month";
+                remotePath = path228 + File.separator + "upload" + File.separator +  "time" +File.separator+"month";
             }
 
             localPath = localPath.replaceAll("time", date);

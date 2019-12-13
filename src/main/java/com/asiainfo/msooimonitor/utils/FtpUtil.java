@@ -373,7 +373,7 @@ public class FtpUtil {
             ftpClient.logout();
 
             if (flag) {
-                logger.info("文件[]接口上传成功！！！", interfaceId);
+                logger.info("文件{}接口上传成功！！！", interfaceId);
                 InterfaceRecord interfaceRecord = new InterfaceRecord();
                 interfaceRecord.setInterfaceId(interfaceId);
                 interfaceRecord.setRunStep(StateAndTypeConstant.FILE_UPLOAD_OR_RK);
