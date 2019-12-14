@@ -1111,15 +1111,17 @@ public class TaskServicesImpl implements TaskService {
                         break;
                 }
             }
+            log.info("接口名为{}",interfaceId);
             path = CommonConstant.interfaceSet.contains(interfaceId) ? "new-upload" : "upload";
+            log.info("patg{}",path);
             localPath = localPath.replaceAll("path", path).replaceAll("time", date);
             remotePath = remotePath.replaceAll("path", path).replaceAll("time", date);
             if(date.length()==8){
-                localPath = path17 + File.separator + "upload" + File.separator +"time" +File.separator+"day";
-                remotePath = path228 + File.separator + "upload" + File.separator +"time" +File.separator+"day";
+                localPath = path17 + File.separator + path + File.separator +"time" +File.separator+"day";
+                remotePath = path228 + File.separator + path + File.separator +"time" +File.separator+"day";
             }else {
-                localPath = path17 + File.separator + "upload" + File.separator + "time" +File.separator+"month";
-                remotePath = path228 + File.separator + "upload" + File.separator +  "time" +File.separator+"month";
+                localPath = path17 + File.separator + path + File.separator + "time" +File.separator+"month";
+                remotePath = path228 + File.separator +path + File.separator +  "time" +File.separator+"month";
             }
 
             localPath = localPath.replaceAll("time", date);
