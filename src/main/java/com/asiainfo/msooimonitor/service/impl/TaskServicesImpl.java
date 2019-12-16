@@ -1063,7 +1063,6 @@ public class TaskServicesImpl implements TaskService {
 
     @Override
     public void uploadFile() {
-        String path = "";
         // 查询数据已准备完成的
         List<Map<String, String>> canCreateFileInterface = uploadService.getCanCreateFileInterface();
 
@@ -1098,35 +1097,22 @@ public class TaskServicesImpl implements TaskService {
                     case "file_name":
                         fileName = v;
                         break;
-                    case "interface_cycle":
-                        if (("1").equals(v) || "2".equals(v)) {
-                            localPath = path17 + File.separator + "path" + File.separator + "time" +File.separator+"day";
-                            remotePath = path228 + File.separator + "path" + File.separator +"time" +File.separator+"day";
-                        } else if ("3".equals(v)) {
-                            localPath = path17 + File.separator + "path" + File.separator + "time" +File.separator+"month";
-                            remotePath = path228 + File.separator + "path" + File.separator + "time" +File.separator+"month";
-                        }
-                        break;
                     default:
                         break;
                 }
             }
-            log.info("接口名为{}",interfaceId);
-            path = CommonConstant.interfaceSet.contains(interfaceId) ? "new-upload" : "upload";
-            log.info("patg{}",path);
-            localPath = localPath.replaceAll("path", path).replaceAll("time", date);
-            remotePath = remotePath.replaceAll("path", path).replaceAll("time", date);
-            if(date.length()==8){
-                localPath = path17 + File.separator + path + File.separator +"time" +File.separator+"day";
-                remotePath = path228 + File.separator + path + File.separator +"time" +File.separator+"day";
-            }else {
-                localPath = path17 + File.separator + path + File.separator + "time" +File.separator+"month";
-                remotePath = path228 + File.separator +path + File.separator +  "time" +File.separator+"month";
+            log.info("接口名为{}", interfaceId);
+            String path = CommonConstant.interfaceSet.contains(interfaceId) ? "new-upload" : "upload";
+            if (date.length() == 8) {
+                localPath = path17 + File.separator + path + File.separator + "time" + File.separator + "day";
+                remotePath = path228 + File.separator + path + File.separator + "time" + File.separator + "day";
+            } else {
+                localPath = path17 + File.separator + path + File.separator + "time" + File.separator + "month";
+                remotePath = path228 + File.separator + path + File.separator + "time" + File.separator + "month";
             }
-
             localPath = localPath.replaceAll("time", date);
             remotePath = remotePath.replaceAll("time", date);
-            log.info("interfaceId:{},fileName：{}", interfaceId, fileName);
+            log.info("interfaceId:{},fileName：{},localPath:{},remotePath:{}", interfaceId, fileName, localPath, remotePath);
             writeFileThread.write(interfaceId, fileName, tableName, localPath, remotePath, date);
         }
     }
@@ -1183,31 +1169,31 @@ public class TaskServicesImpl implements TaskService {
     public void saveAll93052OR93053() {
         // 查询需要上传到集团的标签信息(集团下发标签信息省侧上传数据)(93052月数据93053日数据)
         List<UploadLabelInfo> uploadLabelInfoList = getFileDataMapper.getUploadLabelInfo();
-        if(uploadLabelInfoList.isEmpty()){
+        if (uploadLabelInfoList.isEmpty()) {
             log.info("暂无需要省侧上传的标签数据");
             return;
         }
-        for (UploadLabelInfo info:
-        uploadLabelInfoList) {
+        for (UploadLabelInfo info :
+                uploadLabelInfoList) {
             String taskId = info.getTaskId();
             String cycle = info.getCycle();
             String labelId = info.getLabelId();
             String refreshCYC = info.getRefreshCyc();
-            if(LabelConstant.CYCLE_TMP.equals(cycle)){
+            if (LabelConstant.CYCLE_TMP.equals(cycle)) {
                 // 临时性标签查找是否已经上传过
-                boolean isUpload = labelDataIsUpload(taskId, labelId,"tmp",LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC)?"93052":"93053");
-                if(!isUpload){
-                    createData(labelId, taskId,(LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC)?"day":"month"),(LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC)?"93052":"93053"));
+                boolean isUpload = labelDataIsUpload(taskId, labelId, "tmp", LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC) ? "93052" : "93053");
+                if (!isUpload) {
+                    createData(labelId, taskId, (LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC) ? "day" : "month"), (LabelConstant.REFRESH_CYC_DAY.equals(refreshCYC) ? "93052" : "93053"));
                 }
-            }else {
-                if("D".equals(refreshCYC)) {
-                    createData(labelId, taskId,"day","93052");
-                }else if ("M".equals(refreshCYC)){
+            } else {
+                if ("D".equals(refreshCYC)) {
+                    createData(labelId, taskId, "day", "93052");
+                } else if ("M".equals(refreshCYC)) {
                     // 查看本月是否有同步纪录
-                    boolean isUpload = labelDataIsUpload(taskId, labelId,"month","93053");
-                    if(!isUpload){
+                    boolean isUpload = labelDataIsUpload(taskId, labelId, "month", "93053");
+                    if (!isUpload) {
                         // 上传月指标数据
-                        createData(labelId, taskId,"month","93053");
+                        createData(labelId, taskId, "month", "93053");
                     }
                 }
             }
@@ -1218,32 +1204,32 @@ public class TaskServicesImpl implements TaskService {
     public void saveAll93050OR93051() {
         // 查询需要上传的标签数据
         List<UploadLabelInfo> jtUploadLabelInfoList = getFileDataMapper.getJTUploadLabelInfo();
-        if(jtUploadLabelInfoList.isEmpty()){
+        if (jtUploadLabelInfoList.isEmpty()) {
             log.info("暂无集团下发标签信息省侧上传标签数据的标签");
             return;
         }
 
-        for (UploadLabelInfo uploadLabelInfo:
-        jtUploadLabelInfoList) {
+        for (UploadLabelInfo uploadLabelInfo :
+                jtUploadLabelInfoList) {
             String taskId = uploadLabelInfo.getTaskId();
             String cycle = uploadLabelInfo.getCycle();
             String labelId = uploadLabelInfo.getLabelId();
             String refreshCyc = uploadLabelInfo.getRefreshCyc();
-            if(LabelConstant.CYCLE_TMP.equals(cycle)){
+            if (LabelConstant.CYCLE_TMP.equals(cycle)) {
                 // 临时性标签查找是否已经上传过
-                boolean isUpload = labelDataIsUpload(taskId, labelId,"tmp",LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)?"93050":"93051");
-                if(!isUpload){
-                    createData(labelId, taskId,(LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)?"day":"month"),LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)?"93050":"93051");
+                boolean isUpload = labelDataIsUpload(taskId, labelId, "tmp", LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc) ? "93050" : "93051");
+                if (!isUpload) {
+                    createData(labelId, taskId, (LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc) ? "day" : "month"), LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc) ? "93050" : "93051");
                 }
-            }else {
-                if(LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)) {
-                    createData(labelId, taskId,"day","93050");
-                }else if (LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)){
+            } else {
+                if (LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)) {
+                    createData(labelId, taskId, "day", "93050");
+                } else if (LabelConstant.REFRESH_CYC_DAY.equals(refreshCyc)) {
                     // 查看本月是否有同步纪录
-                    boolean isUpload = labelDataIsUpload(taskId, labelId,"month","93051");
-                    if(!isUpload){
+                    boolean isUpload = labelDataIsUpload(taskId, labelId, "month", "93051");
+                    if (!isUpload) {
                         // 上传月指标数据
-                        createData(labelId, taskId,"month","93051");
+                        createData(labelId, taskId, "month", "93051");
                     }
                 }
             }
@@ -1251,7 +1237,7 @@ public class TaskServicesImpl implements TaskService {
     }
 
     @Override
-    public void saveAll93054() throws Exception{
+    public void saveAll93054() throws Exception {
         // 查询需要上传标签引用次数的标签
         List<UploadLabelInfo> quoteLabelInfo = getFileDataMapper.getQuoteLabelInfo();
         // 插入数据表
@@ -1261,30 +1247,31 @@ public class TaskServicesImpl implements TaskService {
 
     /**
      * 将生成完成的数据插入状态表
+     *
      * @param tableName
      * @return
      */
-    private boolean insertStatusInfo(String tableName,String taskId,String type,String interfaceId) {
+    private boolean insertStatusInfo(String tableName, String taskId, String type, String interfaceId) {
         boolean flag = true;
         try {
             String time = "";
-            if("day".equals(type)){
+            if ("day".equals(type)) {
                 time = TimeUtil.getLastDaySql(new Date());
-            }else {
+            } else {
                 time = TimeUtil.getLastMonthSql(new Date());
             }
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId(interfaceId)
                             .tableName(tableName)
-                            .fileName("i_280_"+taskId+"_time_IOP-"+interfaceId+"_fileNum.dat")
+                            .fileName("i_280_" + taskId + "_time_IOP-" + interfaceId + "_fileNum.dat")
                             .dataTime(time)
                             .step("1")
                             .build()
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             flag = false;
-            log.error("上传标签数据插入状态表出错！！{}",e);
+            log.error("上传标签数据插入状态表出错！！{}", e);
         }
 
         return flag;
@@ -1292,48 +1279,49 @@ public class TaskServicesImpl implements TaskService {
 
     /**
      * 根据labelid查找标签库生成数上传到集团
+     *
      * @param labelId
      * @return
      */
-    private boolean createData(String labelId,String taskId,String type,String interfaceId) {
+    private boolean createData(String labelId, String taskId, String type, String interfaceId) {
         boolean flag = true;
         try {
-            String uploadTableName = "iop_"+interfaceId+"_"+taskId+"_"+labelId;
+            String uploadTableName = "iop_" + interfaceId + "_" + taskId + "_" + labelId;
             CocLabelInfo cocLabelInfo = getFileDataMapper.getCocLabelInfo(labelId);
             String tableName = cocLabelInfo.getTableName();
             String cycle = cocLabelInfo.getUpdateCycle();
             String columnName = cocLabelInfo.getColumnName();
             String dependIndex = cocLabelInfo.getDependIndex();
             String rules = cocLabelInfo.getRules();
-            if(rules.trim().equals(dependIndex)){
-                rules = " case when "+dependIndex+" = 1 then 1 else 0 end ";
+            if (rules.trim().equals(dependIndex)) {
+                rules = " case when " + dependIndex + " = 1 then 1 else 0 end ";
             }
-            String rule = rules.replaceAll(dependIndex,columnName);
+            String rule = rules.replaceAll(dependIndex, columnName);
             // 查询最新数据源表
-            String newTableName = interfaceInfoMpper.getNewTableName(tableName, ("1".equals(cycle)? 8 : 6));
+            String newTableName = interfaceInfoMpper.getNewTableName(tableName, ("1".equals(cycle) ? 8 : 6));
             // 计算表数据
-            if("93052".equals(interfaceId) || "93053".equals(interfaceId)){
+            if ("93052".equals(interfaceId) || "93053".equals(interfaceId)) {
                 String content = "(phone_no varchar(30))";
                 int sccoc = interfaceInfoMpper.tableIsExit("iop", uploadTableName);
-                if(sccoc > 0){
-                    interfaceInfoMpper.dropTable("iop",uploadTableName);
+                if (sccoc > 0) {
+                    interfaceInfoMpper.dropTable("iop", uploadTableName);
                 }
-                interfaceInfoMpper.createTbale( uploadTableName, content);
-                interfaceInfoMpper.countLabeData(newTableName,rule,uploadTableName);
-            }else {
+                interfaceInfoMpper.createTbale(uploadTableName, content);
+                interfaceInfoMpper.countLabeData(newTableName, rule, uploadTableName);
+            } else {
                 String content = "(phone_no varchar(30),sex varchar(10),age varchar(10),black_1 varchar(50) DEFAULT 'null',black_2 varchar(50) DEFAULT 'null',black_3 varchar(50) DEFAULT 'null',black_4 varchar(50) DEFAULT 'null') ";
                 int sccoc = interfaceInfoMpper.tableIsExit("iop", uploadTableName);
-                if(sccoc > 0){
-                    interfaceInfoMpper.dropTable("iop",uploadTableName);
+                if (sccoc > 0) {
+                    interfaceInfoMpper.dropTable("iop", uploadTableName);
                 }
-                interfaceInfoMpper.createTbale(uploadTableName,content);
+                interfaceInfoMpper.createTbale(uploadTableName, content);
                 String sexTable = interfaceInfoMpper.getNewTableName("dw_user_agesex_info", 9);
-                interfaceInfoMpper.countJTLabeData(newTableName,rule,uploadTableName,sexTable);
+                interfaceInfoMpper.countJTLabeData(newTableName, rule, uploadTableName, sexTable);
             }
-            insertStatusInfo(uploadTableName,taskId,type,interfaceId);
-        }catch (Exception e){
+            insertStatusInfo(uploadTableName, taskId, type, interfaceId);
+        } catch (Exception e) {
             flag = false;
-            log.error("标签数生成异常！！！{}",e);
+            log.error("标签数生成异常！！！{}", e);
         }
 
         return flag;
@@ -1341,21 +1329,22 @@ public class TaskServicesImpl implements TaskService {
 
     /**
      * 判断标签数据是否已经上传
+     *
      * @param taskId
      * @param labelId
      * @return
      */
-    private boolean labelDataIsUpload(String taskId, String labelId,String type,String interfaceId) {
+    private boolean labelDataIsUpload(String taskId, String labelId, String type, String interfaceId) {
         boolean flag = true;
-        String tableName = "iop_"+interfaceId+"_"+taskId+"_"+labelId;
+        String tableName = "iop_" + interfaceId + "_" + taskId + "_" + labelId;
         String content = "";
-        if("month".equals(type)){
-            content  = "data_time = '"+TimeUtil.getLastMonthSql(new Date())+"'" ;
-        }else {
-             content = "1=1" ;
+        if ("month".equals(type)) {
+            content = "data_time = '" + TimeUtil.getLastMonthSql(new Date()) + "'";
+        } else {
+            content = "1=1";
         }
-        int i = getFileDataMapper.labelDataIsUpload(tableName,content);
-        if(i==0){
+        int i = getFileDataMapper.labelDataIsUpload(tableName, content);
+        if (i == 0) {
             flag = false;
         }
         return flag;
