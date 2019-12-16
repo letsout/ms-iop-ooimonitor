@@ -64,7 +64,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -99,7 +98,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93011 error :{}", e);
-//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -128,7 +126,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93003 error :{}", e);
-//                    fileDataService.truncateTable("93003");
                 }
             }
         }.start();
@@ -156,7 +153,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93006 error :{}", e);
-//                    fileDataService.truncateTable("93006");
                 }
             }
         }.start();
@@ -184,7 +180,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93001 error :{}", e);
-//                    fileDataService.truncateTable("93001");
                 }
 
             }
@@ -220,7 +215,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93005 error :{}", e);
-//                    fileDataService.truncateTable("93005");
                 }
 
             }
@@ -257,7 +251,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93002 error :{}", e);
-//                    fileDataService.truncateTable("93002");
                 }
             }
         }.start();
@@ -312,7 +305,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93056 error :{}", e);
-//                    fileDataService.truncateTable("93056");
                 }
             }
         }.run();
@@ -348,7 +340,6 @@ public class TaskSaveController {
                     taskServices.uploadFile();
                 } catch (Exception e) {
                     log.error("93055 error :{}", e);
-//                    fileDataService.truncateTable("93055");
                 }
             }
         }.run();

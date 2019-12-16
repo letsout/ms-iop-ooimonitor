@@ -44,4 +44,14 @@
         left join ooi_coc_label_rel b on a.label_id = b.ooi_label_id
         where a.task_id = #{taskId} and a.label_id is not null
     </select>
+
+    <select id="getUploadEror" parameterType="string" resultType="com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord">
+        select *
+        from ooi_interfacae_run_record_dtl a
+        where type_desc='-1' and file_time=#{date}
+    </select>
+
+
+
+
 </mapper>

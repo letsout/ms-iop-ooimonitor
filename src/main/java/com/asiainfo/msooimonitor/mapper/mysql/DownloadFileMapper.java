@@ -13,24 +13,29 @@ public interface DownloadFileMapper {
 
     /**
      * 查询需要下载的文件接口
+     *
      * @return
      */
     List<InterfaceInfo> listDownloadFileInterface();
 
     /**
      * 保存文件入库记录
+     *
      * @param interfaceRecord
      */
     void insertRecord(InterfaceRecord interfaceRecord);
 
     /**
      * 获取此接口成功的最大时间
+     *
      * @param interfaceId
      * @return
      */
     String getMaxSuccessTime(String interfaceId);
 
-    void updateRelTable(@Param("interfaceId") String interfaceId,@Param("date") String date);
+    void updateRelTable(@Param("interfaceId") String interfaceId, @Param("date") String date);
 
-    Map<String,String> getLabelInfoBytaskId(String taskId);
+    Map<String, String> getLabelInfoBytaskId(String taskId);
+
+    List<InterfaceRecord> getUploadEror(String date);
 }
