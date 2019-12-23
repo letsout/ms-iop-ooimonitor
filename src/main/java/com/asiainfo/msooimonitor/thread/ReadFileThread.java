@@ -82,7 +82,7 @@ public class ReadFileThread {
 
             FileInputStream fileInputStream = new FileInputStream(dir + File.separator + fileName);
 
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "gb2312");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "gbk");
 
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 

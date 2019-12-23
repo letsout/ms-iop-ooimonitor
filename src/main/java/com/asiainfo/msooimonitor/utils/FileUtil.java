@@ -98,7 +98,8 @@ public class FileUtil {
             fileReader.close();
             lineNumberReader.close();
         } catch (Exception e) {
-            log.error("运行异常："+e);e.printStackTrace();
+            log.error("运行异常：" + e);
+            e.printStackTrace();
 
         }
         return String.valueOf(rows);
@@ -112,11 +113,11 @@ public class FileUtil {
      */
     public static List<String> listFile(String dir) {
         List<String> dat = null;
-       // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
+        // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
         File file = new File(dir);
         String[] list = file.list();
         try {
-            dat = Arrays.stream(list).filter(name -> name.endsWith("dat") || name.endsWith(".txt")).collect(Collectors.toList());
+            dat = Arrays.stream(list).filter(name -> name.endsWith("dat") || name.endsWith(".txt")||name.contains("91059")).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("遍历指定文件夹下的文件名出错：{}", dir);
         }
@@ -129,7 +130,7 @@ public class FileUtil {
      * @param dir
      * @return List文件名
      */
-    public static String[]  listUploadFile(String dir) {
+    public static String[] listUploadFile(String dir) {
         List<String> dat = null;
         // dir = "H:\\data1\\vgop_iop\\iop-OOI\\sbin-data\\download\\20190822\\day";
         File file = new File(dir);
@@ -258,7 +259,8 @@ public class FileUtil {
             fileInputStream.close();
 
         } catch (Exception e) {
-            log.error("运行异常："+e);e.printStackTrace();
+            log.error("运行异常：" + e);
+            e.printStackTrace();
 
         }
     }

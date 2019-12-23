@@ -1,8 +1,6 @@
 package com.asiainfo.msooimonitor.service.impl;
 
-import com.asiainfo.msooimonitor.mapper.mysql.InterfaceInfoMapper;
 import com.asiainfo.msooimonitor.mapper.mysql.InterfaceRunRecordMapper;
-import com.asiainfo.msooimonitor.model.ooimodel.InterfaceInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.InterfaceRunRecordService;
 import com.github.pagehelper.PageHelper;

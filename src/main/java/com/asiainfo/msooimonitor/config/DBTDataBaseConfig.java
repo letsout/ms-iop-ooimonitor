@@ -48,18 +48,18 @@ public class DBTDataBaseConfig {
     @Bean(name = "loadJdbc")
     public NamedParameterJdbcTemplate loadJdbc(){
 
-        DataSource dataSource = DataSourceBuilder.create()
+       /* DataSource dataSource = DataSourceBuilder.create()
                 .driverClassName("com.gbase.jdbc.Driver")
                 .url("jdbc:gbase://10.101.167.28:5258/iop?rewriteBatchedStatements=true")
                 .username("gbase")
                 .password("gbase")
-                .build();
-      /*  DataSource dataSource = DataSourceBuilder.create()
+                .build();*/
+        DataSource dataSource = DataSourceBuilder.create()
                 .driverClassName("com.gbase.jdbc.Driver")
                 .url("jdbc:gbase://10.113.148.2:5258/iop?rewriteBatchedStatements=true")
                 .username("gbinst1")
                 .password("@_kx%a3p")
-                .build();*/
+                .build();
         NamedParameterJdbcTemplate loadJdbc = new NamedParameterJdbcTemplate(dataSource);
         return loadJdbc;
     }

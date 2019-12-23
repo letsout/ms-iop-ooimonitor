@@ -33,17 +33,23 @@ spring:
       username: aiapp
       password: tFc_99w_
     secondary:
-      driver-class-name: com.gbase.jdbc.Driver
       jdbc-url: jdbc:gbase://10.113.148.2:5258/iop
       username: gbinst1
       password: '@_kx%a3p'
+      driver-class-name: com.gbase.jdbc.Driver
+      initial-size: 2
+      min-idle: 2
+      max-idle: 2z
+      max-active: 10
+      max-wait: 100000
+      validation-quer: values 1
+      test-while-idle: true
+      time-between-eviction-runs-millis: 27800
 
   redis:
     password: qcd_As1ainfo
     cluster:
       nodes: 10.114.208.18:6010,10.114.208.19:6010,10.114.208.20:6010
-
-
 
 ftp:
   host: 10.109.3.228

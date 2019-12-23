@@ -58,6 +58,9 @@ public class HandleData {
             if (collect.size() > 0) {
                 for (String fileName:
                 collect) {
+                    if(fileName.contains("91059") && fileName.endsWith(".tar")){
+                        continue;
+                    }
                     readFileThread.readFile(fileName,localPath,interfaceId,tableName,date);
                 }
             } else {

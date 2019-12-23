@@ -37,6 +37,7 @@ spring:
       jdbc-url: jdbc:gbase://10.101.167.28:5258/iop
       username: gbase
       password: gbase
+
 ftp:
   host: 10.101.167.28
   user: sftp
