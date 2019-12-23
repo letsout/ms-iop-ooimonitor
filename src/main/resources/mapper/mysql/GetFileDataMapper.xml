@@ -206,6 +206,8 @@
           and b.activity_id is not null
           and c.offer_code is not null
           and d.activity_id is not null
+          and d.is_deleted = 0
+          and d.is_paused = 0
     </select>
 
 
@@ -216,6 +218,8 @@
                  left join activity_base_info b on a.iop_activity_id = b.activity_id
         where is_feedback = 2
           and data_state = 'U'
+          and b.is_deleted = 0
+          and b.is_paused = 0
           and #{month} = date_format(b.end_time, '%Y%m')
           and b.activity_id is not null
     </select>

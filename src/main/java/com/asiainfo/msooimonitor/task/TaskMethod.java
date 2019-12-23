@@ -191,7 +191,6 @@ public class TaskMethod {
 
     @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
     public void save93055() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
         fileDataService.truncateTable("93055");
         try {
             String lastMonthSql = TimeUtil.getLastMonthSql(new Date());
@@ -215,7 +214,6 @@ public class TaskMethod {
 
     @Scheduled(cron = "0 00 10 5 * ?")//每月5号10:00触发
     public void save93056() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 
         fileDataService.truncateTable("93056");
         try {
@@ -367,6 +365,7 @@ public class TaskMethod {
             InputStream inputStream = null;
             for (File file : dir) {
                 String fileName = file.getName();
+                log.info("文件名为："+fileName);
                 boolean isCheckFile = fileName.startsWith("f");
                 inputStream = new FileInputStream(file);
                 BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, "GBK"));

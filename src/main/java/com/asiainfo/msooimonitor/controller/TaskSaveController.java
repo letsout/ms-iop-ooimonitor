@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.asiainfo.msooimonitor.model.ooimodel.Result;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -285,20 +286,15 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-
                 fileDataService.truncateTable("93056");
                 try {
-                    Date dataMonth = sdf.parse(activityEndDate);
-
                     fileDataService.create93056(activityEndDate);
-
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93056")
                                     .tableName("iop_93056")
                                     .fileName("i_13000_time_IOP-93056_" + num + "_fileNum.dat")
-                                    .dataTime(TimeUtil.getAfterMonthSql(dataMonth))
+                                    .dataTime(activityEndDate)
                                     .step("1")
                                     .build()
                     );
@@ -322,18 +318,15 @@ public class TaskSaveController {
         new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
                 fileDataService.truncateTable("93055");
                 try {
-                    Date dataMonth = sdf.parse(activityEndDate);
                     fileDataService.create93055(activityEndDate);
-
                     fileDataService.insertInterfaceRelTable(
                             CretaeFileInfo.builder()
                                     .interfaceId("93055")
                                     .tableName("iop_93055")
                                     .fileName("i_13000_time_IOP-93055_" + num + "_fileNum.dat")
-                                    .dataTime(TimeUtil.getAfterMonthSql(dataMonth))
+                                    .dataTime(activityEndDate)
                                     .step("1")
                                     .build()
                     );
