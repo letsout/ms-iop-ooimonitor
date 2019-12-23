@@ -61,6 +61,8 @@ public class CommonConstant {
         interfaceSet.add("93002");
         interfaceSet.add("93005");
         interfaceSet.add("93006");
+        interfaceSet.add("93055");
+        interfaceSet.add("93056");
     }
 
     public static String SC = "280";
