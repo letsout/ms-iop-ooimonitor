@@ -1,6 +1,7 @@
 package com.asiainfo.msooimonitor.controller;
 
 import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
+import com.asiainfo.msooimonitor.model.ooimodel.Result;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.utils.ResultUtil;
@@ -12,10 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.asiainfo.msooimonitor.model.ooimodel.Result;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -337,5 +334,11 @@ public class TaskSaveController {
             }
         }.run();
         return "success：请查看日志";
+    }
+
+    @RequestMapping("/checkFile/{date}")
+    public String checkFile(@PathVariable String date) {
+        taskServices.checkFile(date);
+        return "校验成功，请查看短信，校验的日期为：" + date;
     }
 }

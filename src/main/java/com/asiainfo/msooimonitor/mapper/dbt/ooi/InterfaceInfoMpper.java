@@ -45,15 +45,18 @@ public interface InterfaceInfoMpper {
     Map<String, String> getLastSummaryEffect(@Param("activityId") String activityId, @Param("month") String month);
 
     void insertIop93011();
-    String getNewTableName(@Param("tableName") String tableName,@Param("length") int length);
 
-    void countLabeData(@Param("tableName") String tableName,@Param("rule") String rule,@Param("uploadTableName") String uploadTableName);
+    String getNewTableName(@Param("tableName") String tableName, @Param("length") int length);
 
-    void createTbale(@Param("tableName") String tableName,@Param("content") String content);
+    void countLabeData(@Param("tableName") String tableName, @Param("rule") String rule, @Param("uploadTableName") String uploadTableName);
 
-    void countJTLabeData(@Param("cocTableName") String cocTableName,@Param("rule") String rule,@Param("uploadTableName") String uploadTableName,@Param("sexTable") String sexTable);
+    void createTbale(@Param("tableName") String tableName, @Param("content") String content);
 
-    void dropTable(@Param("schema") String schema,@Param("tableName") String tableName);
+    void countJTLabeData(@Param("cocTableName") String cocTableName, @Param("rule") String rule, @Param("uploadTableName") String uploadTableName, @Param("sexTable") String sexTable);
+
+    void dropTable(@Param("schema") String schema, @Param("tableName") String tableName);
 
     void insert93054(List<UploadLabelInfo> quoteLabelInfo);
+
+    Map<String, String> getMaxCount();
 }

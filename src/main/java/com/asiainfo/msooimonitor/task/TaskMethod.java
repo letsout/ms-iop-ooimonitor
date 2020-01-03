@@ -6,18 +6,16 @@ import com.asiainfo.msooimonitor.model.datahandlemodel.CretaeFileInfo;
 import com.asiainfo.msooimonitor.model.ooimodel.InterfaceRecord;
 import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
-import com.asiainfo.msooimonitor.utils.FtpUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author yx
@@ -59,6 +57,7 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93006接口运行异常");
             log.error("运行异常：" + e);
             e.printStackTrace();
 
@@ -83,6 +82,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93011接口运行异常");
+
             log.error("运行异常：" + e);
             e.printStackTrace();
 //            fileDataService.truncateTable("93006");
@@ -106,6 +107,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93004接口运行异常");
+
             e.printStackTrace();
 //            fileDataService.truncateTable("93006");
         }
@@ -128,6 +131,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93001接口运行异常");
+
             e.printStackTrace();
 //       fileDataService.truncateTable("93001");
         }
@@ -153,6 +158,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93005接口运行异常");
+
             log.error("运行异常：" + e);
             e.printStackTrace();
 //       fileDataService.truncateTable("93006");
@@ -177,6 +184,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93002接口运行异常");
+
             log.error("运行异常：" + e);
             e.printStackTrace();
 //      fileDataService.truncateTable("93006");
@@ -207,6 +216,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93055接口运行异常");
+
             log.error("93055 error :{}", e);
             fileDataService.truncateTable("93055");
         }
@@ -232,6 +243,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93056接口运行异常");
+
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93056");
         }
@@ -256,6 +269,8 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93003接口运行异常");
+
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93003");
         }
@@ -269,6 +284,8 @@ public class TaskMethod {
             taskServices.saveAll93052OR93053();
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("9352OR93053接口运行异常");
+
             log.error("save93052OR93053 error :{}", e);
         }
     }
@@ -281,6 +298,8 @@ public class TaskMethod {
             taskServices.saveAll93050OR93051();
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93050OR93051接口运行异常");
+
             log.error("93050 error :{}", e);
             //  fileDataService.truncateTable("93050");
         }
@@ -303,6 +322,7 @@ public class TaskMethod {
             );
             taskServices.uploadFile();
         } catch (Exception e) {
+            sendMessage.sendSms("93054接口运行异常");
             log.error("93054 error :{}", e);
             fileDataService.truncateTable("93054");
         }
@@ -328,83 +348,17 @@ public class TaskMethod {
     }
 
     //查看每天校验文件失败的接口
-    @Scheduled(cron = "0 00 14 * * ?")//每天14:00触发
+    @Scheduled(cron = "0 15 10 * * ?")//每天10:15触发
     public void checkFile() {
         final String lastDaySql = TimeUtil.getLastDaySql(new Date());
-        String remotePath = path228 + "/tmp";
-        String loaclPath = path17 + "/tmp/" + lastDaySql;
-        log.info("开始处理" + lastDaySql + "这一天的校验文件");
-        try {
-            boolean b = FtpUtil.downloadCheckFileFTP(remotePath, loaclPath);
-            log.info("下载" + lastDaySql + "这一天的校验文件" + (b ? "成功" : "失败"));
-            Set fileSet = new HashSet();
-            //日接口
-            fileSet.add("93001");
-            fileSet.add("93002");
-            fileSet.add("93004");
-            fileSet.add("93005");
-            fileSet.add("93006");
-            fileSet.add("93011");
-            //月接口
-            if ("10".equals(lastDaySql.substring(6))) {
-                fileSet.add("93003");
-                fileSet.add("93055");
-                fileSet.add("93056");
-                fileSet.add("93053");
-                fileSet.add("93052");
-                fileSet.add("93051");
-                fileSet.add("93050");
-                fileSet.add("93054");
-            }
-            Set rSet = new HashSet(fileSet);
-            File files = new File(loaclPath);
-            final File[] dir = files.listFiles();
-            List<Map<String, String>> result = new ArrayList();
+        taskServices.checkFile(lastDaySql);
+    }
 
-            Map<String, String> map = null;
-            InputStream inputStream = null;
-            for (File file : dir) {
-                String fileName = file.getName();
-                log.info("文件名为："+fileName);
-                boolean isCheckFile = fileName.startsWith("f");
-                inputStream = new FileInputStream(file);
-                BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, "GBK"));
-                String interfaceId = fileName.substring(23, 28);
-                String str;
-                boolean checkResult = true;
-                while ((str = bf.readLine()) != null) {
-                    if (StringUtils.isBlank(str)) {
-                        continue;
-                    }
-                    if (isCheckFile) {
-                        if (!"00".equals(str.substring(str.length() - 2))) {
-                            checkResult = false;
-                        }
-                    } else {
-                        if (!"000000000".equals(str.substring(str.length() - 9))) {
-                            checkResult = false;
-                        }
-                    }
-                }
-                /**
-                 * 校验通过后移除有的接口id
-                 */
-                if (checkResult) {
-                    if (isCheckFile) {
-                        fileSet.remove(interfaceId);
-                    } else {
-                        rSet.remove(interfaceId);
-                    }
-                }
-            }
-            log.info(lastDaySql + "这一天的校验文件有误的接口为：" + rSet);
-            rSet.addAll(fileSet);
-            if (rSet.size() > 0) {
-                sendMessage.sendSms(lastDaySql + "这一天接口" + rSet + "的校验文件出现异常，请检查");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            sendMessage.sendSms(lastDaySql + "这一天校验文件下载出现异常，请检查");
-        }
+    /**
+     * 每天检验国信的数据是否存在有同一个活动每一天有两条效果数据的情况
+     */
+    @Scheduled(cron = "0 55 09 * * ?")//每天9:55触发
+    public void getMaxCount() {
+        taskServices.getMaxCount();
     }
 }

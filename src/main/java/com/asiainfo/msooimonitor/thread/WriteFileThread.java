@@ -47,9 +47,9 @@ public class WriteFileThread {
         fileName = fileName.replaceAll("time", date);
         // 校验文件名称
         String verifyFileName = "";
-        if("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId) ){
-            verifyFileName = fileName.replace("dat","verf");
-        }else {
+        if ("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId)) {
+            verifyFileName = fileName.replace("dat", "verf");
+        } else {
             verifyFileName = fileName.substring(0, fileName.lastIndexOf("_")) + ".verf";
         }
         FileOutputStream dataFileWriter = null;
@@ -61,18 +61,17 @@ public class WriteFileThread {
         // 文件个数
         int fileNum = 1;
         String fileNameTmp = fileName.replace("fileNum", "00" + fileNum);
-        if("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId) ){
+        if ("93050".equals(interfaceId) || "93051".equals(interfaceId) || "93052".equals(interfaceId) || "93053".equals(interfaceId) || "93054".equals(interfaceId)) {
             verifyFileName = verifyFileName.replace("fileNum", "00" + fileNum);
         }
         int sum = loadMapper.getrows(tableName);
         try {
-            dataFileWriter = new FileOutputStream(localPath + File.separator+ fileNameTmp);
-            verifyFileWriter = new FileOutputStream(localPath + File.separator+ verifyFileName);
+            dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
+            verifyFileWriter = new FileOutputStream(localPath + File.separator + verifyFileName);
             // 分页读取文件
             List<String> sqlList = createsql(tableName);
 
-            for (String sql :
-                    sqlList) {
+            for (String sql : sqlList) {
                 log.info("开始执行sql查询结果数据：{}", sql);
                 List<Map<String, String>> interfaceInfoLists = uploadService.getInterfaceInfo(sql);
 
@@ -84,7 +83,7 @@ public class WriteFileThread {
                     if (records % filterRecords == 0 && records > 0) {
                         log.info("开始监测文件{}大小！！！", fileNameTmp);
                         dataFileWriter.flush();
-                        boolean okSize = isOksize(localPath + File.separator+ fileNameTmp);
+                        boolean okSize = isOksize(localPath + File.separator + fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
                             dataWrite(dataFileWriter, line, "U");
@@ -96,10 +95,10 @@ public class WriteFileThread {
 
                             if (fileNum >= 10) {
                                 fileNameTmp = fileName.replaceAll("fileNum", "0" + fileNum);
-                                dataFileWriter = new FileOutputStream(localPath + File.separator+ fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
                             } else {
                                 fileNameTmp = fileName.replaceAll("fileNum", "00" + fileNum);
-                                dataFileWriter = new FileOutputStream(localPath + File.separator+ fileNameTmp);
+                                dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
                             }
                         } else {
                             dataWrite(dataFileWriter, line, "U");
@@ -146,7 +145,7 @@ public class WriteFileThread {
             interfaceRecord.setRunStep(StateAndTypeConstant.FILE_DOWNLOAD_OR_CREATE);
             interfaceRecord.setTypeDesc(StateAndTypeConstant.FALSE);
             interfaceRecord.setFileName(fileName);
-            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator+ fileName));
+            interfaceRecord.setFileNum(FileUtil.getFileRows(localPath + File.separator + fileName));
             interfaceRecord.setFileTime(date);
             interfaceRecord.setFileSuccessNum("0");
             if (e.getMessage().length() > 480) {
@@ -166,7 +165,8 @@ public class WriteFileThread {
                     verifyFileWriter.close();
                 }
             } catch (IOException e) {
-                log.error("运行异常："+e);e.printStackTrace();
+                log.error("运行异常：" + e);
+                e.printStackTrace();
 
             }
         }
@@ -175,8 +175,8 @@ public class WriteFileThread {
     /**
      * 删除与此接口相关的文件
      *
-     * @param localPath   文件存放路径
-     * @param fileName 文件名称
+     * @param localPath 文件存放路径
+     * @param fileName  文件名称
      * @return flag
      */
     private void deleteFile(String localPath, String fileName) {
@@ -200,8 +200,8 @@ public class WriteFileThread {
      * @return
      */
     private String[] createverifyInfo(String fileName, String localPath, String date) {
-        String fileSize = FileUtil.getFileSize(localPath + File.separator+ fileName);
-        String filerows = FileUtil.getFileRows(localPath + File.separator+ fileName);
+        String fileSize = FileUtil.getFileSize(localPath + File.separator + fileName);
+        String filerows = FileUtil.getFileRows(localPath + File.separator + fileName);
         String longSeconds = TimeUtil.getLongSeconds(new Date());
 
         String[] verifyinfo = {fileName, fileSize, filerows, date, longSeconds};
@@ -274,16 +274,19 @@ public class WriteFileThread {
 
         // 设置分页参数 每次50000条
         int sum = loadMapper.getrows(tableName);
+        String sql = "desc " + tableName;
+        List<String> strings = loadMapper.selectTableSutrct(sql);
+        String colums = StringUtils.join(strings, ",");
         // 分页条数
         int limitNum = 20000;
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {
-            sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + limitNum);
+            sqlList.add("select RANK() OVER(ORDER BY " + colums + " )+" + start + " as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + limitNum);
             start += limitNum;
             end -= limitNum;
         }
-        sqlList.add("select a.rowid+1 as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + end);
+        sqlList.add("select RANK() OVER(ORDER BY " + colums + " ) +" + start + " as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + end);
 
         return sqlList;
     }

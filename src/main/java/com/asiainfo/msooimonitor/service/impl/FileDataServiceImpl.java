@@ -97,7 +97,7 @@ public class FileDataServiceImpl implements FileDataService {
         this.insertFailDetails(uploadDetailInfos);
         UploadCountInfo uploadCountInfo = new UploadCountInfo();
         uploadCountInfo.setInterfaceId("93003");
-        uploadCountInfo.setUploadNum(activitys.size()-uploadDetailInfos.size());
+        uploadCountInfo.setUploadNum(activitys.size() - uploadDetailInfos.size());
         uploadCountInfo.setFailNum(uploadDetailInfos.size());
         uploadCountInfo.setActivityTime(month);
         getFileDataMapper.insertUploadCount(uploadCountInfo);
@@ -129,12 +129,14 @@ public class FileDataServiceImpl implements FileDataService {
         String customerNumStr = "";
         String customerFilterRule = "";
         StringBuilder activityIds = new StringBuilder();
+        Map<String, String> errorMap = new HashMap<>();
         for (Map<String, Object> map : activityEndTimeList) {
             // 获取最大时间
 //            String time = interfaceInfoMpper.getMaxTime(map.get("activity_id").toString());
-            String time = map.get("end_time").toString().replaceAll("-","");
+            String time = map.get("end_time").toString().replaceAll("-", "");
             Map<String, String> summaryEffect = interfaceInfoMpper.getSummaryEffect(map.get("activity_id").toString(), time);
             if (summaryEffect == null) {
+                errorMap.put(map.get("activity_id").toString(), time);
                 activityIds.append(",").append(map.get("activity_id"));
                 log.info("activityIds:{}", activityIds);
                 continue;
@@ -170,7 +172,7 @@ public class FileDataServiceImpl implements FileDataService {
         map.put("in_out_rate", df.format(inOutRate / i));
         map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
         if (StringUtils.isNotEmpty(activityIds.toString())) {
-            String message = activityIds.toString().substring(1) + "在" + activityEndDate + "当天缺少效果数据，请核查";
+            String message = errorMap+"缺少效果数据，请核查";
             sendMessage.sendSms(message);
         }
         return map;
@@ -253,6 +255,7 @@ public class FileDataServiceImpl implements FileDataService {
     public void truncateTable(String tableName) {
         interfaceInfoMpper.truncateTable(tableName);
     }
+
     @Override
     @Transactional(transactionManager = "MysqlTransactionManager", rollbackFor = Exception.class)
     public void create93055(String month) {
@@ -291,7 +294,7 @@ public class FileDataServiceImpl implements FileDataService {
                 Map<String, String> jtActivityInfo = getFileDataMapper.getJTActivityInfoById(activityId);
                 paramMap.put("A2", CommonConstant.SC);
                 paramMap.put("A3", CommonConstant.cityMap.get("1"));
-                paramMap.put("A4", "280" + jtActivityInfo.get("jt_activity_id"));
+                paramMap.put("A4", jtActivityInfo.get("jt_activity_id"));
                 paramMap.put("A5", jtActivityInfo.get("jt_activity_name"));
                 paramMap.put("A6", "9");
                 paramMap.put("A7", CommonConstant.SC + "_" + jtActivityInfo.get("ooi_campaign_id") + "_" + activityId.substring(1));

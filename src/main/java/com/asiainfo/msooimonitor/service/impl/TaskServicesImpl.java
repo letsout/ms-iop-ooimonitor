@@ -12,6 +12,7 @@ import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.service.UploadService;
 import com.asiainfo.msooimonitor.thread.WriteFileThread;
+import com.asiainfo.msooimonitor.utils.CheckCloum;
 import com.asiainfo.msooimonitor.utils.FtpUtil;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
@@ -21,9 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -38,6 +37,8 @@ public class TaskServicesImpl implements TaskService {
     DecimalFormat df = new DecimalFormat("0.000000");
     @Autowired
     FileDataService fileDataService;
+    @Autowired
+    CheckCloum checkCloum;
     @Autowired
     SendMessage sendMessage;
     @Autowired
@@ -112,7 +113,7 @@ public class TaskServicesImpl implements TaskService {
             activity.setStartTime(TimeUtil.getOoiDate(activity.getStartTime()));
             //6活动结束时间
             //String endTime = sdf.format(activity.get("end_time").toString());
-            activity.setEndTime(TimeUtil.getOoiDate(activity.getEndTime()));
+            activity.setEndTime(TimeUtil.getOoiEndDate(activity.getEndTime()));
             //7子活动编号
             activity.setCampaignId(activity.getCampaignId().substring(1));
             //8子活动名称
@@ -291,7 +292,7 @@ public class TaskServicesImpl implements TaskService {
             //7活动开始时间必填,长度14位,为数据生成时间
             map.put("A7", TimeUtil.getOoiDate(activity.get("activity_starttime")));
             //8活动结束时间必填,长度14位,为数据生成时间,活动结束时间不早于活动开始时间
-            map.put("A8", TimeUtil.getOoiDate(activity.get("activity_endtime")));
+            map.put("A8", TimeUtil.getOoiEndDate(activity.get("activity_endtime")));
             //9营销活动类型必填，填写枚举值ID
             map.put("A9", activity.getOrDefault("activity_type", "9"));
             //10营销活动目的必填，填写枚举值ID
@@ -316,7 +317,7 @@ public class TaskServicesImpl implements TaskService {
                 //16子活动开始时间必填,长度14位,为数据生成时间
                 resultmap.put("A16", TimeUtil.getOoiDate(campaignedmap.get("campaign_starttime").toString()));
                 //17子活动结束时间必填,长度14位,为数据生成时间,子活动结束时间不早于子活动开始时间
-                resultmap.put("A17", TimeUtil.getOoiDate(campaignedmap.get("end_time").toString()));
+                resultmap.put("A17", TimeUtil.getOoiEndDate(campaignedmap.get("end_time").toString()));
                 //23产品编码必填,前七位需符合8.1产品编码规则
                 String proCode = campaignedmap.get("offer_code").toString();
                 resultmap.put("A23", proCode);
@@ -392,6 +393,10 @@ public class TaskServicesImpl implements TaskService {
                     //营销成功用户数
                     int vicNum = Integer.parseInt(mapEffect.get("vic_num")) - Integer.parseInt(mapEffect1.get("vic_num"));
                     //
+                    if (touchNum < 0 || vicNum < 0) {
+                        sendMessage.sendSms("活动：" + iopActivityId + "在：" + activityEndDate + "这一天后出现了成功接触客户数或营销成功用户数负增长的情况，请核查");
+                        throw new Exception("活动：" + iopActivityId + "在：" + activityEndDate + "这一天后出现了成功接触客户数或营销成功用户数负增长的情况，请核查");
+                    }
                     String responseRate = String.valueOf(Float.valueOf(mapEffect.get("response_rate")) - Float.valueOf(mapEffect1.get("response_rate")));
                     DecimalFormat df = new DecimalFormat("0.000000");
                     //43成功接触客户数日指标，必填,口径：运营活动中，通过各触点，接触到的用户数量，如短信下发成功用户数、外呼成功接通用户数、APP成功弹出量等
@@ -424,6 +429,7 @@ public class TaskServicesImpl implements TaskService {
                 //50 4G流量客户数,日指标，选填，口径：统计周期内，使用4G网络产生4G流量的客户数
                 map.put("A50", "");
                 resultmap.putAll(map);
+                checkCloum.checkColunmIsNull(resultmap, "93001");
                 list.add(resultmap);
             }
         }
@@ -472,7 +478,7 @@ public class TaskServicesImpl implements TaskService {
             //7 活动开始时间 必填,长度14位
             map.put("A7", TimeUtil.getOoiDate(activity.get("activity_starttime")));
             //8 活动结束时间 必填，长度14位，活动结束时间不早于活动开始时间
-            map.put("A8", TimeUtil.getOoiDate(activity.get("activity_endtime")));
+            map.put("A8", TimeUtil.getOoiEndDate(activity.get("activity_endtime")));
             //9 营销活动类型 必填，填写枚举值ID
             map.put("A9", activity.getOrDefault("activity_type", "9"));
             //10 营销活动目的 必填，填写枚举值ID
@@ -594,6 +600,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A49", "");
             // 50,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
             map.put("A50", "");
+            checkCloum.checkColunmIsNull(map, "93005");
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
@@ -634,9 +641,9 @@ public class TaskServicesImpl implements TaskService {
             map.put("A7", TimeUtil.getOoiDate(start_time));
             //8 活动结束时间 必填，长度14位，活动结束时间不早于活动开始时间
             String end_time = activity.get("end_time").toString();
-            map.put("A8", TimeUtil.getOoiDate(end_time));
+            map.put("A8", TimeUtil.getOoiEndDate(end_time));
             //9 营销活动类型 必填，填写枚举值ID
-            map.put("A9", CommonConstant.activityTypeMap.get(activity.get("business_bigtype_id")));
+            map.put("A9", CommonConstant.activityTypeMap.get(activity.get("business_bigtype_id") + ""));
             //10 营销活动目的 必填，填写枚举值ID
             map.put("A10", activity.getOrDefault("activity_objective", "9").toString());
             //11 营销活动描述 对产品、服务等信息进行简要描述
@@ -728,6 +735,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A49", "");
             // 50,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
             map.put("A50", "");
+            checkCloum.checkColunmIsNull(map, "93005");
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
@@ -771,7 +779,7 @@ public class TaskServicesImpl implements TaskService {
             //7,活动开始时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间
             map.put("A7", TimeUtil.getOoiDate(activity.get("activity_starttime")));
             //8,活动结束时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间,活动结束时间不早于活动开始时间
-            map.put("A8", TimeUtil.getOoiDate(activity.get("activity_endtime")));
+            map.put("A8", TimeUtil.getOoiEndDate(activity.get("activity_endtime")));
             //9,营销活动类型,1：入网类,必填，填写枚举值ID,2：终端类,3：流量类,4：数字化服务类,5：基础服务类,6：客户保有类,7：宽带类,8：融合套餐类,9：其它类
             map.put("A9", activity.getOrDefault("activity_type", "9"));
             //10,营销活动目的,1：新增客户类,必填，填写枚举值ID,2：存量保有类,3：价值提升类,4：离网预警类,9：其它类
@@ -798,7 +806,7 @@ public class TaskServicesImpl implements TaskService {
                 //16,子活动开始时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间
                 resultmap.put("A16", TimeUtil.getOoiDate(campaignedmap.get("campaign_starttime").toString()));
                 //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间,子活动结束时间不早于子活动开始时间
-                resultmap.put("A17", TimeUtil.getOoiDate(campaignedmap.get("end_time").toString()));
+                resultmap.put("A17", TimeUtil.getOoiEndDate(campaignedmap.get("end_time").toString()));
                 Map<String, String> mapEffect1 = interfaceInfoMpper.getSummaryEffect(iop_activity_id, activityEndDate);
                 if (mapEffect1 == null) {
                     uploadDetailInfos.add(UploadDetailInfo.builder().interfaceId("93002")
@@ -897,6 +905,8 @@ public class TaskServicesImpl implements TaskService {
                 //90投入产出比,NUMBER (20,6),必填且取值小于1；,口径：,统计周期（活动开始时间至活动结束时间）,运营活动成功用户产生的收入/运营活动投入的成本,例：填0.1代表10%
 //                map.put("A90", mapEffect.get("in_out_rate"));
                 resultmap.putAll(map);
+                checkCloum.checkColunmIsNull(resultmap, "93002");
+
                 list.add(resultmap);
             }
         }
@@ -940,9 +950,15 @@ public class TaskServicesImpl implements TaskService {
             //7,活动开始时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间
             map.put("A7", TimeUtil.getOoiDate(activity.get("start_time").toString()));
             //8,活动结束时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间,活动结束时间不早于活动开始时间
-            map.put("A8", TimeUtil.getOoiDate(activity.get("end_time").toString()));
+            map.put("A8", TimeUtil.getOoiEndDate(activity.get("end_time").toString()));
             //9,营销活动类型,1：入网类,必填，填写枚举值ID,2：终端类,3：流量类,4：数字化服务类,5：基础服务类,6：客户保有类,7：宽带类,8：融合套餐类,9：其它类
-            map.put("A9", CommonConstant.activityTypeMap.get(activity.get("business_bigtype_id")));
+            final String business_bigtype_id = activity.get("business_bigtype_id").toString();
+            final int business_bigtype_id1 = Integer.parseInt(activity.get("business_bigtype_id").toString());
+            log.info("从数据库中获取到的值：" + business_bigtype_id);
+            log.info("CommonConstant.activityTypeMap：" + CommonConstant.activityTypeMap);
+            log.info("A9str：" + CommonConstant.activityTypeMap.get(business_bigtype_id));
+            log.info("A9int：" + CommonConstant.activityTypeMap.get(business_bigtype_id1));
+            map.put("A9", CommonConstant.activityTypeMap.get(business_bigtype_id));
             //10,营销活动目的,1：新增客户类,必填，填写枚举值ID,2：存量保有类,3：价值提升类,4：离网预警类,9：其它类
             map.put("A10", activity.getOrDefault("activity_objective", "9"));
             //11,营销活动描述,对产品、服务等信息进行简要描述
@@ -1003,7 +1019,7 @@ public class TaskServicesImpl implements TaskService {
             //16,子活动开始时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间
             map.put("A16", TimeUtil.getOoiDate(activity.get("start_time").toString()));
             //17,子活动结束时间,格式：YYYYMMDDHH24MISS,必填,,为数据生成时间,子活动结束时间不早于子活动开始时间
-            map.put("A17", TimeUtil.getOoiDate(activity.get("end_time").toString()));
+            map.put("A17", TimeUtil.getOoiEndDate(activity.get("end_time").toString()));
             //18,目标客户群编号,必填
             map.put("A18", mapEffect.get("customer_group_id"));
             //19,目标客户群名称,必填
@@ -1048,6 +1064,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A35", "");
             //36,资源使用情况,描述性信息,可为空
             map.put("A36", "");
+            checkCloum.checkColunmIsNull(map, "93002");
             list.add(map);
         }
         SqlUtil.getInsert("93002", list);
@@ -1242,6 +1259,101 @@ public class TaskServicesImpl implements TaskService {
         List<UploadLabelInfo> quoteLabelInfo = getFileDataMapper.getQuoteLabelInfo();
         // 插入数据表
         interfaceInfoMpper.insert93054(quoteLabelInfo);
+    }
+
+    @Override
+    public void checkFile(String date) {
+        String remotePath = path228 + "/tmp";
+        String loaclPath = path17 + "/tmp/" + date;
+        log.info("开始处理" + date + "这一天的校验文件");
+        try {
+            boolean b = FtpUtil.downloadCheckFileFTP(remotePath, loaclPath);
+            log.info("下载" + date + "这一天的校验文件" + (b ? "成功" : "失败"));
+            Set fileSet = new HashSet();
+            //日接口
+            fileSet.add("93001");
+            fileSet.add("93002");
+            fileSet.add("93004");
+            fileSet.add("93005");
+            fileSet.add("93006");
+            //因为尚未考核集团定于11.14才开始调度
+            fileSet.add("93011");
+            //月接口
+            if ("10".equals(date.substring(6))) {
+                fileSet.add("93003");
+                fileSet.add("93055");
+                fileSet.add("93056");
+                fileSet.add("93053");
+                fileSet.add("93052");
+                fileSet.add("93051");
+                fileSet.add("93050");
+                fileSet.add("93054");
+            }
+            Set rSet = new HashSet(fileSet);
+            File files = new File(loaclPath);
+            final File[] dir = files.listFiles();
+
+            InputStream inputStream = null;
+            for (File file : dir) {
+                String fileName = file.getName();
+                log.info("文件名为：" + fileName);
+                boolean isCheckFile = fileName.startsWith("f");
+                inputStream = new FileInputStream(file);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, "GBK"));
+                String interfaceId = fileName.substring(23, 28);
+                String str;
+                boolean checkResult = true;
+                while ((str = bf.readLine()) != null) {
+                    log.info("{}读取到的文件内容为：{}", fileName, str);
+                    if (StringUtils.isBlank(str)) {
+                        continue;
+                    }
+                    if (isCheckFile) {
+                        if (!"00".equals(str.substring(str.length() - 2))) {
+                            log.info("{}校验文件出错，内容为：{}", fileName, str);
+                            checkResult = false;
+                        }
+                    } else {
+                        if (!"000000000".equals(str.substring(str.length() - 9))) {
+                            log.info("{}校验文件出错，内容为：{}", fileName, str);
+                            checkResult = false;
+                        }
+                    }
+                }
+                /**
+                 * 校验通过后移除有的接口id
+                 */
+                if (checkResult) {
+                    if (isCheckFile) {
+                        log.info("{}校验文件通过，移除他的文件级set记录", fileName);
+                        fileSet.remove(interfaceId);
+                    } else {
+                        log.info("{}校验文件通过，移除他的记录级set记录", fileName);
+                        rSet.remove(interfaceId);
+                    }
+                }
+            }
+            log.info(date + "这一天的校验文件有误的接口为：" + rSet);
+            rSet.addAll(fileSet);
+            if (rSet.size() > 0) {
+                sendMessage.sendSms(date + "这一天接口" + rSet + "的校验文件出现异常，请检查");
+            } else {
+                sendMessage.sendSms(date + "这一天接口的校验文件正常");
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            sendMessage.sendSms(date + "这一天校验文件下载出现异常，请检查");
+        }
+    }
+
+    @Override
+    public void getMaxCount() {
+        final Map<String, String> maxCount = interfaceInfoMpper.getMaxCount();
+        int max = Integer.parseInt(maxCount.getOrDefault("max", "1"));
+        if (max > 1) {
+            sendMessage.sendSms("国信的效果数据存在有重复的情况，请到gbase数据库核查");
+        }
     }
 
 

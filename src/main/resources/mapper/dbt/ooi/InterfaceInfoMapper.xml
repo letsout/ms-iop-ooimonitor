@@ -206,4 +206,10 @@
         select distinct phone_no
         from user_list_type
     </insert>
+
+
+    <select id="getMaxCount"  resultType="map">
+        select activity_id,data_time,count(1) max from iop_public.ooi_activity_summary_effect GROUP BY activity_id,data_time ORDER BY cnt desc  limit 1
+    </select>
+
 </mapper>

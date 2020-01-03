@@ -85,4 +85,16 @@ public interface TaskService {
     void saveAll93050OR93051();
 
     void saveAll93054() throws Exception;
+
+    /**
+     * 检验校验文件是否正确
+     *
+     * @param date 需要检验的日期
+     */
+    void checkFile(String date);
+
+    /**
+     * 检测每个活动id与日期对应每一天的最大效果数据数量，用语判断效果数据是否正确
+     */
+    void getMaxCount();
 }

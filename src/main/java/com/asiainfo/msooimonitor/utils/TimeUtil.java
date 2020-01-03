@@ -30,15 +30,29 @@ public class TimeUtil {
     public static final String LONG_TIME_FORMAT = "yyyyMMddHHmmss";
 
     public static String getOoiDate(String str) throws Exception {
-//    2019/09/03 00:00:00
         /**
-         * 专门转化字符串为集团上传数据日期格式
+         * 专门转化字符串为集团上传数据日期格式 2019/09/03 00:00:00
          */
         str = str.replaceAll("/", "").replaceAll(":", "").replaceAll("-", "").replaceAll(" ", "");
         if (str.length() == 14) {
             return str;
         } else if (str.length() == 8) {
             return str + "000000";
+        } else {
+            throw new Exception("时间转换异常");
+        }
+    }
+
+    public static String getOoiEndDate(String str) throws Exception {
+
+        /**
+         * 专门转化字符串为集团上传数据日期格式   2019/09/03 00:00:00
+         */
+        str = str.replaceAll("/", "").replaceAll(":", "").replaceAll("-", "").replaceAll(" ", "");
+        if (str.length() == 14) {
+            return str;
+        } else if (str.length() == 8) {
+            return str + "235959";
         } else {
             throw new Exception("时间转换异常");
         }
