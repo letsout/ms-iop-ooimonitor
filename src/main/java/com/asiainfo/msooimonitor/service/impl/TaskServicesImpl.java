@@ -12,7 +12,6 @@ import com.asiainfo.msooimonitor.service.FileDataService;
 import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.service.UploadService;
 import com.asiainfo.msooimonitor.thread.WriteFileThread;
-import com.asiainfo.msooimonitor.utils.CheckCloum;
 import com.asiainfo.msooimonitor.utils.FtpUtil;
 import com.asiainfo.msooimonitor.utils.SqlUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
@@ -37,8 +36,8 @@ public class TaskServicesImpl implements TaskService {
     DecimalFormat df = new DecimalFormat("0.000000");
     @Autowired
     FileDataService fileDataService;
-    @Autowired
-    CheckCloum checkCloum;
+//    @Autowired
+//    CheckCloum checkCloum;
     @Autowired
     SendMessage sendMessage;
     @Autowired
@@ -429,7 +428,7 @@ public class TaskServicesImpl implements TaskService {
                 //50 4G流量客户数,日指标，选填，口径：统计周期内，使用4G网络产生4G流量的客户数
                 map.put("A50", "");
                 resultmap.putAll(map);
-                checkCloum.checkColunmIsNull(resultmap, "93001");
+//                checkCloum.checkColunmIsNull(resultmap, "93001");
                 list.add(resultmap);
             }
         }
@@ -600,7 +599,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A49", "");
             // 50,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
             map.put("A50", "");
-            checkCloum.checkColunmIsNull(map, "93005");
+//            checkCloum.checkColunmIsNull(map, "93005");
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
@@ -735,7 +734,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A49", "");
             // 50,签约客户转化率,选填：,该PCC策略活动期间签约用户的转化率（当采用了PCC能力时，相关内容必填）,例：填0.1代表10%
             map.put("A50", "");
-            checkCloum.checkColunmIsNull(map, "93005");
+//            checkCloum.checkColunmIsNull(map, "93005");
             list.add(map);
         }
         SqlUtil.getInsert("93005", list);
@@ -905,7 +904,7 @@ public class TaskServicesImpl implements TaskService {
                 //90投入产出比,NUMBER (20,6),必填且取值小于1；,口径：,统计周期（活动开始时间至活动结束时间）,运营活动成功用户产生的收入/运营活动投入的成本,例：填0.1代表10%
 //                map.put("A90", mapEffect.get("in_out_rate"));
                 resultmap.putAll(map);
-                checkCloum.checkColunmIsNull(resultmap, "93002");
+//                checkCloum.checkColunmIsNull(resultmap, "93002");
 
                 list.add(resultmap);
             }
@@ -1064,7 +1063,7 @@ public class TaskServicesImpl implements TaskService {
             map.put("A35", "");
             //36,资源使用情况,描述性信息,可为空
             map.put("A36", "");
-            checkCloum.checkColunmIsNull(map, "93002");
+//            checkCloum.checkColunmIsNull(map, "93002");
             list.add(map);
         }
         SqlUtil.getInsert("93002", list);
