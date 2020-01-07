@@ -36,7 +36,7 @@ public class TaskServicesImpl implements TaskService {
     DecimalFormat df = new DecimalFormat("0.000000");
     @Autowired
     FileDataService fileDataService;
-//    @Autowired
+    //    @Autowired
 //    CheckCloum checkCloum;
     @Autowired
     SendMessage sendMessage;
@@ -218,6 +218,10 @@ public class TaskServicesImpl implements TaskService {
                     activityInfo.setCity(CommonConstant.cityMap.get("1"));
                     activityInfo.setProvince(CommonConstant.SC);
                     activityInfo.setCampaignId("280_" + activityInfo.getCampaignId() + "_" + activityInfo.getIopActivityId().substring(1));
+                    if (StringUtils.isEmpty(activityInfo.getSpetopicId())) {
+                        activityInfo.setSpetopicId("null");
+                    }
+
                 }
 
                 //省级策划省级执行
@@ -227,8 +231,11 @@ public class TaskServicesImpl implements TaskService {
                         iopActivityInfo) {
                     activityInfo.setCountTime(TimeUtil.getOoiDate(activityEndDate));
                     activityInfo.setProvince(CommonConstant.SC);
-                    activityInfo.setCity(CommonConstant.SC + activityInfo.getActivityId().substring(1));
+                    activityInfo.setActivityId(CommonConstant.SC + activityInfo.getActivityId().substring(1));
                     activityInfo.setCity(CommonConstant.cityMap.get(activityInfo.getCity()));
+                    if (StringUtils.isEmpty(activityInfo.getSpetopicId())) {
+                        activityInfo.setSpetopicId("null");
+                    }
                 }
                 iopActivityInfo.addAll(jtActivityInfos);
 
@@ -238,7 +245,9 @@ public class TaskServicesImpl implements TaskService {
                 // 融合数据
                 interfaceInfoMpper.insertiop93006(activityEndDate);
             } catch (Exception e) {
+                sendMessage.sendSms("93006查询到有数据表但接口运行异常,有可能数据表没有权限，请核查");
                 log.error("93006 生成数据出现异常{}", e);
+
                 uploadDetailInfo = UploadDetailInfo.builder()
                         .activityId("93006")
                         .activityTime(activityEndDate)
@@ -246,6 +255,7 @@ public class TaskServicesImpl implements TaskService {
                         .activitytype("base")
                         .failDesc("数据融合出现异常")
                         .build();
+                throw e;
             }
 
         }
@@ -1128,6 +1138,9 @@ public class TaskServicesImpl implements TaskService {
             }
             localPath = localPath.replaceAll("time", date);
             remotePath = remotePath.replaceAll("time", date);
+            if ("93005".equals(interfaceId) || "93006".equals(interfaceId)) {
+                remotePath = remotePath.replaceAll("day", "").replaceAll("month", "");
+            }
             log.info("interfaceId:{},fileName：{},localPath:{},remotePath:{}", interfaceId, fileName, localPath, remotePath);
             writeFileThread.write(interfaceId, fileName, tableName, localPath, remotePath, date);
         }
@@ -1261,34 +1274,18 @@ public class TaskServicesImpl implements TaskService {
     }
 
     @Override
-    public void checkFile(String date) {
+    public void checkFile(String date, Set<String> fileSet) {
+        String setStr = fileSet.toString();
         String remotePath = path228 + "/tmp";
-        String loaclPath = path17 + "/tmp/" + date;
+        String loaclPath = path17 + "/checkFile/" + date;
         log.info("开始处理" + date + "这一天的校验文件");
         try {
             boolean b = FtpUtil.downloadCheckFileFTP(remotePath, loaclPath);
             log.info("下载" + date + "这一天的校验文件" + (b ? "成功" : "失败"));
-            Set fileSet = new HashSet();
             //日接口
-            fileSet.add("93001");
-            fileSet.add("93002");
-            fileSet.add("93004");
-            fileSet.add("93005");
-            fileSet.add("93006");
-            //因为尚未考核集团定于11.14才开始调度
-            fileSet.add("93011");
+            //因为尚未考核93011集团定于11.14才开始调度
             //月接口
-            if ("10".equals(date.substring(6))) {
-                fileSet.add("93003");
-                fileSet.add("93055");
-                fileSet.add("93056");
-                fileSet.add("93053");
-                fileSet.add("93052");
-                fileSet.add("93051");
-                fileSet.add("93050");
-                fileSet.add("93054");
-            }
-            Set rSet = new HashSet(fileSet);
+            Set<String> rSet = new HashSet(fileSet);
             File files = new File(loaclPath);
             final File[] dir = files.listFiles();
 
@@ -1335,14 +1332,14 @@ public class TaskServicesImpl implements TaskService {
             log.info(date + "这一天的校验文件有误的接口为：" + rSet);
             rSet.addAll(fileSet);
             if (rSet.size() > 0) {
-                sendMessage.sendSms(date + "这一天接口" + rSet + "的校验文件出现异常，请检查");
+                sendMessage.sendCheckFileFail(rSet.toString());
             } else {
-                sendMessage.sendSms(date + "这一天接口的校验文件正常");
+                sendMessage.sendCheckFileSuccess( setStr );
 
             }
         } catch (IOException e) {
+            sendMessage.sendCheckFileFail(setStr);
             e.printStackTrace();
-            sendMessage.sendSms(date + "这一天校验文件下载出现异常，请检查");
         }
     }
 

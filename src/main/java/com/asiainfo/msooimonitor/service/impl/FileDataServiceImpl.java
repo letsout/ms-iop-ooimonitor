@@ -2,7 +2,6 @@ package com.asiainfo.msooimonitor.service.impl;
 
 import com.asiainfo.msooimonitor.config.SendMessage;
 import com.asiainfo.msooimonitor.constant.CommonConstant;
-import com.asiainfo.msooimonitor.mapper.dbt.common.CommonMapper;
 import com.asiainfo.msooimonitor.mapper.dbt.ooi.InterfaceInfoMpper;
 import com.asiainfo.msooimonitor.mapper.mysql.GetFileDataMapper;
 import com.asiainfo.msooimonitor.model.datahandlemodel.ActivityProcessInfo;
@@ -28,8 +27,6 @@ public class FileDataServiceImpl implements FileDataService {
     @Autowired
     GetFileDataMapper getFileDataMapper;
     @Autowired
-    CommonMapper commonMapper;
-    @Autowired
     InterfaceInfoMpper interfaceInfoMpper;
     @Autowired
     SendMessage sendMessage;
@@ -38,8 +35,9 @@ public class FileDataServiceImpl implements FileDataService {
     public List<Map<String, String>> getData93003(String month) {
         List<Map<String, String>> activitys = getFileDataMapper.getData93003(month);
         List<Map<String, String>> list = new ArrayList<>();
-        if (activitys == null || activitys.size() == 0)
+        if (activitys == null || activitys.size() == 0) {
             return list;
+        }
         Map<String, String> map = new HashMap<>(9);
         String activityType = "9";
         String cityCode = "";
@@ -172,7 +170,7 @@ public class FileDataServiceImpl implements FileDataService {
         map.put("in_out_rate", df.format(inOutRate / i));
         map.put("terminal_flow_rate", df.format(terminalFlowRate / i));
         if (StringUtils.isNotEmpty(activityIds.toString())) {
-            String message = errorMap+"缺少效果数据，请核查";
+            String message = errorMap + "缺少效果数据，请核查";
             sendMessage.sendSms(message);
         }
         return map;

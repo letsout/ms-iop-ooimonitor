@@ -72,8 +72,7 @@
         select a.*,b.flow,d.*
         from activity_base_info a
                  inner join ooi_activity_flow b on a.activity_id = b.activity_id
-                 inner join activity_rel_channel c on a.activity_id = c.activity_id
-                 inner join ooi_base_channel_info d on c.channel_id = d.channel_id
+                 inner join ooi_base_channel_info c on c.channel_id = b.channel_id
         where DATE_FORMAT(a.end_time, '%Y%m%d') = #{activityEndDate}
           and b.flow in (2, 3)
     </select>
@@ -88,9 +87,9 @@
                                   and data_state = 'U')
     </select>
     <insert id="insertFlow" parameterType="java.util.HashMap">
-        INSERT INTO `ooi_activity_flow`(`activity_id`, `flow`)values
+        INSERT INTO `ooi_activity_flow`(`activity_id`, `flow`,`channel_id`)values
         <foreach collection="list" item="map" separator=",">
-            (#{map.activity_id}, #{map.flow})
+            (#{map.activity_id}, #{map.flow}, #{map.channel_id})
         </foreach>
     </insert>
     <select id="getFlowInfo1" resultType="map">

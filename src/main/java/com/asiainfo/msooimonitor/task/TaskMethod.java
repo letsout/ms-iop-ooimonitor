@@ -13,9 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author yx
@@ -56,12 +57,11 @@ public class TaskMethod {
                             .build()
             );
             taskServices.uploadFile();
+            sendMessage.sendFileUploadSuccess("93006");
         } catch (Exception e) {
-            sendMessage.sendSms("93006接口运行异常");
+            sendMessage.sendFileUploadFail("93006");
             log.error("运行异常：" + e);
             e.printStackTrace();
-
-//            fileDataService.truncateTable("93006");
         }
     }
 
@@ -86,7 +86,6 @@ public class TaskMethod {
 
             log.error("运行异常：" + e);
             e.printStackTrace();
-//            fileDataService.truncateTable("93006");
         }
     }
 
@@ -108,9 +107,7 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93004接口运行异常");
-
             e.printStackTrace();
-//            fileDataService.truncateTable("93006");
         }
     }
 
@@ -132,9 +129,7 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93001接口运行异常");
-
             e.printStackTrace();
-//       fileDataService.truncateTable("93001");
         }
     }
 
@@ -157,12 +152,12 @@ public class TaskMethod {
                             .build()
             );
             taskServices.uploadFile();
-        } catch (Exception e) {
-            sendMessage.sendSms("93005接口运行异常");
+            sendMessage.sendFileUploadSuccess("93005");
 
+        } catch (Exception e) {
+            sendMessage.sendFileUploadFail("93005");
             log.error("运行异常：" + e);
             e.printStackTrace();
-//       fileDataService.truncateTable("93006");
         }
     }
 
@@ -185,10 +180,8 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93002接口运行异常");
-
             log.error("运行异常：" + e);
             e.printStackTrace();
-//      fileDataService.truncateTable("93006");
         }
     }
 
@@ -204,7 +197,6 @@ public class TaskMethod {
         try {
             String lastMonthSql = TimeUtil.getLastMonthSql(new Date());
             fileDataService.create93055(lastMonthSql);
-
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93055")
@@ -217,7 +209,6 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93055接口运行异常");
-
             log.error("93055 error :{}", e);
             fileDataService.truncateTable("93055");
         }
@@ -229,9 +220,7 @@ public class TaskMethod {
         fileDataService.truncateTable("93056");
         try {
             String lastMonthSql = TimeUtil.getLastMonthSql(new Date());
-
             fileDataService.create93056(lastMonthSql);
-
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
                             .interfaceId("93056")
@@ -244,7 +233,6 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93056接口运行异常");
-
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93056");
         }
@@ -252,11 +240,9 @@ public class TaskMethod {
 
     @Scheduled(cron = "0 00 00 10 * ?")//每月10号00:00触发
     public void save93003() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
         fileDataService.truncateTable("93003");
         try {
             String month = TimeUtil.getLastMonthSql(new Date());
-
             taskServices.saveAll93003(month);
             fileDataService.insertInterfaceRelTable(
                     CretaeFileInfo.builder()
@@ -270,7 +256,6 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93003接口运行异常");
-
             log.error("93056 error :{}", e);
             fileDataService.truncateTable("93003");
         }
@@ -285,7 +270,6 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("9352OR93053接口运行异常");
-
             log.error("save93052OR93053 error :{}", e);
         }
     }
@@ -299,7 +283,6 @@ public class TaskMethod {
             taskServices.uploadFile();
         } catch (Exception e) {
             sendMessage.sendSms("93050OR93051接口运行异常");
-
             log.error("93050 error :{}", e);
             //  fileDataService.truncateTable("93050");
         }
@@ -347,11 +330,20 @@ public class TaskMethod {
         }
     }
 
-    //查看每天校验文件失败的接口
+    /**
+     * 查看每天校验文件失败的接口
+     */
     @Scheduled(cron = "0 15 10 * * ?")//每天10:15触发
     public void checkFile() {
         final String lastDaySql = TimeUtil.getLastDaySql(new Date());
-        taskServices.checkFile(lastDaySql);
+        Set<String> set = new HashSet<>();
+
+        /**
+         * 这里暂时只加考核的两个接口
+         */
+        set.add("93005");
+        set.add("93006");
+        taskServices.checkFile(lastDaySql, set);
     }
 
     /**

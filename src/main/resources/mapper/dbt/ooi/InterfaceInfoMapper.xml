@@ -209,7 +209,13 @@
 
 
     <select id="getMaxCount"  resultType="map">
-        select activity_id,data_time,count(1) max from iop_public.ooi_activity_summary_effect GROUP BY activity_id,data_time ORDER BY cnt desc  limit 1
+        select activity_id,data_time,count(1) max from iop_public.ooi_activity_summary_effect GROUP BY activity_id,data_time ORDER BY max desc  limit 1
     </select>
 
+
+    <select id="getSummaryEffectsCountByDate" parameterType="string" resultType="int">
+        select *
+        from iop_public.ooi_activity_summary_effect
+        where  data_time = #{date}
+    </select>
 </mapper>

@@ -7,16 +7,16 @@ import com.asiainfo.msooimonitor.service.TaskService;
 import com.asiainfo.msooimonitor.utils.ResultUtil;
 import com.asiainfo.msooimonitor.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author yx
@@ -337,8 +337,9 @@ public class TaskSaveController {
     }
 
     @RequestMapping("/checkFile/{date}")
-    public String checkFile(@PathVariable String date) {
-        taskServices.checkFile(date);
+    public String checkFile(@PathVariable String date, @RequestParam(defaultValue = "93005,93006") String interfaces) {
+        final Set<String> set = StringUtils.commaDelimitedListToSet(interfaces);
+        taskServices.checkFile(date, set);
         return "校验成功，请查看短信，校验的日期为：" + date;
     }
 }

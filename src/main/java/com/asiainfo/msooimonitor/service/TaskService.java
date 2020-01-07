@@ -3,6 +3,7 @@ package com.asiainfo.msooimonitor.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yx
@@ -89,9 +90,10 @@ public interface TaskService {
     /**
      * 检验校验文件是否正确
      *
-     * @param date 需要检验的日期
+     * @param date    需要检验的日期
+     * @param fileSet 需要校验的日期的集合
      */
-    void checkFile(String date);
+    void checkFile(String date, Set<String> fileSet);
 
     /**
      * 检测每个活动id与日期对应每一天的最大效果数据数量，用语判断效果数据是否正确

@@ -77,8 +77,8 @@ public class WriteFileThread {
 
                 for (Map<String, String> map :
                         interfaceInfoLists) {
-                    records++;
-                    Object[] line = map.values().toArray();
+                    map.put("A1", String.valueOf(++records));
+//                    Object[] line = map.values().toArray();
                     // 每filterRecords 条就验证文件是否超出大小
                     if (records % filterRecords == 0 && records > 0) {
                         log.info("开始监测文件{}大小！！！", fileNameTmp);
@@ -86,7 +86,7 @@ public class WriteFileThread {
                         boolean okSize = isOksize(localPath + File.separator + fileNameTmp);
                         if (okSize) {
                             log.info("文件[{}]大于指定大小", fileNameTmp);
-                            dataWrite(dataFileWriter, line, "U");
+                            dataMapWrite(dataFileWriter, map, "U");
                             dataFileWriter.flush();
                             fileNum++;
                             // 生成校验文件信息
@@ -101,16 +101,16 @@ public class WriteFileThread {
                                 dataFileWriter = new FileOutputStream(localPath + File.separator + fileNameTmp);
                             }
                         } else {
-                            dataWrite(dataFileWriter, line, "U");
+                            dataMapWrite(dataFileWriter, map, "U");
                         }
                     } else {
                         if (sum == records) {
-                            dataWrite(dataFileWriter, line, "U");
+                            dataMapWrite(dataFileWriter, map, "U");
                             dataFileWriter.flush();
                             String[] verifyLine = createverifyInfo(fileNameTmp, localPath, date);
                             dataWrite(verifyFileWriter, verifyLine, "U");
                         } else {
-                            dataWrite(dataFileWriter, line, "U");
+                            dataMapWrite(dataFileWriter, map, "U");
                         }
                     }
                 }
@@ -209,6 +209,40 @@ public class WriteFileThread {
         return verifyinfo;
     }
 
+
+    /**
+     * @param writer
+     * @param map
+     * @param flag   是否写入换行符
+     * @throws Exception
+     */
+    private void dataMapWrite(FileOutputStream writer, Map<String, String> map, String flag) throws Exception {
+        byte[] bytes = {(byte) 0x80};
+        int size = map.size();
+        for (int i = 1; i <= size; i++) {
+            final String cloumn = map.getOrDefault("A" + i, "");
+            // 最后一个字符的写入方式
+            if (i == size) {
+                if (!"null".equals(cloumn)) {
+                    writer.write(cloumn.getBytes("gbk"));
+                }
+                break;
+            }
+            // 字段为空的写入方式
+            if ("null".equals(cloumn) || org.springframework.util.StringUtils.isEmpty(cloumn)) {
+                writer.write(bytes);
+            } else {
+                writer.write(cloumn.getBytes("gbk"));
+                writer.write(bytes);
+            }
+
+        }
+        if ("U".equals(flag)) {
+            writer.write("\r\n".getBytes("gbk"));
+        }
+
+    }
+
     /**
      * @param writer
      * @param line
@@ -282,11 +316,11 @@ public class WriteFileThread {
         int start = 0;
         int end = sum;
         for (int i = 0; i < sum / limitNum; i++) {
-            sqlList.add("select RANK() OVER(ORDER BY " + colums + " )+" + start + " as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + limitNum);
+            sqlList.add("select a.* from " + tableName + " a " + " limit " + start + "," + limitNum);
             start += limitNum;
             end -= limitNum;
         }
-        sqlList.add("select RANK() OVER(ORDER BY " + colums + " ) +" + start + " as A1 ,a.* from " + tableName + " a " + " limit " + start + "," + end);
+        sqlList.add("select a.* from " + tableName + " a " + " limit " + start + "," + end);
 
         return sqlList;
     }

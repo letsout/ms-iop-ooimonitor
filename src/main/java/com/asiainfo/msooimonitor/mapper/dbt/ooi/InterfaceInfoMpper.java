@@ -59,4 +59,6 @@ public interface InterfaceInfoMpper {
     void insert93054(List<UploadLabelInfo> quoteLabelInfo);
 
     Map<String, String> getMaxCount();
+
+    int getSummaryEffectsCountByDate(@Param("date") String date);
 }
